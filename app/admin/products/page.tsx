@@ -7,7 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Plus, Search, Pencil, Trash2, Loader2, RotateCcw, Eye, EyeOff, AlertTriangle } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Plus, Search, Pencil, Trash2, Loader2, RotateCcw, Eye, EyeOff, MoreHorizontal, CheckSquare } from "lucide-react"
 import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth, Can } from "@/components/auth-context"
@@ -20,6 +22,7 @@ import {
   emptyTrash,
   publishProduct,
   unpublishProduct,
+  updateProduct,
   type ProductStatus,
 } from "@/app/actions/products"
 import type { Product } from "@/types/database"
@@ -42,6 +45,8 @@ export default function ProductsPage() {
   const [isPending, startTransition] = useTransition()
   const [searchQuery, setSearchQuery] = useState("")
   const [currentTab, setCurrentTab] = useState<"all" | ProductStatus>("all")
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkAction, setBulkAction] = useState<string | null>(null)
   const { toast } = useToast()
   const { can } = useAuth()
 
@@ -57,13 +62,13 @@ export default function ProductsPage() {
       search: searchQuery || undefined,
     })
     if (result.data) {
-      // For "all" tab, exclude trash
       if (currentTab === "all") {
         setProducts(result.data.filter(p => p.status !== "trash"))
       } else {
         setProducts(result.data)
       }
     }
+    setSelectedIds(new Set())
     setIsLoading(false)
   }
 
@@ -79,42 +84,57 @@ export default function ProductsPage() {
     loadProducts()
   }
 
-  const handleTrash = (product: Product) => {
-    startTransition(async () => {
-      const result = await trashProduct(product.id)
-      if (result.success) {
-        toast({ title: "Product moved to trash" })
-        loadProducts()
-        loadCounts()
-      } else {
-        toast({ title: "Error", description: result.error, variant: "destructive" })
-      }
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
     })
   }
 
-  const handleRestore = (product: Product) => {
-    startTransition(async () => {
-      const result = await restoreProduct(product.id)
-      if (result.success) {
-        toast({ title: "Product restored" })
-        loadProducts()
-        loadCounts()
-      } else {
-        toast({ title: "Error", description: result.error, variant: "destructive" })
-      }
-    })
+  const toggleSelectAll = () => {
+    if (selectedIds.size === products.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(products.map(p => p.id)))
+    }
   }
 
-  const handleDeletePermanently = (product: Product) => {
+  const handleBulkAction = (action: string) => {
+    const ids = Array.from(selectedIds)
+    if (ids.length === 0) return
+
     startTransition(async () => {
-      const result = await deleteProductPermanently(product.id)
-      if (result.success) {
-        toast({ title: "Product permanently deleted" })
-        loadProducts()
-        loadCounts()
-      } else {
-        toast({ title: "Error", description: result.error, variant: "destructive" })
+      let count = 0
+      for (const id of ids) {
+        let result: { success?: boolean; error?: string | null }
+        switch (action) {
+          case "publish":
+            result = await publishProduct(id)
+            break
+          case "unpublish":
+            result = await unpublishProduct(id)
+            break
+          case "trash":
+            result = await trashProduct(id)
+            break
+          case "restore":
+            result = await restoreProduct(id)
+            break
+          case "delete":
+            result = await deleteProductPermanently(id)
+            break
+          default:
+            result = { success: false }
+        }
+        if (result.success) count++
       }
+
+      toast({ title: `${count} product${count !== 1 ? "s" : ""} updated` })
+      loadProducts()
+      loadCounts()
+      setSelectedIds(new Set())
     })
   }
 
@@ -122,33 +142,7 @@ export default function ProductsPage() {
     startTransition(async () => {
       const result = await emptyTrash()
       if (result.success) {
-        toast({ title: "Trash emptied", description: `${result.count} products permanently deleted` })
-        loadProducts()
-        loadCounts()
-      } else {
-        toast({ title: "Error", description: result.error, variant: "destructive" })
-      }
-    })
-  }
-
-  const handlePublish = (product: Product) => {
-    startTransition(async () => {
-      const result = await publishProduct(product.id)
-      if (result.success) {
-        toast({ title: "Product published" })
-        loadProducts()
-        loadCounts()
-      } else {
-        toast({ title: "Error", description: result.error, variant: "destructive" })
-      }
-    })
-  }
-
-  const handleUnpublish = (product: Product) => {
-    startTransition(async () => {
-      const result = await unpublishProduct(product.id)
-      if (result.success) {
-        toast({ title: "Product unpublished" })
+        toast({ title: "Trash emptied", description: `${result.count} products deleted` })
         loadProducts()
         loadCounts()
       } else {
@@ -190,18 +184,10 @@ export default function ProductsPage() {
       {/* Status Tabs */}
       <Tabs value={currentTab} onValueChange={(v) => setCurrentTab(v as typeof currentTab)} className="mb-6">
         <TabsList>
-          <TabsTrigger value="all">
-            All <span className="ml-1.5 text-xs text-muted-foreground">({counts.all})</span>
-          </TabsTrigger>
-          <TabsTrigger value="published">
-            Published <span className="ml-1.5 text-xs text-muted-foreground">({counts.published})</span>
-          </TabsTrigger>
-          <TabsTrigger value="draft">
-            Draft <span className="ml-1.5 text-xs text-muted-foreground">({counts.draft})</span>
-          </TabsTrigger>
-          <TabsTrigger value="trash">
-            Trash <span className="ml-1.5 text-xs text-muted-foreground">({counts.trash})</span>
-          </TabsTrigger>
+          <TabsTrigger value="all">All ({counts.all})</TabsTrigger>
+          <TabsTrigger value="published">Published ({counts.published})</TabsTrigger>
+          <TabsTrigger value="draft">Draft ({counts.draft})</TabsTrigger>
+          <TabsTrigger value="trash">Trash ({counts.trash})</TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -212,20 +198,15 @@ export default function ProductsPage() {
               <CardTitle>
                 {currentTab === "all" ? "All Products" : currentTab === "trash" ? "Trash" : `${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Products`}
               </CardTitle>
-              <CardDescription>
-                {currentTab === "trash"
-                  ? "Items in trash will be permanently deleted after 30 days"
-                  : `${products.length} product${products.length !== 1 ? "s" : ""}`
-                }
-              </CardDescription>
+              <CardDescription>{products.length} products</CardDescription>
             </div>
             <div className="flex gap-2">
               <form onSubmit={handleSearch} className="flex gap-2">
                 <Input
-                  placeholder="Search products..."
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64"
+                  className="w-48"
                 />
                 <Button type="submit" variant="secondary" size="icon">
                   <Search className="h-4 w-4" />
@@ -234,29 +215,81 @@ export default function ProductsPage() {
               {currentTab === "trash" && counts.trash > 0 && can("products.delete") && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm">
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Empty Trash
-                    </Button>
+                    <Button variant="destructive" size="sm">Empty Trash</Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>Empty Trash?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will permanently delete all {counts.trash} products in trash. This cannot be undone.
-                      </AlertDialogDescription>
+                      <AlertDialogDescription>This will permanently delete {counts.trash} products.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleEmptyTrash} className="bg-destructive text-destructive-foreground">
-                        Delete All
-                      </AlertDialogAction>
+                      <AlertDialogAction onClick={handleEmptyTrash} className="bg-destructive">Delete All</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
               )}
             </div>
           </div>
+
+          {/* Bulk Actions Bar */}
+          {selectedIds.size > 0 && (
+            <div className="flex items-center gap-4 mt-4 p-3 bg-muted rounded-lg">
+              <Checkbox checked={selectedIds.size === products.length} onCheckedChange={toggleSelectAll} />
+              <span className="text-sm font-medium">{selectedIds.size} selected</span>
+              <div className="flex gap-2 ml-auto">
+                {currentTab === "trash" ? (
+                  <>
+                    <Can permission="products.edit">
+                      <Button variant="outline" size="sm" onClick={() => handleBulkAction("restore")} disabled={isPending}>
+                        <RotateCcw className="h-4 w-4 mr-1" />
+                        Restore
+                      </Button>
+                    </Can>
+                    <Can permission="products.delete">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="sm" disabled={isPending}>
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete {selectedIds.size} products?</AlertDialogTitle>
+                            <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleBulkAction("delete")} className="bg-destructive">Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </Can>
+                  </>
+                ) : (
+                  <>
+                    <Can permission="products.edit">
+                      <Button variant="outline" size="sm" onClick={() => handleBulkAction("publish")} disabled={isPending}>
+                        <Eye className="h-4 w-4 mr-1" />
+                        Publish
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleBulkAction("unpublish")} disabled={isPending}>
+                        <EyeOff className="h-4 w-4 mr-1" />
+                        Unpublish
+                      </Button>
+                    </Can>
+                    <Can permission="products.delete">
+                      <Button variant="outline" size="sm" className="text-destructive" onClick={() => handleBulkAction("trash")} disabled={isPending}>
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Trash
+                      </Button>
+                    </Can>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -266,10 +299,7 @@ export default function ProductsPage() {
           ) : products.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               {currentTab === "trash" ? (
-                <>
-                  <Trash2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Trash is empty</p>
-                </>
+                <p>Trash is empty</p>
               ) : (
                 <>
                   <p>No products found</p>
@@ -285,29 +315,28 @@ export default function ProductsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox checked={selectedIds.size === products.length && products.length > 0} onCheckedChange={toggleSelectAll} />
+                  </TableHead>
                   <TableHead>Product</TableHead>
                   <TableHead>Category</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Stock</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {products.map((product) => (
-                  <TableRow key={product.id}>
+                  <TableRow key={product.id} className={selectedIds.has(product.id) ? "bg-muted/50" : undefined}>
+                    <TableCell>
+                      <Checkbox checked={selectedIds.has(product.id)} onCheckedChange={() => toggleSelect(product.id)} />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {product.images?.[0] ? (
-                          <img
-                            src={product.images[0]}
-                            alt={product.title}
-                            className="w-10 h-10 rounded object-cover"
-                          />
+                          <img src={product.images[0]} alt={product.title} className="w-10 h-10 rounded object-cover" />
                         ) : (
-                          <div className="w-10 h-10 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                            No img
-                          </div>
+                          <div className="w-10 h-10 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">No img</div>
                         )}
                         <div>
                           <p className="font-medium">{product.title}</p>
@@ -318,87 +347,61 @@ export default function ProductsPage() {
                     <TableCell className="text-muted-foreground">{product.category || "-"}</TableCell>
                     <TableCell>${product.price?.toFixed(2) || "-"}</TableCell>
                     <TableCell>{getStatusBadge(product.status)}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={
-                        product.stock_status === "In Stock" ? "border-green-500 text-green-600" :
-                          product.stock_status === "Low Stock" ? "border-yellow-500 text-yellow-600" :
-                            "border-red-500 text-red-600"
-                      }>
-                        {product.stock_status}
-                      </Badge>
-                    </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex gap-1 justify-end">
-                        {currentTab === "trash" ? (
-                          // Trash actions
-                          <>
-                            <Can permission="products.edit">
-                              <Button variant="ghost" size="sm" onClick={() => handleRestore(product)} disabled={isPending}>
-                                <RotateCcw className="h-4 w-4 mr-1" />
-                                Restore
-                              </Button>
-                            </Can>
-                            <Can permission="products.delete">
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="text-destructive" disabled={isPending}>
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete permanently?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      This will permanently delete &quot;{product.title}&quot;. This cannot be undone.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDeletePermanently(product)} className="bg-destructive">
-                                      Delete
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </Can>
-                          </>
-                        ) : (
-                          // Normal actions
-                          <>
-                            <Can permission="products.edit">
-                              {product.status === "draft" ? (
-                                <Button variant="ghost" size="sm" onClick={() => handlePublish(product)} disabled={isPending}>
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  Publish
-                                </Button>
-                              ) : product.status === "published" ? (
-                                <Button variant="ghost" size="sm" onClick={() => handleUnpublish(product)} disabled={isPending}>
-                                  <EyeOff className="h-4 w-4 mr-1" />
-                                  Unpublish
-                                </Button>
-                              ) : null}
-                            </Can>
-                            <Can permission="products.edit">
-                              <Button variant="ghost" size="sm" asChild>
-                                <Link href={`/admin/products/${product.id}`}>
-                                  <Pencil className="h-4 w-4" />
-                                </Link>
-                              </Button>
-                            </Can>
-                            <Can permission="products.delete">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-destructive"
-                                onClick={() => handleTrash(product)}
-                                disabled={isPending}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </Can>
-                          </>
-                        )}
-                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {currentTab === "trash" ? (
+                            <>
+                              <Can permission="products.edit">
+                                <DropdownMenuItem onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("restore"); }}>
+                                  <RotateCcw className="h-4 w-4 mr-2" />
+                                  Restore
+                                </DropdownMenuItem>
+                              </Can>
+                              <Can permission="products.delete">
+                                <DropdownMenuItem className="text-destructive" onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("delete"); }}>
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete Permanently
+                                </DropdownMenuItem>
+                              </Can>
+                            </>
+                          ) : (
+                            <>
+                              <Can permission="products.edit">
+                                <DropdownMenuItem asChild>
+                                  <Link href={`/admin/products/${product.id}`}>
+                                    <Pencil className="h-4 w-4 mr-2" />
+                                    Edit
+                                  </Link>
+                                </DropdownMenuItem>
+                                {product.status === "draft" ? (
+                                  <DropdownMenuItem onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("publish"); }}>
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    Publish
+                                  </DropdownMenuItem>
+                                ) : (
+                                  <DropdownMenuItem onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("unpublish"); }}>
+                                    <EyeOff className="h-4 w-4 mr-2" />
+                                    Unpublish
+                                  </DropdownMenuItem>
+                                )}
+                              </Can>
+                              <DropdownMenuSeparator />
+                              <Can permission="products.delete">
+                                <DropdownMenuItem className="text-destructive" onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("trash"); }}>
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Move to Trash
+                                </DropdownMenuItem>
+                              </Can>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}

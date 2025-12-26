@@ -7,12 +7,13 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Plus, X, Loader2, Package2 } from "lucide-react"
+import { ArrowLeft, Plus, X, Loader2, Package2, Image as ImageIcon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { getProductById, updateProduct } from "@/app/actions/products"
 import type { Product } from "@/types/database"
+import { MediaPicker } from "@/components/media-picker"
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params)
@@ -79,11 +80,8 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     setSpecifications(updated)
   }
 
-  const handleAddImage = () => {
-    if (imageUrl.trim()) {
-      setImages([...images, imageUrl.trim()])
-      setImageUrl("")
-    }
+  const handleAddImage = (url: string) => {
+    setImages([...images, url])
   }
 
   const handleRemoveImage = (index: number) => {
@@ -226,17 +224,15 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               <CardDescription>Add image URLs for this product</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Enter image URL..."
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddImage())}
-                />
-                <Button type="button" variant="outline" onClick={handleAddImage}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
+              <MediaPicker
+                onSelect={handleAddImage}
+                trigger={
+                  <Button type="button" variant="outline" className="w-full">
+                    <ImageIcon className="h-4 w-4 mr-2" />
+                    Add Image from Library
+                  </Button>
+                }
+              />
 
               {images.length > 0 && (
                 <div className="grid grid-cols-4 gap-4">
@@ -348,19 +344,21 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 <Label htmlFor="category">
                   Category <span className="text-destructive">*</span>
                 </Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger id="category">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Perfumes">Perfumes</SelectItem>
-                    <SelectItem value="Skincare">Skincare</SelectItem>
-                    <SelectItem value="Makeup">Makeup</SelectItem>
-                    <SelectItem value="Hair Care">Hair Care</SelectItem>
-                    <SelectItem value="Body Care">Body Care</SelectItem>
-                    <SelectItem value="Gift Sets">Gift Sets</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input
+                  id="category"
+                  list="category-options"
+                  placeholder="Select or type category..."
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+                <datalist id="category-options">
+                  <option value="Perfumes" />
+                  <option value="Skincare" />
+                  <option value="Makeup" />
+                  <option value="Hair Care" />
+                  <option value="Body Care" />
+                  <option value="Gift Sets" />
+                </datalist>
               </div>
 
               <div className="space-y-2">
