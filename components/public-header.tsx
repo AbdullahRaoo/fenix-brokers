@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { Package, Search, Menu } from "lucide-react"
+import { Sparkles, Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -28,9 +28,9 @@ export function PublicHeader() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <Package className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold hidden sm:inline">ProSupply Wholesale</span>
-            <span className="text-xl font-bold sm:hidden">ProSupply</span>
+            <Sparkles className="h-8 w-8 text-pink-500" />
+            <span className="text-xl font-bold hidden sm:inline">Fenix Brokers</span>
+            <span className="text-xl font-bold sm:hidden">Fenix</span>
           </Link>
 
           {/* Desktop Navigation */}

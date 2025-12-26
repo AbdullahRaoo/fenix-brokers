@@ -2,13 +2,14 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Mail } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { subscribeEmail } from "@/app/actions/subscribers"
 
 interface SubscriberModalProps {
   open: boolean
@@ -18,27 +19,44 @@ interface SubscriberModalProps {
 export default function SubscriberModal({ open, onOpenChange }: SubscriberModalProps) {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
 
-    // Store in state array (will be moved to database later)
-    const subscribers = JSON.parse(localStorage.getItem("subscribers") || "[]")
-    subscribers.push({ name, email, createdAt: new Date().toISOString() })
-    localStorage.setItem("subscribers", JSON.stringify(subscribers))
+    startTransition(async () => {
+      const result = await subscribeEmail({ email, name })
 
-    toast({
-      title: "Successfully subscribed!",
-      description: "Thank you for subscribing to our newsletter.",
+      if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        return
+      }
+
+      if (result.alreadySubscribed) {
+        toast({
+          title: "Already subscribed!",
+          description: "This email is already on our newsletter list.",
+        })
+      } else {
+        toast({
+          title: "Successfully subscribed!",
+          description: "Thank you for subscribing to our newsletter.",
+        })
+      }
+
+      // Set a flag to prevent modal from showing again for 30 days
+      localStorage.setItem("has_subscribed", "true")
+      localStorage.setItem("subscribed_at", new Date().toISOString())
+
+      setName("")
+      setEmail("")
+      onOpenChange(false)
     })
-
-    setName("")
-    setEmail("")
-    setIsSubmitting(false)
-    onOpenChange(false)
   }
 
   return (
@@ -69,8 +87,8 @@ export default function SubscriberModal({ open, onOpenChange }: SubscriberModalP
               required
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Subscribing..." : "Subscribe"}
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending ? "Subscribing..." : "Subscribe"}
           </Button>
         </form>
       </DialogContent>

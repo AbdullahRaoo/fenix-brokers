@@ -1,79 +1,45 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Search, Eye } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { Search, Eye, Loader2 } from "lucide-react"
 import Link from "next/link"
-
-interface Inquiry {
-  id: string
-  productId: string
-  productName: string
-  quantity: string
-  companyName: string
-  notes: string
-  status: "New" | "In Progress" | "Closed"
-  adminNotes: string
-  createdAt: string
-}
+import { getInquiries } from "@/app/actions/inquiries"
+import type { Inquiry } from "@/types/database"
 
 export default function InquiriesPage() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [tempStatus, setTempStatus] = useState<Inquiry["status"]>("New")
-  const [tempAdminNotes, setTempAdminNotes] = useState("")
-  const { toast } = useToast()
+  const [statusFilter, setStatusFilter] = useState("all")
 
   useEffect(() => {
-    // Load inquiries from localStorage
-    const storedInquiries = JSON.parse(localStorage.getItem("inquiries") || "[]")
-    setInquiries(storedInquiries)
-  }, [])
-
-  const filteredInquiries = inquiries.filter(
-    (inquiry) =>
-      inquiry.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      inquiry.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      inquiry.id.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
-
-  const handleViewInquiry = (inquiry: Inquiry) => {
-    setSelectedInquiry(inquiry)
-    setTempStatus(inquiry.status)
-    setTempAdminNotes(inquiry.adminNotes)
-    setDialogOpen(true)
-  }
-
-  const handleSave = () => {
-    if (selectedInquiry) {
-      const updatedInquiries = inquiries.map((inq) =>
-        inq.id === selectedInquiry.id ? { ...inq, status: tempStatus, adminNotes: tempAdminNotes } : inq,
-      )
-      setInquiries(updatedInquiries)
-      localStorage.setItem("inquiries", JSON.stringify(updatedInquiries))
-
-      toast({
-        title: "Inquiry updated",
-        description: "The inquiry has been successfully updated.",
+    async function loadInquiries() {
+      setIsLoading(true)
+      const result = await getInquiries({
+        status: statusFilter === "all" ? undefined : statusFilter,
+        search: searchQuery || undefined,
       })
-      setDialogOpen(false)
+
+      if (result.data) {
+        setInquiries(result.data)
+      }
+      setIsLoading(false)
     }
-  }
+
+    loadInquiries()
+  }, [searchQuery, statusFilter])
 
   const getStatusColor = (status: Inquiry["status"]) => {
     switch (status) {
       case "New":
         return "bg-primary/10 text-primary hover:bg-primary/20"
+      case "Viewed":
+        return "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"
       case "In Progress":
         return "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20"
       case "Closed":
@@ -90,17 +56,29 @@ export default function InquiriesPage() {
         <p className="text-muted-foreground">Track and respond to customer quote requests</p>
       </div>
 
-      {/* Search Bar */}
-      <div className="flex gap-4 mb-6">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by product, company, or ID..."
+            placeholder="Search by product, company, or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="New">New</SelectItem>
+            <SelectItem value="Viewed">Viewed</SelectItem>
+            <SelectItem value="In Progress">In Progress</SelectItem>
+            <SelectItem value="Closed">Closed</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Inquiries Table */}
@@ -111,6 +89,7 @@ export default function InquiriesPage() {
               <TableHead>Inquiry ID</TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Company</TableHead>
+              <TableHead>Contact</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created</TableHead>
@@ -118,18 +97,31 @@ export default function InquiriesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredInquiries.length === 0 ? (
+            {isLoading ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+                  <p className="text-muted-foreground">Loading inquiries...</p>
+                </TableCell>
+              </TableRow>
+            ) : inquiries.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                   No inquiries found
                 </TableCell>
               </TableRow>
             ) : (
-              filteredInquiries.map((inquiry) => (
+              inquiries.map((inquiry) => (
                 <TableRow key={inquiry.id}>
-                  <TableCell className="font-mono text-sm">{inquiry.id}</TableCell>
-                  <TableCell className="font-medium">{inquiry.productName}</TableCell>
-                  <TableCell>{inquiry.companyName}</TableCell>
+                  <TableCell className="font-mono text-sm">{inquiry.id.slice(0, 8)}</TableCell>
+                  <TableCell className="font-medium">{inquiry.product_name}</TableCell>
+                  <TableCell>{inquiry.company_name}</TableCell>
+                  <TableCell>
+                    <div>
+                      <p className="text-sm">{inquiry.contact_person}</p>
+                      <p className="text-xs text-muted-foreground">{inquiry.email}</p>
+                    </div>
+                  </TableCell>
                   <TableCell>{inquiry.quantity}</TableCell>
                   <TableCell>
                     <Badge variant="secondary" className={getStatusColor(inquiry.status)}>
@@ -137,7 +129,7 @@ export default function InquiriesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new Date(inquiry.createdAt).toLocaleDateString()}
+                    {new Date(inquiry.created_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" asChild>
@@ -153,87 +145,6 @@ export default function InquiriesPage() {
           </TableBody>
         </Table>
       </div>
-
-      {/* Inquiry Details Dialog */}
-      {selectedInquiry && (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Inquiry Details</DialogTitle>
-              <DialogDescription>Review and update the inquiry information</DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4 mt-4">
-              {/* Inquiry Info */}
-              <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Inquiry ID</p>
-                  <p className="font-mono text-sm">{selectedInquiry.id}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Created</p>
-                  <p className="text-sm">{new Date(selectedInquiry.createdAt).toLocaleString()}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Product</p>
-                  <p className="font-medium">{selectedInquiry.productName}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Quantity</p>
-                  <p className="font-medium">{selectedInquiry.quantity}</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-muted-foreground mb-1">Company</p>
-                  <p className="font-medium">{selectedInquiry.companyName}</p>
-                </div>
-                {selectedInquiry.notes && (
-                  <div className="col-span-2">
-                    <p className="text-sm text-muted-foreground mb-1">Customer Notes</p>
-                    <p className="text-sm">{selectedInquiry.notes}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Status Dropdown */}
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Select value={tempStatus} onValueChange={(value: Inquiry["status"]) => setTempStatus(value)}>
-                  <SelectTrigger id="status">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="New">New</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Closed">Closed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Admin Notes */}
-              <div className="space-y-2">
-                <Label htmlFor="admin-notes">Admin Notes</Label>
-                <Textarea
-                  id="admin-notes"
-                  placeholder="Add internal notes about this inquiry..."
-                  value={tempAdminNotes}
-                  onChange={(e) => setTempAdminNotes(e.target.value)}
-                  rows={4}
-                />
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSave} className="flex-1">
-                  Save Changes
-                </Button>
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   )
 }

@@ -1,36 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Plus, X, Upload } from "lucide-react"
+import { ArrowLeft, Plus, X, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
-import { MediaLibraryModal } from "@/components/media-library-modal"
+import { createProduct } from "@/app/actions/products"
 
 export default function NewProductPage() {
   const router = useRouter()
   const { toast } = useToast()
+  const [isPending, startTransition] = useTransition()
 
   const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
+  const [shortDescription, setShortDescription] = useState("")
+  const [fullDescription, setFullDescription] = useState("")
   const [category, setCategory] = useState("")
   const [brand, setBrand] = useState("")
   const [price, setPrice] = useState("")
-  const [stock, setStock] = useState("")
-  const [sku, setSku] = useState("")
+  const [stockStatus, setStockStatus] = useState("In Stock")
   const [metaTitle, setMetaTitle] = useState("")
   const [metaDescription, setMetaDescription] = useState("")
-  const [urlSlug, setUrlSlug] = useState("")
-  const [canonicalUrl, setCanonicalUrl] = useState("")
   const [specifications, setSpecifications] = useState<{ key: string; value: string }[]>([{ key: "", value: "" }])
+  const [imageUrl, setImageUrl] = useState("")
   const [images, setImages] = useState<string[]>([])
-  const [mediaLibraryOpen, setMediaLibraryOpen] = useState(false)
 
   const addSpecification = () => {
     setSpecifications([...specifications, { key: "", value: "" }])
@@ -46,32 +45,61 @@ export default function NewProductPage() {
     setSpecifications(updated)
   }
 
+  const handleAddImage = () => {
+    if (imageUrl.trim()) {
+      setImages([...images, imageUrl.trim()])
+      setImageUrl("")
+    }
+  }
+
+  const handleRemoveImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index))
+  }
+
   const handleSave = () => {
     // Validation
-    if (!title || !category || !brand || !price || !stock || !sku) {
+    if (!title || !category || !brand) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required fields.",
+        description: "Please fill in Title, Category, and Brand.",
         variant: "destructive",
       })
       return
     }
 
-    // Save to localStorage (in production, this would be an API call)
-    toast({
-      title: "Product created",
-      description: "The product has been successfully added to your catalog.",
+    startTransition(async () => {
+      const result = await createProduct({
+        title,
+        brand,
+        category,
+        price: price ? parseFloat(price) : undefined,
+        short_description: shortDescription || undefined,
+        full_description: fullDescription || undefined,
+        specs: specifications.filter(s => s.key && s.value),
+        seo_metadata: {
+          meta_title: metaTitle || undefined,
+          meta_description: metaDescription || undefined,
+        },
+        images: images.length > 0 ? images : undefined,
+        stock_status: stockStatus,
+      })
+
+      if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        return
+      }
+
+      toast({
+        title: "Product created",
+        description: "The product has been successfully added to your catalog.",
+      })
+
+      router.push("/admin/products")
     })
-
-    router.push("/admin/products")
-  }
-
-  const handleAddImage = (url: string) => {
-    setImages([...images, url])
-  }
-
-  const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index))
   }
 
   return (
@@ -104,23 +132,34 @@ export default function NewProductPage() {
                 </Label>
                 <Input
                   id="title"
-                  placeholder="e.g., Industrial LED Light Panel 60W"
+                  placeholder="e.g., Luxury Oud Collection 100ml"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="short-description">Short Description</Label>
                 <Textarea
-                  id="description"
-                  placeholder="Enter a detailed product description..."
-                  rows={8}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  id="short-description"
+                  placeholder="Brief product summary shown in listings..."
+                  rows={3}
+                  value={shortDescription}
+                  onChange={(e) => setShortDescription(e.target.value)}
                   className="resize-none"
                 />
-                <p className="text-xs text-muted-foreground">Supports rich text formatting</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="full-description">Full Description</Label>
+                <Textarea
+                  id="full-description"
+                  placeholder="Detailed product description for the product page..."
+                  rows={6}
+                  value={fullDescription}
+                  onChange={(e) => setFullDescription(e.target.value)}
+                  className="resize-none"
+                />
               </div>
             </CardContent>
           </Card>
@@ -128,14 +167,21 @@ export default function NewProductPage() {
           {/* Media Gallery */}
           <Card>
             <CardHeader>
-              <CardTitle>Media Gallery</CardTitle>
-              <CardDescription>Product images and videos</CardDescription>
+              <CardTitle>Product Images</CardTitle>
+              <CardDescription>Add image URLs for this product</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button variant="outline" className="w-full bg-transparent" onClick={() => setMediaLibraryOpen(true)}>
-                <Upload className="h-4 w-4 mr-2" />
-                Add from Media Library
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter image URL..."
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddImage())}
+                />
+                <Button type="button" variant="outline" onClick={handleAddImage}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
 
               {images.length > 0 && (
                 <div className="grid grid-cols-4 gap-4">
@@ -167,20 +213,20 @@ export default function NewProductPage() {
           {/* Specifications */}
           <Card>
             <CardHeader>
-              <CardTitle>Technical Specifications</CardTitle>
+              <CardTitle>Product Specifications</CardTitle>
               <CardDescription>Key-value pairs for product specs</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {specifications.map((spec, index) => (
                 <div key={index} className="flex gap-2">
                   <Input
-                    placeholder="Key (e.g., Material)"
+                    placeholder="Key (e.g., Volume)"
                     value={spec.key}
                     onChange={(e) => updateSpecification(index, "key", e.target.value)}
                     className="flex-1"
                   />
                   <Input
-                    placeholder="Value (e.g., Steel)"
+                    placeholder="Value (e.g., 100ml)"
                     value={spec.value}
                     onChange={(e) => updateSpecification(index, "value", e.target.value)}
                     className="flex-1"
@@ -233,26 +279,6 @@ export default function NewProductPage() {
                 />
                 <p className="text-xs text-muted-foreground">{metaDescription.length}/160 characters</p>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="url-slug">URL Slug</Label>
-                <Input
-                  id="url-slug"
-                  placeholder="product-name-here"
-                  value={urlSlug}
-                  onChange={(e) => setUrlSlug(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="canonical-url">Canonical URL</Label>
-                <Input
-                  id="canonical-url"
-                  placeholder="https://yoursite.com/products/product-name"
-                  value={canonicalUrl}
-                  onChange={(e) => setCanonicalUrl(e.target.value)}
-                />
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -274,10 +300,12 @@ export default function NewProductPage() {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="electronics">Electronics</SelectItem>
-                    <SelectItem value="industrial">Industrial Equipment</SelectItem>
-                    <SelectItem value="office">Office Supplies</SelectItem>
-                    <SelectItem value="construction">Construction Materials</SelectItem>
+                    <SelectItem value="Perfumes">Perfumes</SelectItem>
+                    <SelectItem value="Skincare">Skincare</SelectItem>
+                    <SelectItem value="Makeup">Makeup</SelectItem>
+                    <SelectItem value="Hair Care">Hair Care</SelectItem>
+                    <SelectItem value="Body Care">Body Care</SelectItem>
+                    <SelectItem value="Gift Sets">Gift Sets</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -288,43 +316,37 @@ export default function NewProductPage() {
                 </Label>
                 <Input
                   id="brand"
-                  placeholder="e.g., LumenTech"
+                  placeholder="e.g., Arabian Essence"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="sku">
-                  SKU <span className="text-destructive">*</span>
-                </Label>
-                <Input id="sku" placeholder="e.g., LED-60W-001" value={sku} onChange={(e) => setSku(e.target.value)} />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="price">
-                  Price (USD) <span className="text-destructive">*</span>
-                </Label>
+                <Label htmlFor="price">Price (USD)</Label>
                 <Input
                   id="price"
                   type="number"
-                  placeholder="0.00"
+                  step="0.01"
+                  placeholder="0.00 (leave empty for 'Request Quote')"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="stock">
-                  Stock Quantity <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="stock"
-                  type="number"
-                  placeholder="0"
-                  value={stock}
-                  onChange={(e) => setStock(e.target.value)}
-                />
+                <Label htmlFor="stock-status">Stock Status</Label>
+                <Select value={stockStatus} onValueChange={setStockStatus}>
+                  <SelectTrigger id="stock-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="In Stock">In Stock</SelectItem>
+                    <SelectItem value="Low Stock">Low Stock</SelectItem>
+                    <SelectItem value="Out of Stock">Out of Stock</SelectItem>
+                    <SelectItem value="Pre-Order">Pre-Order</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
@@ -332,8 +354,15 @@ export default function NewProductPage() {
           {/* Actions */}
           <Card>
             <CardContent className="pt-6 space-y-3">
-              <Button onClick={handleSave} className="w-full">
-                Save Product
+              <Button onClick={handleSave} className="w-full" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Save Product"
+                )}
               </Button>
               <Button variant="outline" className="w-full bg-transparent" asChild>
                 <Link href="/admin/products">Cancel</Link>
@@ -342,8 +371,6 @@ export default function NewProductPage() {
           </Card>
         </div>
       </div>
-
-      <MediaLibraryModal open={mediaLibraryOpen} onOpenChange={setMediaLibraryOpen} onSelect={handleAddImage} />
     </div>
   )
 }

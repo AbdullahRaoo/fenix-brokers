@@ -1,109 +1,47 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Package, Search, Filter } from "lucide-react"
+import { Package, Search, Filter, Loader2 } from "lucide-react"
 import { PublicHeader } from "@/components/public-header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-
-// Dummy product data
-const products = [
-  {
-    id: "PROD-001",
-    slug: "industrial-led-light-panel-60w",
-    name: "Industrial LED Light Panel 60W",
-    brand: "LumenTech",
-    category: "Electronics",
-    image: "/industrial-led-panel.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-  {
-    id: "PROD-002",
-    slug: "heavy-duty-power-drill-set",
-    name: "Heavy Duty Power Drill Set",
-    brand: "PowerMax",
-    category: "Industrial Equipment",
-    image: "/power-drill-set.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-  {
-    id: "PROD-003",
-    slug: "office-chair-ergonomic-pro",
-    name: "Office Chair Ergonomic Pro",
-    brand: "ComfortSeating",
-    category: "Office Supplies",
-    image: "/ergonomic-office-chair.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-  {
-    id: "PROD-004",
-    slug: "steel-beam-20ft-i-section",
-    name: "Steel Beam 20ft I-Section",
-    brand: "SteelCore",
-    category: "Construction Materials",
-    image: "/steel-i-beam.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-  {
-    id: "PROD-005",
-    slug: "commercial-coffee-maker-12-cup",
-    name: "Commercial Coffee Maker 12-Cup",
-    brand: "BrewMaster",
-    category: "Office Supplies",
-    image: "/commercial-coffee-maker.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-  {
-    id: "PROD-006",
-    slug: "warehouse-shelving-unit",
-    name: "Warehouse Shelving Unit",
-    brand: "StoragePro",
-    category: "Industrial Equipment",
-    image: "/warehouse-shelving-unit.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-  {
-    id: "PROD-007",
-    slug: "security-camera-system-8-channel",
-    name: "Security Camera System 8-Channel",
-    brand: "SecureVision",
-    category: "Electronics",
-    image: "/security-camera-system.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-  {
-    id: "PROD-008",
-    slug: "concrete-mix-pro-grade-50lb",
-    name: "Concrete Mix Pro Grade 50lb",
-    brand: "BuildStrong",
-    category: "Construction Materials",
-    image: "/concrete-mix-bags.jpg",
-    price: "Request Quote",
-    stock: "In Stock",
-  },
-]
+import { getProducts, getCategories } from "@/app/actions/products"
+import type { Product } from "@/types/database"
 
 export default function CatalogPage() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.brand.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = categoryFilter === "all" || product.category === categoryFilter
-    return matchesSearch && matchesCategory
-  })
+  useEffect(() => {
+    async function loadData() {
+      setIsLoading(true)
+
+      const [productsResult, categoriesResult] = await Promise.all([
+        getProducts({
+          category: categoryFilter === "all" ? undefined : categoryFilter,
+          search: searchQuery || undefined,
+        }),
+        getCategories(),
+      ])
+
+      if (productsResult.data) {
+        setProducts(productsResult.data)
+      }
+      if (categoriesResult.data) {
+        setCategories(categoriesResult.data)
+      }
+
+      setIsLoading(false)
+    }
+
+    loadData()
+  }, [categoryFilter, searchQuery])
 
   return (
     <div className="min-h-screen">
@@ -135,16 +73,22 @@ export default function CatalogPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="Electronics">Electronics</SelectItem>
-              <SelectItem value="Industrial Equipment">Industrial Equipment</SelectItem>
-              <SelectItem value="Office Supplies">Office Supplies</SelectItem>
-              <SelectItem value="Construction Materials">Construction Materials</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
         {/* Product Grid */}
-        {filteredProducts.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-16">
+            <Loader2 className="h-16 w-16 text-primary mx-auto mb-4 animate-spin" />
+            <p className="text-muted-foreground">Loading products...</p>
+          </div>
+        ) : products.length === 0 ? (
           <div className="text-center py-16">
             <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
             <h3 className="text-lg font-semibold mb-2">No products found</h3>
@@ -152,7 +96,7 @@ export default function CatalogPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
+            {products.map((product) => (
               <Link
                 key={product.id}
                 href={`/product/${product.slug}`}
@@ -160,20 +104,22 @@ export default function CatalogPage() {
               >
                 <div className="aspect-square relative overflow-hidden bg-muted">
                   <img
-                    src={product.image || "/placeholder.svg"}
-                    alt={product.name}
+                    src={product.images?.[0] || "/placeholder.svg"}
+                    alt={product.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-2 right-2">
                     <span className="px-2 py-1 bg-primary/90 text-primary-foreground text-xs rounded-md">
-                      {product.stock}
+                      {product.stock_status}
                     </span>
                   </div>
                 </div>
                 <div className="p-4">
                   <p className="text-xs text-muted-foreground mb-1">{product.brand}</p>
-                  <h3 className="font-semibold mb-2 text-balance line-clamp-2">{product.name}</h3>
-                  <p className="text-sm text-primary font-medium mb-4">{product.price}</p>
+                  <h3 className="font-semibold mb-2 text-balance line-clamp-2">{product.title}</h3>
+                  <p className="text-sm text-primary font-medium mb-4">
+                    {product.price ? `$${product.price}` : "Request Quote"}
+                  </p>
                   <Button className="w-full" size="sm">
                     View Details
                   </Button>

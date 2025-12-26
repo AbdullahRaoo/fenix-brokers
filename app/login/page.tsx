@@ -2,48 +2,49 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Package } from "lucide-react"
+import { Sparkles, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
+import { loginAdmin } from "@/app/actions/auth"
+import Link from "next/link"
 
 export default function LoginPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState("")
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
     setError("")
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    // Mock authentication
-    if (username === "abdullah" && password === "abdullah") {
-      // Set authentication in localStorage
-      localStorage.setItem("isAuthenticated", "true")
-      localStorage.setItem("user", JSON.stringify({ username: "abdullah", email: "abdullah@prosupply.com" }))
-
-      toast({
-        title: "Login successful",
-        description: "Welcome back, Abdullah!",
-      })
-
-      router.push("/admin")
-    } else {
-      setError("Invalid username or password. Please try again.")
-      setIsLoading(false)
+    if (!email || !password) {
+      setError("Please enter your email and password.")
+      return
     }
+
+    startTransition(async () => {
+      const result = await loginAdmin(email, password)
+
+      if (result.success && result.user) {
+        toast({
+          title: "Login successful",
+          description: `Welcome back, ${result.user.name}!`,
+        })
+        router.push("/admin")
+        router.refresh()
+      } else {
+        setError(result.error || "Invalid email or password.")
+      }
+    })
   }
 
   return (
@@ -51,25 +52,26 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4 flex flex-col items-center">
           <div className="flex items-center gap-2">
-            <Package className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">ProSupply</span>
+            <Sparkles className="h-8 w-8 text-pink-500" />
+            <span className="text-2xl font-bold">Fenix Brokers</span>
           </div>
           <div className="text-center">
-            <CardTitle className="text-2xl">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl">Admin Login</CardTitle>
             <CardDescription>Sign in to access the admin panel</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isLoading}
-                autoComplete="username"
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isPending}
+                autoComplete="email"
               />
             </div>
 
@@ -81,7 +83,7 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
+                disabled={isPending}
                 autoComplete="current-password"
               />
             </div>
@@ -92,10 +94,10 @@ export default function LoginPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? (
                 <>
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent mr-2" />
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   Signing in...
                 </>
               ) : (
@@ -105,9 +107,9 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              Demo Credentials: <span className="font-medium">abdullah / abdullah</span>
-            </p>
+            <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+              ← Back to website
+            </Link>
           </div>
         </CardContent>
       </Card>

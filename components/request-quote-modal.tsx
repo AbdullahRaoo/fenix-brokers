@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Upload, X, FileText, CheckCircle2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { submitQuoteRequest } from "@/app/actions/inquiries"
 
 interface RequestQuoteModalProps {
   open: boolean
@@ -32,7 +33,7 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
     requirements: "",
   })
   const [file, setFile] = useState<File | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,42 +49,43 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
 
-    // Store inquiry in localStorage
-    const inquiries = JSON.parse(localStorage.getItem("inquiries") || "[]")
-    inquiries.push({
-      id: `INQ-${Date.now()}`,
-      productId: product.id,
-      productName: product.name,
-      companyName: formData.companyName,
-      contactPerson: formData.contactPerson,
-      email: formData.email,
-      quantity: formData.quantity,
-      requirements: formData.requirements,
-      fileName: file?.name || null,
-      status: "New",
-      adminNotes: "",
-      createdAt: new Date().toISOString(),
-    })
-    localStorage.setItem("inquiries", JSON.stringify(inquiries))
+    startTransition(async () => {
+      const result = await submitQuoteRequest({
+        productId: product.id,
+        productName: product.name,
+        companyName: formData.companyName,
+        contactPerson: formData.contactPerson,
+        email: formData.email,
+        quantity: parseInt(formData.quantity),
+        requirements: formData.requirements || undefined,
+      })
 
-    toast({
-      title: "Quote request submitted!",
-      description: "We'll get back to you within 24 hours.",
-    })
+      if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        return
+      }
 
-    // Reset form
-    setFormData({
-      companyName: "",
-      contactPerson: "",
-      email: "",
-      quantity: "",
-      requirements: "",
+      toast({
+        title: "Quote request submitted!",
+        description: "We'll get back to you within 24 hours.",
+      })
+
+      // Reset form
+      setFormData({
+        companyName: "",
+        contactPerson: "",
+        email: "",
+        quantity: "",
+        requirements: "",
+      })
+      setFile(null)
+      onOpenChange(false)
     })
-    setFile(null)
-    setIsSubmitting(false)
-    onOpenChange(false)
   }
 
   return (
@@ -255,12 +257,12 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
                   variant="outline"
                   className="flex-1 bg-transparent"
                   onClick={() => onOpenChange(false)}
-                  disabled={isSubmitting}
+                  disabled={isPending}
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="flex-1" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Submit Request"}
+                <Button type="submit" className="flex-1" disabled={isPending}>
+                  {isPending ? "Submitting..." : "Submit Request"}
                 </Button>
               </div>
             </form>

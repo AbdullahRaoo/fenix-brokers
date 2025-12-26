@@ -10,8 +10,8 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "ProSupply Wholesale - B2B E-commerce Platform",
-  description: "Wholesale solutions for growing businesses. Request custom quotes and manage bulk orders.",
+  title: "Fenix Brokers - Wholesale Cosmetics & Perfumes",
+  description: "Premium wholesale cosmetics and fragrances for retailers. Source authentic beauty products from trusted suppliers.",
   generator: "v0.app",
   icons: {
     icon: [

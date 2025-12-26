@@ -1,75 +1,130 @@
 "use client"
+
+import { useEffect, useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, Mail, TrendingUp, Clock, CheckCircle2, Send, FileText } from "lucide-react"
+import { Plus, Mail, TrendingUp, Send, FileText, Trash2, Loader2, Eye, Play } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
-// Mock data for campaigns
-const campaigns = [
-  {
-    id: "1",
-    name: "Spring Product Launch",
-    subject: "New Wholesale Products Available",
-    dateSent: "2025-01-15",
-    status: "sent",
-    recipients: 1234,
-    openRate: "42.5%",
-    clickRate: "12.3%",
-  },
-  {
-    id: "2",
-    name: "Holiday Special Offers",
-    subject: "Exclusive B2B Holiday Deals",
-    dateSent: "2024-12-20",
-    status: "sent",
-    recipients: 1150,
-    openRate: "38.2%",
-    clickRate: "9.8%",
-  },
-  {
-    id: "3",
-    name: "New Year Catalog Update",
-    subject: "Updated Catalog for 2025",
-    dateSent: "2025-01-02",
-    status: "sent",
-    recipients: 1401,
-    openRate: "45.1%",
-    clickRate: "15.2%",
-  },
-]
-
-const activeCampaigns = [
-  {
-    id: "4",
-    name: "February Newsletter",
-    subject: "Monthly Product Highlights",
-    scheduledDate: "2025-02-01",
-    status: "scheduled",
-    recipients: 1523,
-  },
-]
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { getCampaigns, deleteCampaign, sendCampaign } from "@/app/actions/campaigns"
+import { getEmailTemplates, deleteTemplate } from "@/app/actions/templates"
+import { getSubscriberCount } from "@/app/actions/subscribers"
+import type { Campaign, EmailTemplate } from "@/types/database"
+import { useToast } from "@/hooks/use-toast"
 
 export default function MarketingPage() {
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [templates, setTemplates] = useState<EmailTemplate[]>([])
+  const [subscriberCount, setSubscriberCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isPending, startTransition] = useTransition()
+  const { toast } = useToast()
+
+  useEffect(() => {
+    async function loadData() {
+      setIsLoading(true)
+
+      const [campaignsRes, templatesRes, countRes] = await Promise.all([
+        getCampaigns(),
+        getEmailTemplates(),
+        getSubscriberCount(),
+      ])
+
+      if (campaignsRes.data) setCampaigns(campaignsRes.data)
+      if (templatesRes.data) setTemplates(templatesRes.data)
+      if (countRes.count !== undefined) setSubscriberCount(countRes.count)
+
+      setIsLoading(false)
+    }
+
+    loadData()
+  }, [])
+
+  const handleDeleteCampaign = (id: string, name: string) => {
+    if (!confirm(`Delete campaign "${name}"?`)) return
+
+    startTransition(async () => {
+      const result = await deleteCampaign(id)
+      if (result.success) {
+        setCampaigns(campaigns.filter(c => c.id !== id))
+        toast({ title: "Campaign deleted" })
+      } else {
+        toast({ title: "Error", description: result.error, variant: "destructive" })
+      }
+    })
+  }
+
+  const handleDeleteTemplate = (id: string, name: string) => {
+    if (!confirm(`Delete template "${name}"?`)) return
+
+    startTransition(async () => {
+      const result = await deleteTemplate(id)
+      if (result.success) {
+        setTemplates(templates.filter(t => t.id !== id))
+        toast({ title: "Template deleted" })
+      } else {
+        toast({ title: "Error", description: result.error, variant: "destructive" })
+      }
+    })
+  }
+
+  const handleSendCampaign = (id: string, name: string) => {
+    if (!confirm(`Send campaign "${name}" to ${subscriberCount} subscribers?`)) return
+
+    startTransition(async () => {
+      toast({ title: "Sending...", description: "Campaign is being sent." })
+
+      const result = await sendCampaign(id)
+
+      if (result.success) {
+        toast({
+          title: "Campaign sent!",
+          description: `Sent to ${result.sentCount} of ${result.totalSubscribers} subscribers.`
+        })
+        // Reload campaigns
+        const res = await getCampaigns()
+        if (res.data) setCampaigns(res.data)
+      } else {
+        toast({ title: "Error", description: result.error, variant: "destructive" })
+      }
+    })
+  }
+
+  const getStatusColor = (status: Campaign["status"]) => {
+    switch (status) {
+      case "Draft": return "bg-muted text-muted-foreground"
+      case "Scheduled": return "bg-yellow-500/10 text-yellow-600"
+      case "Sending": return "bg-blue-500/10 text-blue-600"
+      case "Sent": return "bg-green-500/10 text-green-600"
+      default: return "bg-muted text-muted-foreground"
+    }
+  }
+
+  const sentCampaigns = campaigns.filter(c => c.status === "Sent")
+  const avgOpenRate = sentCampaigns.length > 0
+    ? Math.round(sentCampaigns.reduce((sum, c) => sum + (c.open_count / Math.max(c.sent_count, 1)) * 100, 0) / sentCampaigns.length)
+    : 0
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold mb-2">Email Marketing</h1>
-          <p className="text-muted-foreground">Manage campaigns and design newsletter templates</p>
+          <p className="text-muted-foreground">Manage campaigns and newsletter templates</p>
         </div>
         <div className="flex gap-3">
-          <Button asChild size="lg" variant="outline">
+          <Button asChild variant="outline">
             <Link href="/admin/marketing/templates/new">
               <FileText className="h-4 w-4 mr-2" />
-              Create Newsletter Template
+              New Template
             </Link>
           </Button>
-          <Button asChild size="lg">
+          <Button asChild>
             <Link href="/admin/marketing/campaigns/new">
               <Plus className="h-4 w-4 mr-2" />
-              Create Campaign
+              New Campaign
             </Link>
           </Button>
         </div>
@@ -82,7 +137,7 @@ export default function MarketingPage() {
         </TabsList>
 
         <TabsContent value="campaigns" className="space-y-6">
-          {/* Stats Overview */}
+          {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -90,134 +145,114 @@ export default function MarketingPage() {
                 <Mail className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{campaigns.length + activeCampaigns.length}</div>
-                <p className="text-xs text-muted-foreground">{activeCampaigns.length} active</p>
+                <div className="text-2xl font-bold">{campaigns.length}</div>
+                <p className="text-xs text-muted-foreground">{sentCampaigns.length} sent</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Subscribers</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{subscriberCount}</div>
+                <p className="text-xs text-muted-foreground">Ready to receive</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Emails Sent</CardTitle>
+                <Send className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {sentCampaigns.reduce((sum, c) => sum + c.sent_count, 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">All time</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Avg. Open Rate</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <Eye className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">41.9%</div>
-                <p className="text-xs text-muted-foreground">+2.1% from last month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Click Rate</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">12.4%</div>
-                <p className="text-xs text-muted-foreground">+0.8% from last month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Subscribers</CardTitle>
-                <Mail className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">1,523</div>
-                <p className="text-xs text-muted-foreground">+43 this month</p>
+                <div className="text-2xl font-bold">{avgOpenRate}%</div>
+                <p className="text-xs text-muted-foreground">Across campaigns</p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Active Campaigns */}
+          {/* Campaigns Table */}
           <Card>
             <CardHeader>
-              <CardTitle>Active Campaigns</CardTitle>
-              <CardDescription>Campaigns currently scheduled or in progress</CardDescription>
+              <CardTitle>All Campaigns</CardTitle>
+              <CardDescription>View and manage your email campaigns</CardDescription>
             </CardHeader>
             <CardContent>
-              {activeCampaigns.length > 0 ? (
-                <div className="space-y-4">
-                  {activeCampaigns.map((campaign) => (
-                    <div
-                      key={campaign.id}
-                      className="flex items-center justify-between p-4 border border-border rounded-lg"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Clock className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">{campaign.name}</h3>
-                          <p className="text-sm text-muted-foreground">{campaign.subject}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="text-sm font-medium">Scheduled: {campaign.scheduledDate}</p>
-                          <p className="text-xs text-muted-foreground">{campaign.recipients} recipients</p>
-                        </div>
-                        <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-200">
-                          <Clock className="h-3 w-3 mr-1" />
-                          Scheduled
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              ) : campaigns.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No campaigns yet. <Link href="/admin/marketing/campaigns/new" className="text-primary hover:underline">Create your first campaign</Link>
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No active campaigns at the moment</p>
-                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Subject</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Sent</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {campaigns.map(campaign => (
+                      <TableRow key={campaign.id}>
+                        <TableCell className="font-medium">{campaign.name}</TableCell>
+                        <TableCell className="text-muted-foreground">{campaign.subject}</TableCell>
+                        <TableCell>
+                          <Badge variant="secondary" className={getStatusColor(campaign.status)}>
+                            {campaign.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{campaign.sent_count || 0}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {new Date(campaign.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            {campaign.status === "Draft" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleSendCampaign(campaign.id, campaign.name)}
+                                disabled={isPending}
+                              >
+                                <Play className="h-4 w-4 mr-1" />
+                                Send
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive"
+                              onClick={() => handleDeleteCampaign(campaign.id, campaign.name)}
+                              disabled={isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Past Campaigns */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Campaign History</CardTitle>
-              <CardDescription>Previously sent campaigns and their performance</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {campaigns.map((campaign) => (
-                  <div
-                    key={campaign.id}
-                    className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                        <CheckCircle2 className="h-5 w-5 text-green-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{campaign.name}</h3>
-                        <p className="text-sm text-muted-foreground">{campaign.subject}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div className="text-sm">
-                        <p className="text-muted-foreground">Sent</p>
-                        <p className="font-medium">{campaign.dateSent}</p>
-                      </div>
-                      <div className="text-sm">
-                        <p className="text-muted-foreground">Recipients</p>
-                        <p className="font-medium">{campaign.recipients.toLocaleString()}</p>
-                      </div>
-                      <div className="text-sm">
-                        <p className="text-muted-foreground">Open Rate</p>
-                        <p className="font-medium text-green-600">{campaign.openRate}</p>
-                      </div>
-                      <div className="text-sm">
-                        <p className="text-muted-foreground">Click Rate</p>
-                        <p className="font-medium text-blue-600">{campaign.clickRate}</p>
-                      </div>
-                      <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-200">
-                        <Send className="h-3 w-3 mr-1" />
-                        Sent
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -225,23 +260,59 @@ export default function MarketingPage() {
         <TabsContent value="templates" className="space-y-6">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Newsletter Templates</CardTitle>
-                  <CardDescription>Reusable email templates for your campaigns</CardDescription>
-                </div>
-                <Button asChild>
-                  <Link href="/admin/marketing/templates/new">
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Template
-                  </Link>
-                </Button>
-              </div>
+              <CardTitle>Email Templates</CardTitle>
+              <CardDescription>Reusable newsletter designs</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground text-center py-8">
-                Templates will be displayed here. Create your first template to get started.
-              </p>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              ) : templates.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No templates yet. <Link href="/admin/marketing/templates/new" className="text-primary hover:underline">Create your first template</Link>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Subject</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {templates.map(template => (
+                      <TableRow key={template.id}>
+                        <TableCell className="font-medium">{template.name}</TableCell>
+                        <TableCell className="text-muted-foreground">{template.subject}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {new Date(template.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            <Button variant="ghost" size="sm" asChild>
+                              <Link href={`/admin/marketing/templates/${template.id}`}>
+                                Edit
+                              </Link>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive"
+                              onClick={() => handleDeleteTemplate(template.id, template.name)}
+                              disabled={isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

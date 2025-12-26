@@ -4,22 +4,40 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, TrendingUp, Zap, Globe, HeadphonesIcon, CheckCircle2 } from "lucide-react"
+import { ArrowRight, Sparkles, Truck, Globe, HeadphonesIcon, CheckCircle2, Star } from "lucide-react"
 import SubscriberModal from "@/components/subscriber-modal"
 import { PublicHeader } from "@/components/public-header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
+import { getProducts } from "@/app/actions/products"
+import type { Product } from "@/types/database"
 
 export default function HomePage() {
   const [showSubscriberModal, setShowSubscriberModal] = useState(false)
-  const [email, setEmail] = useState("")
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSubscriberModal(true)
-    }, 5000)
+    // Check if user has already subscribed
+    const hasSubscribed = localStorage.getItem("has_subscribed")
+    const subscribedAt = localStorage.getItem("subscribed_at")
 
-    return () => clearTimeout(timer)
+    // Only show modal if not subscribed or subscription is older than 30 days
+    if (!hasSubscribed || (subscribedAt && Date.now() - new Date(subscribedAt).getTime() > 30 * 24 * 60 * 60 * 1000)) {
+      const timer = setTimeout(() => {
+        setShowSubscriberModal(true)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
+  useEffect(() => {
+    async function loadProducts() {
+      const result = await getProducts({ sortBy: 'newest' })
+      if (result.data) {
+        setFeaturedProducts(result.data.slice(0, 5))
+      }
+    }
+    loadProducts()
   }, [])
 
   useEffect(() => {
@@ -41,61 +59,38 @@ export default function HomePage() {
 
   const categories = [
     {
-      name: "Electronics",
-      image: "/electronics-wholesale.jpg",
-      count: 234,
+      name: "Perfumes",
+      image: "/perfume-collection.jpg",
+      count: 45,
     },
     {
-      name: "Industrial Equipment",
-      image: "/industrial-machinery.jpg",
-      count: 189,
+      name: "Skincare",
+      image: "/skincare-products.jpg",
+      count: 78,
     },
     {
-      name: "Office Supplies",
-      image: "/office-supplies-bulk.jpg",
-      count: 567,
+      name: "Makeup",
+      image: "/makeup-collection.jpg",
+      count: 124,
     },
     {
-      name: "Construction Materials",
-      image: "/construction-materials-variety.png",
-      count: 423,
+      name: "Hair Care",
+      image: "/haircare-products.jpg",
+      count: 56,
     },
     {
-      name: "Safety Gear",
-      image: "/industrial-safety-gear.jpg",
-      count: 156,
+      name: "Body Care",
+      image: "/bodycare-products.jpg",
+      count: 89,
     },
     {
-      name: "Packaging",
-      image: "/packaging-supplies-boxes.jpg",
-      count: 289,
+      name: "Gift Sets",
+      image: "/gift-sets.jpg",
+      count: 34,
     },
   ]
 
-  const featuredProducts = [
-    { id: "1", name: "Industrial LED Panel 600W", price: "$1,249", image: "/industrial-led-panel.jpg" },
-    { id: "2", name: "Professional Power Drill Set", price: "$899", image: "/power-drill-set.jpg" },
-    { id: "3", name: "Ergonomic Office Chair (Bulk)", price: "$399", image: "/ergonomic-office-chair.jpg" },
-    { id: "4", name: "Steel I-Beam (Structural)", price: "$2,499", image: "/steel-i-beam.jpg" },
-    { id: "5", name: "Commercial Coffee Maker", price: "$1,599", image: "/commercial-coffee-maker.jpg" },
-  ]
-
-  const clientLogos = ["TechCorp", "BuildMax", "OfficeHub", "IndustrialPro", "GlobalSupply", "MegaWholesale"]
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email.trim()) {
-      const subscribers = JSON.parse(localStorage.getItem("subscribers") || "[]")
-      subscribers.push({
-        email,
-        company: "Homepage Newsletter",
-        createdAt: new Date().toISOString(),
-      })
-      localStorage.setItem("subscribers", JSON.stringify(subscribers))
-      setEmail("")
-      alert("Thank you for subscribing!")
-    }
-  }
+  const clientLogos = ["Sephora", "Ulta Beauty", "Douglas", "Boots", "Marionnaud", "Nocibé"]
 
   return (
     <div className="min-h-screen">
@@ -103,40 +98,40 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent animate-gradient" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(99,102,241,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-purple-500/10 to-transparent animate-gradient" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(236,72,153,0.1),transparent_50%)]" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="fade-in-up">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-balance mb-6 leading-tight">
-                Wholesale Solutions for <span className="text-primary">Growing Businesses</span>
+                Premium <span className="text-primary">Cosmetics & Fragrances</span> Wholesale
               </h1>
               <p className="text-lg text-muted-foreground mb-8 text-pretty leading-relaxed">
-                Access premium B2B products at competitive prices. Request custom quotes, manage bulk orders, and scale
-                your business with our comprehensive wholesale platform.
+                Source authentic beauty products at wholesale prices. From luxury perfumes to professional skincare,
+                we supply retailers, salons, and beauty businesses worldwide.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild size="lg" className="text-base">
                   <Link href="/catalog">
-                    Browse Catalog <ArrowRight className="ml-2 h-5 w-5" />
+                    Browse Collection <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="text-base bg-transparent">
-                  <Link href="/contact">Request Information</Link>
+                  <Link href="/contact">Request Wholesale Pricing</Link>
                 </Button>
               </div>
             </div>
 
             <div className="fade-in-up lg:block hidden">
               <div className="relative">
-                <img src="/modern-warehouse-with-products.jpg" alt="Warehouse" className="rounded-2xl shadow-2xl" />
+                <img src="/cosmetics-hero.jpg" alt="Luxury Cosmetics" className="rounded-2xl shadow-2xl" />
                 <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-4 shadow-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-8 w-8 text-primary" />
+                    <Sparkles className="h-8 w-8 text-pink-500" />
                     <div>
                       <p className="font-bold text-lg">500+</p>
-                      <p className="text-sm text-muted-foreground">Happy Clients</p>
+                      <p className="text-sm text-muted-foreground">Premium Brands</p>
                     </div>
                   </div>
                 </div>
@@ -149,7 +144,7 @@ export default function HomePage() {
       <section className="py-12 bg-muted/30 border-y border-border/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-muted-foreground mb-6 font-semibold uppercase tracking-wider">
-            Trusted By Industry Leaders
+            Trusted By Leading Beauty Retailers
           </p>
           <div className="relative overflow-hidden">
             <div className="flex gap-12 animate-scroll">
@@ -169,45 +164,45 @@ export default function HomePage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 fade-in-up">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Why Choose ProSupply</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Why Partner With Fenix Brokers</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
-              We provide comprehensive B2B solutions designed for your success
+              Your trusted source for authentic wholesale beauty products
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="fade-in-up group">
               <div className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <TrendingUp className="h-6 w-6 text-primary" />
+                <div className="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-pink-500/20 transition-colors">
+                  <Star className="h-6 w-6 text-pink-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Bulk Pricing</h3>
+                <h3 className="text-xl font-semibold mb-3">100% Authentic</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Get competitive wholesale prices with volume discounts. The more you buy, the more you save.
+                  All products sourced directly from authorized distributors. Full traceability and authenticity guaranteed.
                 </p>
               </div>
             </div>
 
             <div className="fade-in-up group" style={{ animationDelay: "0.1s" }}>
               <div className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <Globe className="h-6 w-6 text-primary" />
+                <div className="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-pink-500/20 transition-colors">
+                  <Truck className="h-6 w-6 text-pink-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Global Shipping</h3>
+                <h3 className="text-xl font-semibold mb-3">Fast Shipping</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Fast and reliable shipping to over 50 countries. Track your orders in real-time.
+                  Temperature-controlled logistics to preserve product quality. Express delivery available worldwide.
                 </p>
               </div>
             </div>
 
             <div className="fade-in-up group" style={{ animationDelay: "0.2s" }}>
               <div className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <HeadphonesIcon className="h-6 w-6 text-primary" />
+                <div className="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-pink-500/20 transition-colors">
+                  <HeadphonesIcon className="h-6 w-6 text-pink-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">24/7 Support</h3>
+                <h3 className="text-xl font-semibold mb-3">Expert Support</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Dedicated account managers and round-the-clock customer support for your business.
+                  Dedicated beauty industry specialists to help you build the perfect product mix for your store.
                 </p>
               </div>
             </div>
@@ -220,7 +215,7 @@ export default function HomePage() {
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Shop by Category</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto text-pretty">
-              Explore our wide range of wholesale products across multiple industries
+              Explore our curated selection of premium beauty products
             </p>
           </div>
 
@@ -229,7 +224,7 @@ export default function HomePage() {
               <Link
                 key={category.name}
                 href={`/catalog?category=${category.name.toLowerCase().replace(" ", "-")}`}
-                className="fade-in-up group relative overflow-hidden rounded-xl border border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-xl"
+                className="fade-in-up group relative overflow-hidden rounded-xl border border-border bg-card hover:border-pink-500/50 transition-all duration-300 hover:shadow-xl"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div
@@ -256,8 +251,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-12 fade-in-up">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Best Sellers</h2>
-              <p className="text-muted-foreground text-lg">Most popular products this month</p>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">New Arrivals</h2>
+              <p className="text-muted-foreground text-lg">Latest additions to our collection</p>
             </div>
             <Button asChild variant="outline">
               <Link href="/catalog">View All</Link>
@@ -268,21 +263,24 @@ export default function HomePage() {
             {featuredProducts.map((product, index) => (
               <Link
                 key={product.id}
-                href={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`/product/${product.slug}`}
                 className="fade-in-up flex-shrink-0 w-64 group"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="aspect-square bg-muted relative overflow-hidden">
                     <img
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
+                      src={product.images?.[0] || "/placeholder.svg"}
+                      alt={product.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                    <p className="text-lg font-bold text-primary">Starting at {product.price}</p>
+                    <p className="text-xs text-muted-foreground mb-1">{product.brand}</p>
+                    <h3 className="font-semibold mb-2 line-clamp-2">{product.title}</h3>
+                    <p className="text-lg font-bold text-pink-500">
+                      {product.price ? `$${product.price}` : "Request Quote"}
+                    </p>
                   </div>
                 </div>
               </Link>
@@ -295,34 +293,35 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="fade-in-up">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-balance">Built for B2B Excellence</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-balance">Your Beauty Business Partner</h2>
               <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-                With over a decade of experience, we've served thousands of businesses worldwide. Our platform combines
-                cutting-edge technology with personalized service to deliver exceptional value.
+                With over a decade of experience in the cosmetics industry, Fenix Brokers connects retailers and
+                professionals with premium beauty brands. We handle sourcing, quality control, and logistics so
+                you can focus on growing your business.
               </p>
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-6 w-6 text-pink-500 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold mb-1">Verified Suppliers</h4>
                     <p className="text-muted-foreground text-sm">
-                      All products from certified and vetted manufacturers
+                      All products from authorized distributors with batch tracking
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-6 w-6 text-pink-500 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold mb-1">Flexible Payment Terms</h4>
                     <p className="text-muted-foreground text-sm">Net 30/60 terms available for qualified buyers</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-6 w-6 text-pink-500 flex-shrink-0 mt-1" />
                   <div>
-                    <h4 className="font-semibold mb-1">Quality Guarantee</h4>
-                    <p className="text-muted-foreground text-sm">30-day return policy and warranty on all products</p>
+                    <h4 className="font-semibold mb-1">Low MOQ Options</h4>
+                    <p className="text-muted-foreground text-sm">Start small and scale as your business grows</p>
                   </div>
                 </div>
               </div>
@@ -330,19 +329,19 @@ export default function HomePage() {
 
             <div className="fade-in-up grid grid-cols-2 gap-6">
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-primary mb-2">500+</p>
-                <p className="text-muted-foreground">Active Clients</p>
+                <p className="text-4xl font-bold text-pink-500 mb-2">500+</p>
+                <p className="text-muted-foreground">Premium Brands</p>
               </div>
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-primary mb-2">1,400+</p>
+                <p className="text-4xl font-bold text-pink-500 mb-2">2,000+</p>
                 <p className="text-muted-foreground">Products</p>
               </div>
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-primary mb-2">50+</p>
+                <p className="text-4xl font-bold text-pink-500 mb-2">50+</p>
                 <p className="text-muted-foreground">Countries</p>
               </div>
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-primary mb-2">98%</p>
+                <p className="text-4xl font-bold text-pink-500 mb-2">98%</p>
                 <p className="text-muted-foreground">Satisfaction</p>
               </div>
             </div>
@@ -352,20 +351,19 @@ export default function HomePage() {
 
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="fade-in-up bg-gradient-to-br from-primary via-primary to-primary/80 rounded-2xl p-12 lg:p-16 text-center relative overflow-hidden">
+          <div className="fade-in-up bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 rounded-2xl p-12 lg:p-16 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.1),transparent_50%)]" />
             <div className="relative z-10">
-              <Zap className="h-12 w-12 text-primary-foreground mx-auto mb-6" />
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-primary-foreground text-balance">
-                Ready to Scale Your Business?
+              <Sparkles className="h-12 w-12 text-white mx-auto mb-6" />
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white text-balance">
+                Ready to Stock Premium Beauty?
               </h2>
-              <p className="text-primary-foreground/90 text-lg max-w-2xl mx-auto mb-8 text-pretty">
-                Join hundreds of successful businesses. Get custom quotes, exclusive pricing, and dedicated support
-                today.
+              <p className="text-white/90 text-lg max-w-2xl mx-auto mb-8 text-pretty">
+                Join hundreds of successful beauty retailers. Get exclusive wholesale pricing and dedicated support today.
               </p>
               <Button size="lg" variant="secondary" asChild className="text-base">
                 <Link href="/contact">
-                  Request a Quote <ArrowRight className="ml-2 h-5 w-5" />
+                  Request Wholesale Access <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
