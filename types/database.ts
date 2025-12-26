@@ -77,6 +77,18 @@ export interface Campaign {
     updated_at: string
 }
 
+export interface Media {
+    id: string
+    storage_path: string
+    display_name: string
+    alt_text: string | null
+    url: string
+    mime_type: string | null
+    size_bytes: number | null
+    created_at: string
+    updated_at: string
+}
+
 // Email Builder Types
 export type BlockType = 'heading' | 'richtext' | 'image' | 'divider' | 'social' | 'product'
 
@@ -123,6 +135,12 @@ export interface Database {
                 Insert: Omit<Campaign, 'id' | 'created_at'>
                 Update: Partial<Omit<Campaign, 'id' | 'created_at'>>
             }
+            media: {
+                Row: Media
+                Insert: Omit<Media, 'id' | 'created_at' | 'updated_at'>
+                Update: Partial<Omit<Media, 'id' | 'created_at' | 'updated_at'>>
+            }
         }
     }
 }
+

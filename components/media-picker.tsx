@@ -79,8 +79,8 @@ export function MediaPicker({ value, onSelect, trigger }: MediaPickerProps) {
     }
 
     const filteredFiles = files.filter(f =>
-        f.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        f.type.startsWith("image/")
+        f.display_name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (f.mime_type?.startsWith("image/") ?? false)
     )
 
     return (
@@ -130,17 +130,17 @@ export function MediaPicker({ value, onSelect, trigger }: MediaPickerProps) {
                                 <div className="grid grid-cols-4 gap-3">
                                     {filteredFiles.map((file) => (
                                         <button
-                                            key={file.name}
+                                            key={file.id}
                                             type="button"
                                             onClick={() => setSelectedUrl(file.url)}
                                             className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${selectedUrl === file.url
-                                                    ? "border-primary ring-2 ring-primary/20"
-                                                    : "border-transparent hover:border-muted"
+                                                ? "border-primary ring-2 ring-primary/20"
+                                                : "border-transparent hover:border-muted"
                                                 }`}
                                         >
                                             <img
                                                 src={file.url}
-                                                alt={file.name}
+                                                alt={file.alt_text || file.display_name}
                                                 className="w-full h-full object-cover"
                                             />
                                             {selectedUrl === file.url && (

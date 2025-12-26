@@ -254,7 +254,7 @@ export default function TemplateEditorPage() {
 
   const selectedBlockData = blocks.find(b => b.id === selectedBlock)
   const filteredMediaFiles = mediaFiles.filter(f =>
-    f.name.toLowerCase().includes(mediaSearch.toLowerCase()) && f.type.startsWith("image/")
+    f.display_name.toLowerCase().includes(mediaSearch.toLowerCase()) && (f.mime_type?.startsWith("image/") ?? false)
   )
 
   return (
@@ -632,13 +632,13 @@ export default function TemplateEditorPage() {
                   <div className="grid grid-cols-4 gap-2">
                     {filteredMediaFiles.map((file) => (
                       <button
-                        key={file.name}
+                        key={file.id}
                         type="button"
                         onClick={() => setMediaSelected(file.url)}
                         className={`relative aspect-square rounded overflow-hidden border-2 ${mediaSelected === file.url ? "border-pink-500" : "border-transparent hover:border-gray-300"
                           }`}
                       >
-                        <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                        <img src={file.url} alt={file.alt_text || file.display_name} className="w-full h-full object-cover" />
                         {mediaSelected === file.url && (
                           <div className="absolute inset-0 bg-pink-500/20 flex items-center justify-center">
                             <Check className="h-6 w-6 text-white drop-shadow" />
