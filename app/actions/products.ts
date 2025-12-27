@@ -458,3 +458,69 @@ export async function getProductCounts(): Promise<{
         return { all: 0, draft: 0, published: 0, trash: 0, error: 'Failed to get counts' }
     }
 }
+
+// Get categories with product counts, images, and descriptions
+export async function getCategoriesWithCount(): Promise<{
+    data: { name: string; count: number; image_url: string | null; description: string | null }[];
+    error: string | null
+}> {
+    try {
+        // First, get all categories from the categories table
+        const { data: categoriesData, error: categoriesError } = await supabaseAdmin
+            .from('categories')
+            .select('name, image_url, description')
+            .order('name', { ascending: true })
+
+        // Then get product counts by category
+        const { data: productsData, error: productsError } = await supabaseAdmin
+            .from('products')
+            .select('category')
+            .eq('status', 'published')
+            .not('category', 'is', null)
+
+        if (categoriesError) {
+            console.error('Error fetching categories:', categoriesError)
+            // Fallback: get categories from products table if categories table doesn't exist
+        }
+
+        if (productsError) {
+            console.error('Error fetching products for counts:', productsError)
+            return { data: [], error: productsError.message }
+        }
+
+        // Count products per category
+        const categoryCounts: Record<string, number> = {}
+        productsData?.forEach((p: { category: string | null }) => {
+            if (p.category) {
+                categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1
+            }
+        })
+
+        // If we have categories from the categories table, use those with counts
+        if (categoriesData && categoriesData.length > 0) {
+            const categories = categoriesData.map((cat: { name: string; image_url: string | null; description: string | null }) => ({
+                name: cat.name,
+                count: categoryCounts[cat.name] || 0,
+                image_url: cat.image_url,
+                description: cat.description
+            })).sort((a, b) => b.count - a.count)
+
+            return { data: categories, error: null }
+        }
+
+        // Fallback: return categories from products (without images)
+        const categories = Object.entries(categoryCounts).map(([name, count]) => ({
+            name,
+            count,
+            image_url: null,
+            description: null
+        })).sort((a, b) => b.count - a.count)
+
+        return { data: categories, error: null }
+    } catch (error) {
+        console.error('Error in getCategoriesWithCount:', error)
+        return { data: [], error: 'Failed to fetch categories' }
+    }
+}
+
+

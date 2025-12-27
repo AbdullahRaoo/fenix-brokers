@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,6 +12,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { createProduct } from "@/app/actions/products"
+import { getCategoryNames } from "@/app/actions/categories"
 import { MediaPicker } from "@/components/media-picker"
 
 export default function NewProductPage() {
@@ -31,6 +32,18 @@ export default function NewProductPage() {
   const [specifications, setSpecifications] = useState<{ key: string; value: string }[]>([{ key: "", value: "" }])
   const [imageUrl, setImageUrl] = useState("")
   const [images, setImages] = useState<string[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+
+  // Load categories from database
+  useEffect(() => {
+    async function loadCategories() {
+      const result = await getCategoryNames()
+      if (result.data) {
+        setCategories(result.data)
+      }
+    }
+    loadCategories()
+  }, [])
 
   const addSpecification = () => {
     setSpecifications([...specifications, { key: "", value: "" }])
@@ -291,21 +304,20 @@ export default function NewProductPage() {
                 <Label htmlFor="category">
                   Category <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  id="category"
-                  list="category-options"
-                  placeholder="Select or type category..."
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
-                <datalist id="category-options">
-                  <option value="Perfumes" />
-                  <option value="Skincare" />
-                  <option value="Makeup" />
-                  <option value="Hair Care" />
-                  <option value="Body Care" />
-                  <option value="Gift Sets" />
-                </datalist>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.length === 0 ? (
+                      <SelectItem value="" disabled>No categories - create one first</SelectItem>
+                    ) : (
+                      categories.map((cat) => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">

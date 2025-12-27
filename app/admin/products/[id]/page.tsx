@@ -12,6 +12,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { getProductById, updateProduct } from "@/app/actions/products"
+import { getCategoryNames } from "@/app/actions/categories"
 import type { Product } from "@/types/database"
 import { MediaPicker } from "@/components/media-picker"
 
@@ -35,19 +36,29 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const [specifications, setSpecifications] = useState<{ key: string; value: string }[]>([{ key: "", value: "" }])
   const [imageUrl, setImageUrl] = useState("")
   const [images, setImages] = useState<string[]>([])
+  const [categoryOptions, setCategoryOptions] = useState<string[]>([])
 
   useEffect(() => {
-    async function loadProduct() {
+    async function loadData() {
       setIsLoading(true)
-      const result = await getProductById(resolvedParams.id)
 
-      if (result.error || !result.data) {
+      // Load product and categories in parallel
+      const [productResult, categoriesResult] = await Promise.all([
+        getProductById(resolvedParams.id),
+        getCategoryNames()
+      ])
+
+      if (categoriesResult.data) {
+        setCategoryOptions(categoriesResult.data)
+      }
+
+      if (productResult.error || !productResult.data) {
         setNotFound(true)
         setIsLoading(false)
         return
       }
 
-      const product = result.data
+      const product = productResult.data
       setTitle(product.title)
       setShortDescription(product.short_description || "")
       setFullDescription(product.full_description || "")
@@ -63,7 +74,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       setIsLoading(false)
     }
 
-    loadProduct()
+    loadData()
   }, [resolvedParams.id])
 
   const addSpecification = () => {
@@ -344,21 +355,20 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 <Label htmlFor="category">
                   Category <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  id="category"
-                  list="category-options"
-                  placeholder="Select or type category..."
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
-                <datalist id="category-options">
-                  <option value="Perfumes" />
-                  <option value="Skincare" />
-                  <option value="Makeup" />
-                  <option value="Hair Care" />
-                  <option value="Body Care" />
-                  <option value="Gift Sets" />
-                </datalist>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoryOptions.length === 0 ? (
+                      <SelectItem value="" disabled>No categories - create one first</SelectItem>
+                    ) : (
+                      categoryOptions.map((cat) => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -12,11 +13,12 @@ import { getProducts, getCategories } from "@/app/actions/products"
 import type { Product } from "@/types/database"
 
 export default function CatalogPage() {
+  const searchParams = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState("all")
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "")
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "all")
   const [sortBy, setSortBy] = useState("newest")
   const [viewMode, setViewMode] = useState<"grid" | "compact">("grid")
 
@@ -203,8 +205,8 @@ export default function CatalogPage() {
           </div>
         ) : (
           <div className={`grid gap-6 ${viewMode === "grid"
-              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             }`}>
             {products.map((product, index) => (
               <Link
@@ -234,10 +236,10 @@ export default function CatalogPage() {
                   {/* Stock badge */}
                   <div className="absolute top-3 right-3">
                     <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${product.stock_status === 'in_stock'
-                        ? 'bg-emerald-500/90 text-white'
-                        : product.stock_status === 'low_stock'
-                          ? 'bg-amber-500/90 text-white'
-                          : 'bg-red-500/90 text-white'
+                      ? 'bg-emerald-500/90 text-white'
+                      : product.stock_status === 'low_stock'
+                        ? 'bg-amber-500/90 text-white'
+                        : 'bg-red-500/90 text-white'
                       }`}>
                       {product.stock_status === 'in_stock' ? 'In Stock' :
                         product.stock_status === 'low_stock' ? 'Low Stock' : 'Out of Stock'}

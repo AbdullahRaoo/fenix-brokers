@@ -26,12 +26,13 @@ import SubscriberModal from "@/components/subscriber-modal"
 import { PublicHeader } from "@/components/public-header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { getProducts } from "@/app/actions/products"
+import { getProducts, getCategoriesWithCount } from "@/app/actions/products"
 import type { Product } from "@/types/database"
 
 export default function HomePage() {
   const [showSubscriberModal, setShowSubscriberModal] = useState(false)
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [categoryData, setCategoryData] = useState<{ name: string; count: number; image_url: string | null; description: string | null }[]>([])
   const [scrollY, setScrollY] = useState(0)
   const heroRef = useRef<HTMLDivElement>(null)
 
@@ -54,13 +55,20 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    async function loadProducts() {
-      const result = await getProducts({ sortBy: 'newest' })
-      if (result.data) {
-        setFeaturedProducts(result.data.slice(0, 6))
+    async function loadData() {
+      // Load published products
+      const productsResult = await getProducts({ sortBy: 'newest', status: 'published', limit: 6 })
+      if (productsResult.data) {
+        setFeaturedProducts(productsResult.data)
+      }
+
+      // Load categories with counts
+      const categoriesResult = await getCategoriesWithCount()
+      if (categoriesResult.data) {
+        setCategoryData(categoriesResult.data)
       }
     }
-    loadProducts()
+    loadData()
   }, [])
 
   useEffect(() => {
@@ -75,49 +83,33 @@ export default function HomePage() {
       { threshold: 0.1 },
     )
 
+    // Re-observe when content changes (products load)
     document.querySelectorAll(".fade-in-up, .fade-in-left, .fade-in-right, .scale-in").forEach((el) => observer.observe(el))
 
     return () => observer.disconnect()
-  }, [])
+  }, [featuredProducts, categoryData]) // Re-run when products or categories load
 
-  const categories = [
-    {
-      name: "Perfumes",
-      image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80",
-      count: 45,
-      description: "Luxury fragrances from top brands"
-    },
-    {
-      name: "Skincare",
-      image: "https://images.unsplash.com/photo-1570194065650-d99fb4a38b97?w=600&q=80",
-      count: 78,
-      description: "Professional-grade skincare solutions"
-    },
-    {
-      name: "Makeup",
-      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80",
-      count: 124,
-      description: "High-end cosmetics collection"
-    },
-    {
-      name: "Hair Care",
-      image: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=600&q=80",
-      count: 56,
-      description: "Salon-quality hair products"
-    },
-    {
-      name: "Body Care",
-      image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=80",
-      count: 89,
-      description: "Luxurious body treatments"
-    },
-    {
-      name: "Gift Sets",
-      image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&q=80",
-      count: 34,
-      description: "Curated premium gift collections"
-    },
-  ]
+  // Default fallback images for categories (used only if no image is set in database)
+  const defaultCategoryImages: Record<string, { image: string; description: string }> = {
+    "Perfumes": { image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80", description: "Luxury fragrances from top brands" },
+    "Skincare": { image: "https://images.unsplash.com/photo-1570194065650-d99fb4a38b97?w=600&q=80", description: "Professional-grade skincare solutions" },
+    "Makeup": { image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80", description: "High-end cosmetics collection" },
+    "Hair Care": { image: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=600&q=80", description: "Salon-quality hair products" },
+    "Body Care": { image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=80", description: "Luxurious body treatments" },
+    "Gift Sets": { image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&q=80", description: "Curated premium gift collections" },
+  }
+
+  // Use database category data with fallback to default images
+  const categories = categoryData.length > 0
+    ? categoryData.map(cat => ({
+      name: cat.name,
+      count: cat.count,
+      // Prioritize database image, then fallback to default, then generic placeholder
+      image: cat.image_url || defaultCategoryImages[cat.name]?.image || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80",
+      // Prioritize database description, then fallback to default
+      description: cat.description || defaultCategoryImages[cat.name]?.description || "Premium beauty products"
+    }))
+    : []
 
   const clientLogos = ["Sephora", "Ulta Beauty", "Douglas", "Boots", "Marionnaud", "Nocibé", "Macy's", "Nordstrom"]
 
@@ -393,7 +385,7 @@ export default function HomePage() {
             {categories.map((category, index) => (
               <Link
                 key={category.name}
-                href={`/catalog?category=${category.name.toLowerCase().replace(" ", "-")}`}
+                href={`/catalog?category=${encodeURIComponent(category.name)}`}
                 className="fade-in-up group relative overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 hover:shadow-2xl hover:-translate-y-1"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >

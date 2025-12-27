@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect, useTransition } from "react"
 import { Button } from "@/components/ui/button"
-import { Sparkles, LayoutDashboard, FileText, Users, Menu, X, Settings, Megaphone, User, LogOut, Package, UserCog, Image } from "lucide-react"
+import { Sparkles, LayoutDashboard, FileText, Users, Menu, X, Settings, Megaphone, User, LogOut, Package, UserCog, Image, FolderTree } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -25,6 +25,7 @@ import { hasPermission, type Permission, type Role } from "@/lib/permissions"
 const navItems: { href: string; label: string; icon: React.ElementType; permission?: Permission }[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package, permission: "products.view" },
+  { href: "/admin/categories", label: "Categories", icon: FolderTree, permission: "products.view" },
   { href: "/admin/media", label: "Media", icon: Image, permission: "media.view" },
   { href: "/admin/inquiries", label: "Inquiries", icon: FileText, permission: "inquiries.view" },
   { href: "/admin/subscribers", label: "Subscribers", icon: Users, permission: "subscribers.view" },
