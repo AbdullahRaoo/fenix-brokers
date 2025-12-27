@@ -52,7 +52,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4 flex flex-col items-center">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-8 w-8 text-pink-500" />
+            <Sparkles className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold">Fenix Brokers</span>
           </div>
           <div className="text-center">

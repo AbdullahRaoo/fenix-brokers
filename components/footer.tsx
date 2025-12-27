@@ -51,8 +51,11 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="h-6 w-6 text-pink-500" />
-              <span className="font-bold text-lg">Fenix Brokers</span>
+              <img
+                src="/logos/PNG/logo-fenix-brokers-1.png"
+                alt="Fenix Brokers"
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
               Your trusted wholesale partner for premium cosmetics and fragrances. Authentic products, competitive prices.

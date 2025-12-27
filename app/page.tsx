@@ -60,32 +60,32 @@ export default function HomePage() {
   const categories = [
     {
       name: "Perfumes",
-      image: "/perfume-collection.jpg",
+      image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80",
       count: 45,
     },
     {
       name: "Skincare",
-      image: "/skincare-products.jpg",
+      image: "https://images.unsplash.com/photo-1570194065650-d99fb4a38b97?w=600&q=80",
       count: 78,
     },
     {
       name: "Makeup",
-      image: "/makeup-collection.jpg",
+      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80",
       count: 124,
     },
     {
       name: "Hair Care",
-      image: "/haircare-products.jpg",
+      image: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=600&q=80",
       count: 56,
     },
     {
       name: "Body Care",
-      image: "/bodycare-products.jpg",
+      image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=80",
       count: 89,
     },
     {
       name: "Gift Sets",
-      image: "/gift-sets.jpg",
+      image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&q=80",
       count: 34,
     },
   ]
@@ -98,8 +98,8 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-purple-500/10 to-transparent animate-gradient" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(236,72,153,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent animate-gradient" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(0,190,214,0.1),transparent_50%)]" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -125,10 +125,10 @@ export default function HomePage() {
 
             <div className="fade-in-up lg:block hidden">
               <div className="relative">
-                <img src="/cosmetics-hero.jpg" alt="Luxury Cosmetics" className="rounded-2xl shadow-2xl" />
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80" alt="Luxury Cosmetics" className="rounded-2xl shadow-2xl" />
                 <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-4 shadow-lg">
                   <div className="flex items-center gap-3">
-                    <Sparkles className="h-8 w-8 text-pink-500" />
+                    <Sparkles className="h-8 w-8 text-primary" />
                     <div>
                       <p className="font-bold text-lg">500+</p>
                       <p className="text-sm text-muted-foreground">Premium Brands</p>
@@ -173,8 +173,8 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="fade-in-up group">
               <div className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-                <div className="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-pink-500/20 transition-colors">
-                  <Star className="h-6 w-6 text-pink-500" />
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                  <Star className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">100% Authentic</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -185,8 +185,8 @@ export default function HomePage() {
 
             <div className="fade-in-up group" style={{ animationDelay: "0.1s" }}>
               <div className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-                <div className="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-pink-500/20 transition-colors">
-                  <Truck className="h-6 w-6 text-pink-500" />
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                  <Truck className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Fast Shipping</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -197,8 +197,8 @@ export default function HomePage() {
 
             <div className="fade-in-up group" style={{ animationDelay: "0.2s" }}>
               <div className="bg-card border border-border rounded-xl p-8 hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-                <div className="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-pink-500/20 transition-colors">
-                  <HeadphonesIcon className="h-6 w-6 text-pink-500" />
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                  <HeadphonesIcon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Expert Support</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -224,7 +224,7 @@ export default function HomePage() {
               <Link
                 key={category.name}
                 href={`/catalog?category=${category.name.toLowerCase().replace(" ", "-")}`}
-                className="fade-in-up group relative overflow-hidden rounded-xl border border-border bg-card hover:border-pink-500/50 transition-all duration-300 hover:shadow-xl"
+                className="fade-in-up group relative overflow-hidden rounded-xl border border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-xl"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div
@@ -278,7 +278,7 @@ export default function HomePage() {
                   <div className="p-4">
                     <p className="text-xs text-muted-foreground mb-1">{product.brand}</p>
                     <h3 className="font-semibold mb-2 line-clamp-2">{product.title}</h3>
-                    <p className="text-lg font-bold text-pink-500">
+                    <p className="text-lg font-bold text-primary">
                       {product.price ? `$${product.price}` : "Request Quote"}
                     </p>
                   </div>
@@ -302,7 +302,7 @@ export default function HomePage() {
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-pink-500 flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold mb-1">Verified Suppliers</h4>
                     <p className="text-muted-foreground text-sm">
@@ -311,14 +311,14 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-pink-500 flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold mb-1">Flexible Payment Terms</h4>
                     <p className="text-muted-foreground text-sm">Net 30/60 terms available for qualified buyers</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-pink-500 flex-shrink-0 mt-1" />
+                  <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold mb-1">Low MOQ Options</h4>
                     <p className="text-muted-foreground text-sm">Start small and scale as your business grows</p>
@@ -329,19 +329,19 @@ export default function HomePage() {
 
             <div className="fade-in-up grid grid-cols-2 gap-6">
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-pink-500 mb-2">500+</p>
+                <p className="text-4xl font-bold text-primary mb-2">500+</p>
                 <p className="text-muted-foreground">Premium Brands</p>
               </div>
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-pink-500 mb-2">2,000+</p>
+                <p className="text-4xl font-bold text-primary mb-2">2,000+</p>
                 <p className="text-muted-foreground">Products</p>
               </div>
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-pink-500 mb-2">50+</p>
+                <p className="text-4xl font-bold text-primary mb-2">50+</p>
                 <p className="text-muted-foreground">Countries</p>
               </div>
               <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-                <p className="text-4xl font-bold text-pink-500 mb-2">98%</p>
+                <p className="text-4xl font-bold text-primary mb-2">98%</p>
                 <p className="text-muted-foreground">Satisfaction</p>
               </div>
             </div>
@@ -351,7 +351,7 @@ export default function HomePage() {
 
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="fade-in-up bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 rounded-2xl p-12 lg:p-16 text-center relative overflow-hidden">
+          <div className="fade-in-up bg-gradient-to-br from-primary via-accent to-primary rounded-2xl p-12 lg:p-16 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.1),transparent_50%)]" />
             <div className="relative z-10">
               <Sparkles className="h-12 w-12 text-white mx-auto mb-6" />

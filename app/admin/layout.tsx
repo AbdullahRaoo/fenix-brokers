@@ -108,8 +108,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Sidebar Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <Link href="/admin" className="flex items-center gap-2">
-                <Sparkles className="h-6 w-6 text-pink-500" />
-                <span className="font-bold">Admin</span>
+                <img
+                  src="/logos/PNG/logo-fenix-brokers-1.png"
+                  alt="Fenix Admin"
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
               <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
                 <X className="h-5 w-5" />
@@ -166,7 +169,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-pink-500 text-white text-sm">
+                      <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                         {user.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>

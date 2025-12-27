@@ -28,9 +28,11 @@ export function PublicHeader() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <Sparkles className="h-8 w-8 text-pink-500" />
-            <span className="text-xl font-bold hidden sm:inline">Fenix Brokers</span>
-            <span className="text-xl font-bold sm:hidden">Fenix</span>
+            <img
+              src="/logos/PNG/logo-fenix-brokers-1.png"
+              alt="Fenix Brokers"
+              className="h-10 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}

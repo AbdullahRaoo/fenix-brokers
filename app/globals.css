@@ -4,76 +4,71 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Light mode theme colors */
+  /* Light mode theme colors - Fenix Brokers Blue Theme */
   --background: #ffffff;
   --foreground: #0f172a;
   --card: #ffffff;
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #6366f1;
-  --primary-foreground: #f8fafc;
-  --secondary: #f1f5f9;
+  --primary: #00bed6; /* Primary Blue */
+  --primary-foreground: #ffffff;
+  --secondary: #dee6ea; /* Light Greyish Blue */
   --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
+  --muted: #dee6ea;
   --muted-foreground: #64748b;
-  --accent: #6366f1;
-  --accent-foreground: #f8fafc;
+  --accent: #5887da; /* Darker Blue */
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #f8fafc;
-  --border: #e2e8f0;
-  --input: #f1f5f9;
-  --ring: #6366f1;
-  --chart-1: #6366f1;
-  --chart-2: #8b5cf6;
-  --chart-3: #a78bfa;
-  --chart-4: #c4b5fd;
-  --chart-5: #ddd6fe;
+  --border: #beccd5; /* Greyish Blue */
+  --input: #beccd5;
+  --ring: #00bed6;
+  --chart-1: #00bed6;
+  --chart-2: #5887da;
+  --chart-3: #beccd5;
+  --chart-4: #dee6ea;
+  --chart-5: #94a3b8;
   --radius: 0.5rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #00bed6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #dee6ea;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #beccd5;
+  --sidebar-ring: #00bed6;
 }
 
 .dark {
-  /* Dark mode (Midnight Professional) theme colors */
+  /* Dark mode (Midnight Professional) theme colors - Adapted for Blue Theme */
   --background: #0f172a;
-  --foreground: #e2e8f0;
+  --foreground: #dee6ea;
   --card: #1e293b;
-  --card-foreground: #e2e8f0;
+  --card-foreground: #dee6ea;
   --popover: #1e293b;
-  --popover-foreground: #e2e8f0;
-  --primary: #6366f1;
-  --primary-foreground: #f8fafc;
+  --popover-foreground: #dee6ea;
+  --primary: #00bed6;
+  --primary-foreground: #ffffff;
   --secondary: #334155;
-  --secondary-foreground: #e2e8f0;
+  --secondary-foreground: #dee6ea;
   --muted: #1e293b;
   --muted-foreground: #94a3b8;
-  --accent: #6366f1;
-  --accent-foreground: #f8fafc;
+  --accent: #5887da;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #f8fafc;
   --border: #334155;
   --input: #1e293b;
-  --ring: #6366f1;
-  --chart-1: #6366f1;
-  --chart-2: #8b5cf6;
-  --chart-3: #a78bfa;
-  --chart-4: #c4b5fd;
-  --chart-5: #ddd6fe;
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  /* Dark mode specific sidebar colors */
+  --sidebar: #020617;
+  --sidebar-foreground: #dee6ea;
+  --sidebar-primary: #00bed6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #dee6ea;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #00bed6;
 }
 
 @theme inline {
