@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Sparkles, Loader2 } from "lucide-react"
+import { Loader2, Mail, Lock, ArrowLeft, Shield } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { loginAdmin } from "@/app/actions/auth"
@@ -48,71 +48,156 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-4 flex flex-col items-center">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">Fenix Brokers</span>
-          </div>
-          <div className="text-center">
-            <CardTitle className="text-2xl">Admin Login</CardTitle>
-            <CardDescription>Sign in to access the admin panel</CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isPending}
-                autoComplete="email"
-              />
-            </div>
+    <div className="min-h-screen flex relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
+      <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-secondary/20 rounded-full blur-2xl" />
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isPending}
-                autoComplete="current-password"
-              />
-            </div>
+      {/* Left panel - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative">
+        <div className="max-w-md text-center">
+          <Link href="/" className="inline-block mb-8">
+            <img
+              src="/logos/PNG/logo-fenix-brokers-1.png"
+              alt="Fenix Brokers"
+              className="h-20 w-auto mx-auto rounded-xl"
+            />
+          </Link>
+          <h1 className="text-3xl font-bold mb-4">
+            Welcome Back to <span className="text-primary">Fenix Brokers</span>
+          </h1>
+          <p className="text-muted-foreground text-lg mb-8">
+            Access your admin dashboard to manage products, orders, and grow your wholesale beauty business.
+          </p>
 
-            {error && (
-              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-                <p className="text-sm text-destructive">{error}</p>
+          {/* Features list */}
+          <div className="space-y-4 text-left">
+            {[
+              "Manage your product catalog",
+              "Track orders and shipments",
+              "Access analytics and reports",
+              "Communicate with customers",
+            ].map((feature, index) => (
+              <div key={index} className="flex items-center gap-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3">
+                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Shield className="h-4 w-4 text-primary" />
+                </div>
+                <span className="text-sm">{feature}</span>
               </div>
-            )}
+            ))}
+          </div>
+        </div>
+      </div>
 
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Signing in...
-                </>
-              ) : (
-                "Sign In"
-              )}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
-              ← Back to website
+      {/* Right panel - Login form */}
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 relative">
+        <div className="w-full max-w-md">
+          {/* Mobile logo */}
+          <div className="lg:hidden text-center mb-8">
+            <Link href="/" className="inline-block">
+              <img
+                src="/logos/PNG/logo-fenix-brokers-1.png"
+                alt="Fenix Brokers"
+                className="h-16 w-auto mx-auto rounded-lg"
+              />
             </Link>
           </div>
-        </CardContent>
-      </Card>
+
+          <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95">
+            <CardHeader className="space-y-4 pb-6">
+              <div className="text-center">
+                <CardTitle className="text-2xl lg:text-3xl">Admin Login</CardTitle>
+                <CardDescription className="text-base">
+                  Enter your credentials to access the dashboard
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="admin@fenixbrokers.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isPending}
+                      autoComplete="email"
+                      className="pl-10 h-12 text-base"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                    <a href="#" className="text-xs text-primary hover:underline">
+                      Forgot password?
+                    </a>
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isPending}
+                      autoComplete="current-password"
+                      className="pl-10 h-12 text-base"
+                    />
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 animate-in fade-in-0 slide-in-from-top-2">
+                    <p className="text-sm text-destructive font-medium">{error}</p>
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full h-12 text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                      Signing in...
+                    </>
+                  ) : (
+                    "Sign In to Dashboard"
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-8 pt-6 border-t border-border/50 text-center">
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                >
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                  Back to website
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security note */}
+          <div className="mt-6 text-center">
+            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+              <Lock className="h-3 w-3" />
+              Secured with industry-standard encryption
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

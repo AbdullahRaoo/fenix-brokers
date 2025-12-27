@@ -22,6 +22,7 @@ export async function getProducts(options?: {
     sortBy?: 'newest' | 'price-high' | 'price-low' | 'alphabetical'
     status?: ProductStatus | 'all'
     includeArchived?: boolean
+    limit?: number
 }): Promise<{ data: Product[] | null; error: string | null }> {
     try {
         let query = supabaseAdmin
@@ -63,6 +64,11 @@ export async function getProducts(options?: {
                 break
             default:
                 query = query.order('created_at', { ascending: false })
+        }
+
+        // Apply limit if specified
+        if (options?.limit) {
+            query = query.limit(options.limit)
         }
 
         const { data, error } = await query

@@ -54,7 +54,7 @@ export function Footer() {
               <img
                 src="/logos/PNG/logo-fenix-brokers-1.png"
                 alt="Fenix Brokers"
-                className="h-8 w-auto object-contain"
+                className="h-12 w-auto object-contain rounded-lg"
               />
             </div>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
