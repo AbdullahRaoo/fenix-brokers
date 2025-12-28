@@ -62,13 +62,17 @@ export async function createCampaign(input: {
             .select()
             .single()
 
-        if (error) throw error
+        if (error) {
+            console.error("Supabase error creating campaign:", error)
+            return { data: null, error: error.message || "Failed to create campaign" }
+        }
 
         revalidatePath("/admin/marketing")
         return { data: data as Campaign, error: null }
     } catch (error) {
         console.error("Error creating campaign:", error)
-        return { data: null, error: "Failed to create campaign" }
+        const errorMessage = error instanceof Error ? error.message : "Failed to create campaign"
+        return { data: null, error: errorMessage }
     }
 }
 
@@ -175,15 +179,23 @@ export async function sendCampaign(campaignId: string) {
                         .replace(/\{\{email\}\}/g, subscriber.email)
                         .replace(/\{\{unsubscribe_url\}\}/g, `https://fenixbrokers.com/unsubscribe?email=${encodeURIComponent(subscriber.email)}`)
 
-                    await sendEmail({
+                    console.log(`Sending email to ${subscriber.email}...`)
+
+                    const result = await sendEmail({
                         to: subscriber.email,
                         subject: campaign.subject,
                         html: personalizedHtml || "",
                     })
 
-                    sentCount++
+                    if (result.success) {
+                        console.log(`✓ Email sent to ${subscriber.email}`)
+                        sentCount++
+                    } else {
+                        console.error(`✗ Failed to send to ${subscriber.email}:`, result.error)
+                        errors.push(`${subscriber.email}: ${result.error}`)
+                    }
                 } catch (err) {
-                    console.error(`Failed to send to ${subscriber.email}:`, err)
+                    console.error(`✗ Exception sending to ${subscriber.email}:`, err)
                     errors.push(subscriber.email)
                 }
             })
