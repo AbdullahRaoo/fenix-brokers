@@ -77,8 +77,8 @@ export default function ContactPage() {
               </div>
               <h3 className="font-semibold mb-2">Email Us</h3>
               <p className="text-sm text-muted-foreground mb-3">For general inquiries and quotes</p>
-              <a href="mailto:info@fenixbrokers.com" className="text-primary hover:underline font-medium">
-                info@fenixbrokers.com
+              <a href="mailto:ebono@fenixbrokers.com" className="text-primary hover:underline font-medium">
+                ebono@fenixbrokers.com
               </a>
             </div>
 
@@ -87,9 +87,9 @@ export default function ContactPage() {
                 <Phone className="h-6 w-6 text-primary" />
               </div>
               <h3 className="font-semibold mb-2">Call Us</h3>
-              <p className="text-sm text-muted-foreground mb-3">Mon-Fri 9am-6pm EST</p>
-              <a href="tel:+1234567890" className="text-primary hover:underline font-medium">
-                +1 (234) 567-890
+              <p className="text-sm text-muted-foreground mb-3">Mon-Fri 9am-6pm CET</p>
+              <a href="tel:+34615582177" className="text-primary hover:underline font-medium">
+                +34 615 582 177
               </a>
             </div>
 
@@ -97,12 +97,21 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <MapPin className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Visit Us</h3>
+              <h3 className="font-semibold mb-2">Our Location</h3>
               <p className="text-sm text-muted-foreground">
-                123 Business Park Drive<br />
-                Suite 100<br />
-                New York, NY 10001
+                35004 Las Palmas de GC<br />
+                Spain
               </p>
+            </div>
+
+            {/* Contact Person */}
+            <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                <Building2 className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold mb-2">Contact Person</h3>
+              <p className="text-sm text-muted-foreground mb-1">Eleonora Bono</p>
+              <p className="text-xs text-primary font-medium">Global Cosmetics Broker</p>
             </div>
 
             {/* Business Hours */}

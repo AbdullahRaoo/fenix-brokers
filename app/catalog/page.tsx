@@ -265,7 +265,7 @@ export default function CatalogPage() {
                   </h3>
                   <div className="flex items-center justify-between">
                     <p className={`font-bold text-primary ${viewMode === "grid" ? "text-lg" : "text-base"}`}>
-                      {product.price ? `$${product.price}` : "Quote"}
+                      {product.show_price && product.price ? `$${product.price}` : "Request Quote"}
                     </p>
                     {viewMode === "grid" && (
                       <Button size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">

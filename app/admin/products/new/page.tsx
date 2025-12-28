@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Plus, X, Loader2, Image as ImageIcon } from "lucide-react"
 import Link from "next/link"
@@ -26,6 +27,7 @@ export default function NewProductPage() {
   const [category, setCategory] = useState("")
   const [brand, setBrand] = useState("")
   const [price, setPrice] = useState("")
+  const [showPrice, setShowPrice] = useState(false)
   const [stockStatus, setStockStatus] = useState("In Stock")
   const [metaTitle, setMetaTitle] = useState("")
   const [metaDescription, setMetaDescription] = useState("")
@@ -93,6 +95,7 @@ export default function NewProductPage() {
         },
         images: images.length > 0 ? images : undefined,
         stock_status: stockStatus,
+        show_price: showPrice,
       })
 
       if (result.error) {
@@ -338,9 +341,22 @@ export default function NewProductPage() {
                   id="price"
                   type="number"
                   step="0.01"
-                  placeholder="0.00 (leave empty for 'Request Quote')"
+                  placeholder="0.00"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
+                <div>
+                  <Label htmlFor="show-price" className="font-medium">Show Price</Label>
+                  <p className="text-xs text-muted-foreground">Display price publicly or show "Request Quote"</p>
+                </div>
+                <Switch
+                  id="show-price"
+                  checked={showPrice}
+                  onCheckedChange={setShowPrice}
+                  aria-label="Toggle price visibility"
                 />
               </div>
 

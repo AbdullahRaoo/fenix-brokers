@@ -7,6 +7,7 @@ export interface Product {
     brand: string | null
     category: string | null
     price: number | null
+    show_price: boolean
     short_description: string | null
     full_description: string | null
     specs: { key: string; value: string }[]

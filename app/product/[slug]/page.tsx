@@ -142,9 +142,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             {/* CTA Section */}
             <div className="bg-muted/50 border border-border rounded-lg p-6 space-y-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Price</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  {product.show_price && product.price ? "Price" : "Pricing"}
+                </p>
                 <p className="text-2xl font-bold text-primary">
-                  {product.price ? `$${product.price}` : "Request Quote"}
+                  {product.show_price && product.price ? `$${product.price}` : "Request Quote"}
                 </p>
               </div>
               <Button size="lg" className="w-full text-base" onClick={() => setShowQuoteModal(true)}>

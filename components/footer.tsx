@@ -58,11 +58,25 @@ export function Footer() {
               />
             </div>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              Your trusted wholesale partner for premium cosmetics and fragrances. Authentic products, competitive prices.
+              Your trusted global cosmetics broker for premium beauty products. Authentic brands, competitive B2B pricing.
             </p>
-            <p className="text-sm text-muted-foreground">
-              <strong>Email:</strong> info@fenixbrokers.com
-            </p>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p>
+                <strong>Email:</strong>{" "}
+                <a href="mailto:ebono@fenixbrokers.com" className="hover:text-primary transition-colors">
+                  ebono@fenixbrokers.com
+                </a>
+              </p>
+              <p>
+                <strong>Phone:</strong>{" "}
+                <a href="tel:+34615582177" className="hover:text-primary transition-colors">
+                  +34 615 582 177
+                </a>
+              </p>
+              <p>
+                <strong>Location:</strong> Las Palmas de GC, Spain
+              </p>
+            </div>
           </div>
 
           {/* Quick Links */}

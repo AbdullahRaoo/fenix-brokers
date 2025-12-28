@@ -137,6 +137,7 @@ export async function createProduct(productData: {
     brand?: string
     category?: string
     price?: number
+    show_price?: boolean
     short_description?: string
     full_description?: string
     specs?: { key: string; value: string }[]
@@ -169,6 +170,7 @@ export async function createProduct(productData: {
                 images: productData.images || [],
                 stock_status: productData.stock_status || 'In Stock',
                 status: productData.status || 'draft',
+                show_price: productData.show_price ?? false,
                 is_archived: false,
             })
             .select()
@@ -197,6 +199,7 @@ export async function updateProduct(
         brand: string
         category: string
         price: number
+        show_price: boolean
         short_description: string
         full_description: string
         specs: { key: string; value: string }[]

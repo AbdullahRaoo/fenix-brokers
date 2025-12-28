@@ -463,7 +463,7 @@ export default function HomePage() {
                     <p className="text-xs text-muted-foreground mb-1">{product.brand}</p>
                     <h3 className="font-medium text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product.title}</h3>
                     <p className="text-base font-bold text-primary">
-                      {product.price ? `$${product.price}` : "Request Quote"}
+                      {product.show_price && product.price ? `$${product.price}` : "Request Quote"}
                     </p>
                   </div>
                 </div>
