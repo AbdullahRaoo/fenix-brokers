@@ -4,6 +4,36 @@ import { supabaseAdmin } from '@/lib/supabase'
 import type { Subscriber } from '@/types/database'
 import { revalidatePath } from 'next/cache'
 
+/**
+ * Extract a readable name from an email address
+ * Industry-standard approach: parse the local part (before @)
+ * Examples:
+ *   john.smith@company.com -> John Smith
+ *   jane_doe@email.com -> Jane Doe
+ *   marketing@brand.com -> Marketing
+ *   info@company.com -> Info
+ */
+function extractNameFromEmail(email: string): string {
+    const localPart = email.split('@')[0] || ''
+
+    // Replace common separators with spaces
+    const normalized = localPart
+        .replace(/[._-]/g, ' ')  // Replace dots, underscores, hyphens with spaces
+        .replace(/\d+/g, '')     // Remove numbers
+        .trim()
+
+    if (!normalized) {
+        return 'Subscriber'
+    }
+
+    // Capitalize each word
+    return normalized
+        .split(' ')
+        .filter(word => word.length > 0)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ')
+}
+
 // Subscribe a new email
 export async function subscribeEmail(data: {
     email: string
@@ -33,12 +63,15 @@ export async function subscribeEmail(data: {
             return { success: true, error: null }
         }
 
+        // Auto-extract name from email if not provided
+        const subscriberName = data.name?.trim() || extractNameFromEmail(data.email)
+
         // Insert new subscriber
         const { error } = await supabaseAdmin
             .from('subscribers')
             .insert({
                 email: data.email.toLowerCase(),
-                name: data.name || null,
+                name: subscriberName,
                 company: data.company || null,
                 status: 'active',
             })

@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Mail } from "lucide-react"
+import { Mail, Sparkles } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { subscribeEmail } from "@/app/actions/subscribers"
 
@@ -17,7 +17,6 @@ interface SubscriberModalProps {
 }
 
 export default function SubscriberModal({ open, onOpenChange }: SubscriberModalProps) {
-  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
@@ -26,7 +25,8 @@ export default function SubscriberModal({ open, onOpenChange }: SubscriberModalP
     e.preventDefault()
 
     startTransition(async () => {
-      const result = await subscribeEmail({ email, name })
+      // Name is automatically extracted from email on the server
+      const result = await subscribeEmail({ email })
 
       if (result.error) {
         toast({
@@ -53,7 +53,6 @@ export default function SubscriberModal({ open, onOpenChange }: SubscriberModalP
       localStorage.setItem("has_subscribed", "true")
       localStorage.setItem("subscribed_at", new Date().toISOString())
 
-      setName("")
       setEmail("")
       onOpenChange(false)
     })
@@ -63,35 +62,44 @@ export default function SubscriberModal({ open, onOpenChange }: SubscriberModalP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4 mx-auto">
-            <Mail className="h-6 w-6 text-primary" />
+          <div className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 mb-4 mx-auto">
+            <Mail className="h-7 w-7 text-primary" />
           </div>
-          <DialogTitle className="text-center text-2xl">Stay Updated</DialogTitle>
+          <DialogTitle className="text-center text-2xl">Stay in the Loop</DialogTitle>
           <DialogDescription className="text-center">
-            Subscribe to receive exclusive wholesale deals, new product announcements, and industry insights.
+            Get exclusive B2B deals, new product alerts, and industry insights delivered to your inbox.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="modal-email" className="sr-only">Business Email</Label>
             <Input
-              id="email"
+              id="modal-email"
               type="email"
-              placeholder="your.email@company.com"
+              placeholder="your.name@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="h-12 text-base"
+              aria-label="Your business email address"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? "Subscribing..." : "Subscribe"}
+          <Button type="submit" className="w-full h-12 text-base" disabled={isPending}>
+            {isPending ? (
+              "Subscribing..."
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-4 w-4" />
+                Subscribe Now
+              </>
+            )}
           </Button>
+          <p className="text-xs text-center text-muted-foreground">
+            No spam, ever. Unsubscribe anytime.
+          </p>
         </form>
       </DialogContent>
     </Dialog>
   )
 }
+

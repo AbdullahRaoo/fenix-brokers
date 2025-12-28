@@ -6,129 +6,133 @@ import type { EmailTemplate } from "@/types/database"
 
 // Get all templates
 export async function getEmailTemplates() {
-    try {
-        const { data, error } = await supabaseAdmin
-            .from("email_templates")
-            .select("*")
-            .order("created_at", { ascending: false })
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("email_templates")
+      .select("*")
+      .order("created_at", { ascending: false })
 
-        if (error) throw error
-        return { data: data as EmailTemplate[], error: null }
-    } catch (error) {
-        console.error("Error fetching templates:", error)
-        return { data: null, error: "Failed to fetch templates" }
-    }
+    if (error) throw error
+    return { data: data as EmailTemplate[], error: null }
+  } catch (error) {
+    console.error("Error fetching templates:", error)
+    return { data: null, error: "Failed to fetch templates" }
+  }
 }
 
 // Get single template
 export async function getTemplateById(id: string) {
-    try {
-        const { data, error } = await supabaseAdmin
-            .from("email_templates")
-            .select("*")
-            .eq("id", id)
-            .single()
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("email_templates")
+      .select("*")
+      .eq("id", id)
+      .single()
 
-        if (error) throw error
-        return { data: data as EmailTemplate, error: null }
-    } catch (error) {
-        console.error("Error fetching template:", error)
-        return { data: null, error: "Template not found" }
-    }
+    if (error) throw error
+    return { data: data as EmailTemplate, error: null }
+  } catch (error) {
+    console.error("Error fetching template:", error)
+    return { data: null, error: "Template not found" }
+  }
 }
 
 // Create template
 export async function createTemplate(input: {
-    name: string
-    subject: string
-    content: object[]
-    html_content?: string
+  name: string
+  subject: string
+  content: object[]
+  html_content?: string
 }) {
-    try {
-        // Generate HTML from content blocks
-        const htmlContent = generateHtmlFromBlocks(input.content, input.name)
+  try {
+    // Generate HTML from content blocks
+    const htmlContent = generateHtmlFromBlocks(input.content, input.name)
 
-        const { data, error } = await supabaseAdmin
-            .from("email_templates")
-            .insert({
-                name: input.name,
-                subject: input.subject,
-                content: input.content,
-                html_content: htmlContent,
-            })
-            .select()
-            .single()
+    const { data, error } = await supabaseAdmin
+      .from("email_templates")
+      .insert({
+        name: input.name,
+        subject: input.subject,
+        content: input.content,
+        html_content: htmlContent,
+      })
+      .select()
+      .single()
 
-        if (error) throw error
-
-        revalidatePath("/admin/marketing")
-        return { data: data as EmailTemplate, error: null }
-    } catch (error) {
-        console.error("Error creating template:", error)
-        return { data: null, error: "Failed to create template" }
+    if (error) {
+      console.error("Supabase error creating template:", error)
+      return { data: null, error: error.message || "Failed to create template" }
     }
+
+    revalidatePath("/admin/marketing")
+    return { data: data as EmailTemplate, error: null }
+  } catch (error) {
+    console.error("Error creating template:", error)
+    const errorMessage = error instanceof Error ? error.message : "Failed to create template"
+    return { data: null, error: errorMessage }
+  }
 }
 
 // Update template
 export async function updateTemplate(id: string, input: {
-    name?: string
-    subject?: string
-    content?: object[]
+  name?: string
+  subject?: string
+  content?: object[]
 }) {
-    try {
-        const updateData: Record<string, unknown> = {}
+  try {
+    const updateData: Record<string, unknown> = {}
 
-        if (input.name) updateData.name = input.name
-        if (input.subject) updateData.subject = input.subject
-        if (input.content) {
-            updateData.content = input.content
-            updateData.html_content = generateHtmlFromBlocks(input.content, input.name || "Newsletter")
-        }
-        updateData.updated_at = new Date().toISOString()
-
-        const { data, error } = await supabaseAdmin
-            .from("email_templates")
-            .update(updateData)
-            .eq("id", id)
-            .select()
-            .single()
-
-        if (error) throw error
-
-        revalidatePath("/admin/marketing")
-        return { data: data as EmailTemplate, error: null }
-    } catch (error) {
-        console.error("Error updating template:", error)
-        return { data: null, error: "Failed to update template" }
+    if (input.name) updateData.name = input.name
+    if (input.subject) updateData.subject = input.subject
+    if (input.content) {
+      updateData.content = input.content
+      updateData.html_content = generateHtmlFromBlocks(input.content, input.name || "Newsletter")
     }
+    updateData.updated_at = new Date().toISOString()
+
+    const { data, error } = await supabaseAdmin
+      .from("email_templates")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .single()
+
+    if (error) throw error
+
+    revalidatePath("/admin/marketing")
+    return { data: data as EmailTemplate, error: null }
+  } catch (error) {
+    console.error("Error updating template:", error)
+    return { data: null, error: "Failed to update template" }
+  }
 }
 
 // Delete template
 export async function deleteTemplate(id: string) {
-    try {
-        const { error } = await supabaseAdmin
-            .from("email_templates")
-            .delete()
-            .eq("id", id)
+  try {
+    const { error } = await supabaseAdmin
+      .from("email_templates")
+      .delete()
+      .eq("id", id)
 
-        if (error) throw error
+    if (error) throw error
 
-        revalidatePath("/admin/marketing")
-        return { success: true, error: null }
-    } catch (error) {
-        console.error("Error deleting template:", error)
-        return { success: false, error: "Failed to delete template" }
-    }
+    revalidatePath("/admin/marketing")
+    return { success: true, error: null }
+  } catch (error) {
+    console.error("Error deleting template:", error)
+    return { success: false, error: "Failed to delete template" }
+  }
 }
 
 // Generate Outlook-compatible HTML from content blocks
 function generateHtmlFromBlocks(blocks: object[], templateName: string): string {
-    const blockHtml = (blocks as Array<{ type: string; content?: string; src?: string; alt?: string; level?: number; buttonText?: string; buttonUrl?: string }>).map(block => {
-        switch (block.type) {
-            case "heading":
-                const headingTag = block.level === 1 ? "h1" : block.level === 2 ? "h2" : "h3"
-                const fontSize = block.level === 1 ? "28px" : block.level === 2 ? "24px" : "20px"
-                return `
+  const blockHtml = (blocks as Array<{ type: string; content?: string; src?: string; alt?: string; level?: number; buttonText?: string; buttonUrl?: string }>).map(block => {
+    switch (block.type) {
+      case "heading":
+        const headingTag = block.level === 1 ? "h1" : block.level === 2 ? "h2" : "h3"
+        const fontSize = block.level === 1 ? "28px" : block.level === 2 ? "24px" : "20px"
+        return `
           <tr>
             <td style="padding: 20px 30px 10px 30px;">
               <${headingTag} style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: ${fontSize}; font-weight: 600; color: #1a1a1a; line-height: 1.3;">
@@ -137,8 +141,8 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
             </td>
           </tr>`
 
-            case "text":
-                return `
+      case "text":
+        return `
           <tr>
             <td style="padding: 10px 30px;">
               <p style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; color: #4a4a4a; line-height: 1.6;">
@@ -147,8 +151,8 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
             </td>
           </tr>`
 
-            case "image":
-                return `
+      case "image":
+        return `
           <tr>
             <td style="padding: 15px 30px;">
               <!--[if mso]>
@@ -162,8 +166,8 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
             </td>
           </tr>`
 
-            case "button":
-                return `
+      case "button":
+        return `
           <tr>
             <td style="padding: 20px 30px;" align="center">
               <!--[if mso]>
@@ -180,8 +184,8 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
             </td>
           </tr>`
 
-            case "divider":
-                return `
+      case "divider":
+        return `
           <tr>
             <td style="padding: 20px 30px;">
               <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
@@ -192,14 +196,14 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
             </td>
           </tr>`
 
-            case "spacer":
-                return `
+      case "spacer":
+        return `
           <tr>
             <td style="height: 30px; font-size: 0; line-height: 0;">&nbsp;</td>
           </tr>`
 
-            case "product":
-                return `
+      case "product":
+        return `
           <tr>
             <td style="padding: 15px 30px;">
               <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #f9fafb; border-radius: 8px;">
@@ -218,13 +222,13 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
             </td>
           </tr>`
 
-            default:
-                return ""
-        }
-    }).join("")
+      default:
+        return ""
+    }
+  }).join("")
 
-    // Full Outlook-compatible HTML email template
-    return `<!DOCTYPE html>
+  // Full Outlook-compatible HTML email template
+  return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="UTF-8">
@@ -382,12 +386,12 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
 
 // Helper to escape HTML
 function escapeHtml(text: string): string {
-    const map: Record<string, string> = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    }
-    return text.replace(/[&<>"']/g, m => map[m])
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  }
+  return text.replace(/[&<>"']/g, m => map[m])
 }

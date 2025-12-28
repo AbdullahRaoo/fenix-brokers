@@ -15,7 +15,7 @@ import {
 import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 import { getPresetById, type TemplateBlock } from "@/lib/template-presets"
-import { createTemplate } from "@/app/actions/templates"
+import { createTemplate, getTemplateById, updateTemplate } from "@/app/actions/templates"
 import { getMediaFiles, uploadMedia, type MediaItem } from "@/app/actions/media"
 import {
   Dialog,
@@ -49,6 +49,7 @@ export default function TemplateEditorPage() {
   const [history, setHistory] = useState<TemplateBlock[][]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [draggedBlock, setDraggedBlock] = useState<string | null>(null)
+  const [templateId, setTemplateId] = useState<string | null>(null)
 
   // Media picker state - kept separate to avoid re-renders
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false)
@@ -61,23 +62,48 @@ export default function TemplateEditorPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const initializedRef = useRef(false)
 
-  // Load preset on mount - only once
+  // Load preset or existing template on mount - only once
   useEffect(() => {
     if (initializedRef.current) return
 
-    const presetId = searchParams.get("preset")
-    if (presetId) {
-      const preset = getPresetById(presetId)
-      if (preset) {
+    const loadContent = async () => {
+      // Check if we're editing an existing template
+      const id = searchParams.get("id")
+      if (id) {
         initializedRef.current = true
-        const initialBlocks = preset.blocks.map(b => ({ ...b, id: genId() }))
-        setBlocks(initialBlocks)
-        setHistory([initialBlocks])
-        setHistoryIndex(0)
-        setName(preset.name === "Blank Template" ? "" : `${preset.name} Template`)
-        setSubject(preset.name === "Blank Template" ? "" : `${preset.name} - Fenix Brokers`)
+        const result = await getTemplateById(id)
+        if (result.data) {
+          setTemplateId(id)
+          setName(result.data.name)
+          setSubject(result.data.subject)
+          const templateBlocks = (result.data.content as TemplateBlock[]).map(b => ({
+            ...b,
+            id: b.id || genId()
+          }))
+          setBlocks(templateBlocks)
+          setHistory([templateBlocks])
+          setHistoryIndex(0)
+        }
+        return
+      }
+
+      // Otherwise load preset
+      const presetId = searchParams.get("preset")
+      if (presetId) {
+        const preset = getPresetById(presetId)
+        if (preset) {
+          initializedRef.current = true
+          const initialBlocks = preset.blocks.map(b => ({ ...b, id: genId() }))
+          setBlocks(initialBlocks)
+          setHistory([initialBlocks])
+          setHistoryIndex(0)
+          setName(preset.name === "Blank Template" ? "" : `${preset.name} Template`)
+          setSubject(preset.name === "Blank Template" ? "" : `${preset.name} - Fenix Brokers`)
+        }
       }
     }
+
+    loadContent()
   }, [searchParams])
 
   const genId = () => Math.random().toString(36).substring(2, 9)
@@ -236,18 +262,30 @@ export default function TemplateEditorPage() {
     }
 
     startTransition(async () => {
-      const result = await createTemplate({
-        name,
-        subject,
-        content: blocks,
-      })
+      let result
+
+      if (templateId) {
+        // Update existing template
+        result = await updateTemplate(templateId, {
+          name,
+          subject,
+          content: blocks,
+        })
+      } else {
+        // Create new template
+        result = await createTemplate({
+          name,
+          subject,
+          content: blocks,
+        })
+      }
 
       if (result.error) {
         toast({ title: "Error", description: result.error, variant: "destructive" })
         return
       }
 
-      toast({ title: "Template saved!" })
+      toast({ title: templateId ? "Template updated!" : "Template saved!" })
       router.push("/admin/marketing")
     })
   }

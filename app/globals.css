@@ -130,9 +130,14 @@
     @apply bg-background text-foreground;
   }
 
-  /* Custom selection color */
+  /* Custom selection color - visible highlight */
   ::selection {
-    background-color: hsl(var(--primary) / 0.2);
+    background-color: hsl(var(--primary) / 0.4);
+    color: inherit;
+  }
+
+  ::-moz-selection {
+    background-color: hsl(var(--primary) / 0.4);
     color: inherit;
   }
 
