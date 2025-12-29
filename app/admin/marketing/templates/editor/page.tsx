@@ -10,12 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   ArrowLeft, GripVertical, Trash2, Type, ImageIcon, Square, Minus,
-  Box, Loader2, Save, Undo, Redo, ChevronUp, ChevronDown, Sparkles, Upload, Search, Check
+  Box, Loader2, Save, Undo, Redo, ChevronUp, ChevronDown, Sparkles, Upload, Search, Check, Eye, Layers, X, ChevronRight
 } from "lucide-react"
 import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 import { getPresetById, type TemplateBlock } from "@/lib/template-presets"
-import { createTemplate, getTemplateById, updateTemplate } from "@/app/actions/templates"
+import { createTemplate, getTemplateById, updateTemplate, generatePreviewHtml } from "@/app/actions/templates"
 import { getMediaFiles, uploadMedia, type MediaItem } from "@/app/actions/media"
 import {
   Dialog,
@@ -25,8 +25,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { RichTextEditor } from "@/components/rich-text-editor"
 
 const blockTypes = [
+  { type: "section", label: "Section", icon: Box },
+  { type: "columns", label: "Columns", icon: Box },
+  { type: "logo", label: "Logo", icon: Box },
   { type: "heading", label: "Heading", icon: Type },
   { type: "text", label: "Paragraph", icon: Type },
   { type: "image", label: "Image", icon: ImageIcon },
@@ -34,6 +38,40 @@ const blockTypes = [
   { type: "divider", label: "Divider", icon: Minus },
   { type: "spacer", label: "Spacer", icon: Box },
   { type: "product", label: "Product", icon: Box },
+  { type: "footer", label: "Footer", icon: Box },
+]
+
+// Social media platforms
+const socialPlatforms = [
+  { value: 'facebook', label: 'Facebook' },
+  { value: 'instagram', label: 'Instagram' },
+  { value: 'linkedin', label: 'LinkedIn' },
+  { value: 'twitter', label: 'Twitter/X' },
+  { value: 'youtube', label: 'YouTube' },
+  { value: 'tiktok', label: 'TikTok' },
+]
+
+// Brand colors for quick selection
+const brandColors = [
+  { value: '#00bed6', label: 'Brand Cyan' },
+  { value: '#0a0a0a', label: 'Dark' },
+  { value: '#ffffff', label: 'White' },
+  { value: '#ec4899', label: 'Pink' },
+  { value: '#f8fafc', label: 'Light Gray' },
+  { value: '#1a1a1a', label: 'Text Dark' },
+  { value: '#6b7280', label: 'Text Gray' },
+]
+
+// Outlook-approved web-safe fonts for email
+const emailFonts = [
+  { value: 'Arial, sans-serif', label: 'Arial' },
+  { value: 'Georgia, serif', label: 'Georgia' },
+  { value: 'Helvetica, Arial, sans-serif', label: 'Helvetica' },
+  { value: 'Times New Roman, serif', label: 'Times New Roman' },
+  { value: 'Trebuchet MS, sans-serif', label: 'Trebuchet MS' },
+  { value: 'Verdana, sans-serif', label: 'Verdana' },
+  { value: 'Tahoma, sans-serif', label: 'Tahoma' },
+  { value: 'Courier New, monospace', label: 'Courier New' },
 ]
 
 export default function TemplateEditorPage() {
@@ -50,6 +88,16 @@ export default function TemplateEditorPage() {
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [draggedBlock, setDraggedBlock] = useState<string | null>(null)
   const [templateId, setTemplateId] = useState<string | null>(null)
+  const [showStructure, setShowStructure] = useState(false)
+  // Nested element selection: { parentId, type: 'section' | 'column', columnIndex?, itemIndex }
+  const [selectedNested, setSelectedNested] = useState<{
+    parentId: string
+    type: 'section' | 'column'
+    columnIndex?: number
+    itemIndex: number
+  } | null>(null)
+  // Structure panel position for dragging
+  const [structurePos, setStructurePos] = useState({ x: 16, y: 80 })
 
   // Media picker state - kept separate to avoid re-renders
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false)
@@ -61,6 +109,10 @@ export default function TemplateEditorPage() {
   const [mediaSelected, setMediaSelected] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const initializedRef = useRef(false)
+
+  // Preview dialog state
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewHtml, setPreviewHtml] = useState("")
 
   // Load preset or existing template on mount - only once
   useEffect(() => {
@@ -134,17 +186,49 @@ export default function TemplateEditorPage() {
     }
   }
 
-  const addBlock = (type: TemplateBlock["type"]) => {
-    const newBlock: TemplateBlock = {
-      id: genId(),
-      type,
-      content: type === "heading" ? "New Heading" : type === "text" ? "Enter your text here..." : undefined,
-      level: type === "heading" ? 2 : undefined,
-      buttonText: type === "button" ? "Click Here" : undefined,
-      buttonUrl: type === "button" ? "#" : undefined,
-      src: type === "image" || type === "product" ? "" : undefined,
-      alt: type === "image" ? "" : undefined,
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault()
+        if (e.shiftKey) {
+          redo()
+        } else {
+          undo()
+        }
+      }
     }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [historyIndex, history])
+
+  // Create a new block with defaults based on type
+  const createBlockFromType = (type: TemplateBlock["type"]): TemplateBlock => ({
+    id: genId(),
+    type,
+    content: type === "heading" ? "New Heading" : type === "text" ? "Enter your text here..." : undefined,
+    level: type === "heading" ? 2 : undefined,
+    buttonText: type === "button" ? "Click Here" : undefined,
+    buttonUrl: type === "button" ? "#" : undefined,
+    src: type === "image" || type === "product" ? "" : type === "logo" ? "/logos/PNG/logo-fenix-brokers-1.png" : undefined,
+    alt: type === "image" ? "" : type === "logo" ? "Fenix Brokers" : undefined,
+    textAlign: type === "logo" || type === "footer" ? "center" : undefined,
+    backgroundColor: type === "logo" ? "#0a0a0a" : type === "footer" ? "#f8fafc" : type === "section" ? "#f8fafc" : type === "columns" ? "#ffffff" : undefined,
+    padding: type === "logo" ? 20 : type === "footer" ? 20 : type === "section" ? 25 : type === "columns" ? 15 : undefined,
+    socialLinks: type === "footer" ? [
+      { platform: 'instagram' as const, url: 'https://instagram.com/fenixbrokers' },
+      { platform: 'linkedin' as const, url: 'https://linkedin.com/company/fenixbrokers' }
+    ] : undefined,
+    companyName: type === "footer" ? "Fenix Brokers" : undefined,
+    address: type === "footer" ? "35004 Las Palmas de GC, Spain" : undefined,
+    unsubscribeText: type === "footer" ? "Unsubscribe" : undefined,
+    textColor: type === "footer" ? "#6b7280" : undefined,
+    children: type === "section" ? [] : undefined,
+    columns: type === "columns" ? [[], []] : undefined,
+  })
+
+  const addBlock = (type: TemplateBlock["type"]) => {
+    const newBlock = createBlockFromType(type)
     const newBlocks = [...blocks, newBlock]
     setBlocks(newBlocks)
     saveToHistory(newBlocks)
@@ -166,6 +250,53 @@ export default function TemplateEditorPage() {
     setBlocks(newBlocks)
     saveToHistory(newBlocks)
     if (selectedBlock === id) setSelectedBlock(null)
+  }
+
+  // Update nested element inside section or column
+  const updateNestedElement = (updates: Partial<TemplateBlock>) => {
+    if (!selectedNested) return
+    const { parentId, type, columnIndex, itemIndex } = selectedNested
+
+    const newBlocks = blocks.map(block => {
+      if (block.id !== parentId) return block
+
+      if (type === 'section' && block.children) {
+        const newChildren = block.children.map((child, i) =>
+          i === itemIndex ? { ...child, ...updates } : child
+        )
+        return { ...block, children: newChildren }
+      }
+
+      if (type === 'column' && block.columns && columnIndex !== undefined) {
+        const newColumns = block.columns.map((col, ci) =>
+          ci === columnIndex
+            ? col.map((item, i) => i === itemIndex ? { ...item, ...updates } : item)
+            : col
+        )
+        return { ...block, columns: newColumns }
+      }
+
+      return block
+    })
+
+    setBlocks(newBlocks)
+    saveToHistory(newBlocks)
+  }
+
+  // Get currently selected nested element data
+  const getSelectedNestedData = (): TemplateBlock | null => {
+    if (!selectedNested) return null
+    const { parentId, type, columnIndex, itemIndex } = selectedNested
+    const parent = blocks.find(b => b.id === parentId)
+    if (!parent) return null
+
+    if (type === 'section' && parent.children) {
+      return parent.children[itemIndex] || null
+    }
+    if (type === 'column' && parent.columns && columnIndex !== undefined) {
+      return parent.columns[columnIndex]?.[itemIndex] || null
+    }
+    return null
   }
 
   const moveBlock = (id: string, direction: "up" | "down") => {
@@ -200,6 +331,105 @@ export default function TemplateEditorPage() {
     const newBlocks = [...blocks]
     const [removed] = newBlocks.splice(dragIndex, 1)
     newBlocks.splice(dropIndex, 0, removed)
+
+    setBlocks(newBlocks)
+    saveToHistory(newBlocks)
+    setDraggedBlock(null)
+  }
+
+  // Drop into a section's children
+  const handleDropIntoSection = (e: React.DragEvent, sectionId: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Check if this is a new block from sidebar
+    const blockType = e.dataTransfer.getData('blockType')
+    if (blockType) {
+      // Don't allow dropping sections/columns/footer into sections
+      if (blockType === 'section' || blockType === 'columns' || blockType === 'footer') return
+
+      const newBlock = createBlockFromType(blockType as TemplateBlock["type"])
+      const newBlocks = blocks.map(b =>
+        b.id === sectionId
+          ? { ...b, children: [...(b.children || []), newBlock] }
+          : b
+      )
+      setBlocks(newBlocks)
+      saveToHistory(newBlocks)
+      return
+    }
+
+    // Existing block drag
+    if (!draggedBlock) return
+    const draggedBlockData = blocks.find(b => b.id === draggedBlock)
+    if (!draggedBlockData) return
+
+    // Don't allow dropping sections/columns into sections
+    if (draggedBlockData.type === 'section' || draggedBlockData.type === 'columns' || draggedBlockData.type === 'footer') return
+
+    // Remove block from main blocks array
+    const newBlocks = blocks.filter(b => b.id !== draggedBlock)
+
+    // Add to section's children
+    const sectionIndex = newBlocks.findIndex(b => b.id === sectionId)
+    if (sectionIndex !== -1) {
+      const section = newBlocks[sectionIndex]
+      newBlocks[sectionIndex] = {
+        ...section,
+        children: [...(section.children || []), { ...draggedBlockData }]
+      }
+    }
+
+    setBlocks(newBlocks)
+    saveToHistory(newBlocks)
+    setDraggedBlock(null)
+  }
+
+  // Drop into a column
+  const handleDropIntoColumn = (e: React.DragEvent, columnsBlockId: string, columnIndex: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Check if this is a new block from sidebar
+    const blockType = e.dataTransfer.getData('blockType')
+    if (blockType) {
+      // Don't allow dropping sections/columns/footer into columns
+      if (blockType === 'section' || blockType === 'columns' || blockType === 'footer') return
+
+      const newBlock = createBlockFromType(blockType as TemplateBlock["type"])
+      const newBlocks = blocks.map(b => {
+        if (b.id === columnsBlockId) {
+          const newColumns = [...(b.columns || [[], []])]
+          newColumns[columnIndex] = [...newColumns[columnIndex], newBlock]
+          return { ...b, columns: newColumns }
+        }
+        return b
+      })
+      setBlocks(newBlocks)
+      saveToHistory(newBlocks)
+      return
+    }
+
+    // Existing block drag
+    if (!draggedBlock) return
+
+    const draggedBlockData = blocks.find(b => b.id === draggedBlock)
+    if (!draggedBlockData) return
+
+    // Don't allow dropping sections/columns/footer into columns
+    if (draggedBlockData.type === 'section' || draggedBlockData.type === 'columns' || draggedBlockData.type === 'footer') return
+
+    // Remove block from main blocks array
+    const newBlocks = blocks.filter(b => b.id !== draggedBlock)
+
+    // Add to column
+    const colsIndex = newBlocks.findIndex(b => b.id === columnsBlockId)
+    if (colsIndex !== -1) {
+      const colsBlock = newBlocks[colsIndex]
+      const newColumns = [...(colsBlock.columns || [[], []])]
+      newColumns[columnIndex] = [...newColumns[columnIndex], { ...draggedBlockData }]
+      newBlocks[colsIndex] = { ...colsBlock, columns: newColumns }
+    }
 
     setBlocks(newBlocks)
     saveToHistory(newBlocks)
@@ -318,6 +548,22 @@ export default function TemplateEditorPage() {
           <Button variant="outline" size="sm" onClick={redo} disabled={historyIndex >= history.length - 1}>
             <Redo className="h-4 w-4" />
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              const result = await generatePreviewHtml(blocks, name || "Email Preview")
+              if (result.html) {
+                setPreviewHtml(result.html)
+                setPreviewOpen(true)
+              } else {
+                toast({ title: "Error", description: result.error || "Failed to generate preview", variant: "destructive" })
+              }
+            }}
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Preview
+          </Button>
           <Button onClick={handleSave} disabled={isPending}>
             {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
             Save Template
@@ -349,37 +595,57 @@ export default function TemplateEditorPage() {
       <div className="flex-1 flex min-h-0">
         {/* Block Palette */}
         <aside className="w-48 border-r border-border bg-card p-3 overflow-y-auto">
-          <p className="text-xs font-medium text-muted-foreground mb-3">BLOCKS</p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-medium text-muted-foreground">BLOCKS</p>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={() => setShowStructure(!showStructure)}
+              title="Toggle Structure Panel"
+            >
+              <Layers className="h-3.5 w-3.5" />
+            </Button>
+          </div>
           <div className="space-y-1">
             {blockTypes.map((bt) => (
-              <Button
+              <div
                 key={bt.type}
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start h-9"
-                onClick={() => addBlock(bt.type as TemplateBlock["type"])}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('blockType', bt.type)
+                  e.dataTransfer.effectAllowed = 'copy'
+                }}
+                className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-muted cursor-grab active:cursor-grabbing transition-colors"
               >
-                <bt.icon className="h-4 w-4 mr-2" />
-                {bt.label}
-              </Button>
+                <bt.icon className="h-4 w-4 text-muted-foreground" />
+                <span>{bt.label}</span>
+              </div>
             ))}
           </div>
         </aside>
 
         {/* Canvas */}
         <main className="flex-1 overflow-auto bg-muted/30 p-6">
-          <div className="max-w-[600px] mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-            {/* Email Header */}
-            <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-6 text-center text-white">
-              <span className="text-xl font-bold">✨ Fenix Brokers</span>
-            </div>
-
+          <div
+            className="max-w-[600px] mx-auto bg-white rounded-lg shadow-lg overflow-hidden"
+            onDragOver={(e) => {
+              e.preventDefault()
+              e.dataTransfer.dropEffect = 'copy'
+            }}
+            onDrop={(e) => {
+              const blockType = e.dataTransfer.getData('blockType')
+              if (blockType) {
+                addBlock(blockType as TemplateBlock["type"])
+              }
+            }}
+          >
             {/* Email Content */}
-            <div className="p-4 space-y-2">
+            <div className="p-4 space-y-2 min-h-[200px]">
               {blocks.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <p className="mb-2">No blocks yet</p>
-                  <p className="text-sm">Add blocks from the left panel</p>
+                <div className="text-center py-12 text-muted-foreground border-2 border-dashed border-gray-200 rounded-lg">
+                  <p className="mb-2">Drop blocks here</p>
+                  <p className="text-sm">or drag from the left panel</p>
                 </div>
               ) : (
                 blocks.map((block, index) => (
@@ -408,19 +674,38 @@ export default function TemplateEditorPage() {
 
                     {/* Block Content */}
                     {block.type === "heading" && (
-                      <div className={`font-bold ${block.level === 1 ? "text-2xl" : block.level === 2 ? "text-xl" : "text-lg"}`}>
-                        {block.content || "Heading"}
-                      </div>
+                      <div
+                        className={`font-bold ${block.level === 1 ? "text-2xl" : block.level === 2 ? "text-xl" : "text-lg"}`}
+                        style={{ color: block.textColor || '#1a1a1a', fontFamily: block.fontFamily || 'Arial, sans-serif' }}
+                        dangerouslySetInnerHTML={{ __html: block.content || "Heading" }}
+                      />
                     )}
                     {block.type === "text" && (
-                      <p className="text-gray-600 whitespace-pre-wrap">{block.content || "Paragraph text..."}</p>
+                      <div
+                        className="prose prose-sm max-w-none"
+                        style={{ color: block.textColor || '#6b7280', fontFamily: block.fontFamily || 'Arial, sans-serif', textAlign: block.textAlign || 'left' }}
+                        dangerouslySetInnerHTML={{ __html: block.content || "Paragraph text..." }}
+                      />
                     )}
                     {block.type === "image" && (
-                      <div className="aspect-video bg-gray-100 rounded flex items-center justify-center overflow-hidden">
+                      <div
+                        className={`bg-gray-100 rounded flex overflow-hidden p-2 ${block.textAlign === 'left' ? 'justify-start' :
+                          block.textAlign === 'right' ? 'justify-end' : 'justify-center'
+                          }`}
+                      >
                         {block.src ? (
-                          <img src={block.src} alt={block.alt} className="w-full h-full object-cover" />
+                          <img
+                            src={block.src}
+                            alt={block.alt}
+                            style={{
+                              width: `${block.fontSize || 100}%`,
+                              maxWidth: '100%',
+                              borderRadius: `${block.borderRadius || 0}px`,
+                              objectFit: 'cover'
+                            }}
+                          />
                         ) : (
-                          <div className="text-center text-muted-foreground">
+                          <div className="text-center text-muted-foreground py-8 w-full">
                             <ImageIcon className="h-8 w-8 mx-auto mb-1" />
                             <p className="text-xs">Click to add image</p>
                           </div>
@@ -428,14 +713,25 @@ export default function TemplateEditorPage() {
                       </div>
                     )}
                     {block.type === "button" && (
-                      <div className="text-center py-2">
-                        <span className="inline-block bg-pink-500 text-white px-6 py-2 rounded font-medium">
+                      <div className={`py-2 flex ${block.textAlign === 'left' ? 'justify-start' :
+                        block.textAlign === 'right' ? 'justify-end' : 'justify-center'
+                        }`}>
+                        <span
+                          className="inline-block px-6 py-2 rounded font-medium"
+                          style={{
+                            backgroundColor: block.buttonColor || '#00bed6',
+                            color: block.buttonTextColor || '#ffffff',
+                            fontFamily: block.fontFamily || 'Arial, sans-serif'
+                          }}
+                        >
                           {block.buttonText || "Button"}
                         </span>
                       </div>
                     )}
-                    {block.type === "divider" && <hr className="border-t border-gray-200" />}
-                    {block.type === "spacer" && <div className="h-8" />}
+                    {block.type === "divider" && (
+                      <hr style={{ borderColor: block.borderColor || '#e5e5e5' }} />
+                    )}
+                    {block.type === "spacer" && <div style={{ height: block.padding || 30 }} />}
                     {block.type === "product" && (
                       <div className="flex gap-4 p-3 bg-gray-50 rounded">
                         <div className="w-16 h-16 bg-gray-200 rounded flex-shrink-0 overflow-hidden">
@@ -449,8 +745,253 @@ export default function TemplateEditorPage() {
                         </div>
                         <div className="flex-1">
                           <p className="font-medium">{block.content || "Product Name"}</p>
-                          <span className="text-sm text-pink-500">View Product →</span>
+                          <span style={{ color: block.buttonColor || '#00bed6' }} className="text-sm">View Product →</span>
                         </div>
+                      </div>
+                    )}
+                    {block.type === "logo" && (
+                      <div
+                        className="-mx-4 py-4"
+                        style={{ backgroundColor: block.backgroundColor || '#0a0a0a', textAlign: block.textAlign || 'center' }}
+                      >
+                        {block.src ? (
+                          <img src={block.src} alt={block.alt} className="h-10 inline-block" />
+                        ) : (
+                          <span className="text-white font-bold">Logo</span>
+                        )}
+                      </div>
+                    )}
+                    {block.type === "section" && (
+                      <div
+                        className={`-mx-4 py-4 px-4 transition-all ${draggedBlock ? 'ring-2 ring-cyan-500 ring-inset' : ''
+                          }`}
+                        style={{ backgroundColor: block.backgroundColor || '#f8fafc', padding: block.padding || 20 }}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDropIntoSection(e, block.id)}
+                      >
+                        {block.children && block.children.length > 0 ? (
+                          <div className="space-y-2">
+                            {block.children.map((child, i) => {
+                              const isSelected = selectedNested?.parentId === block.id && selectedNested?.type === 'section' && selectedNested?.itemIndex === i
+                              return (
+                                <div
+                                  key={i}
+                                  className={`relative p-2 rounded cursor-pointer transition-all ${isSelected ? 'ring-2 ring-pink-500 bg-pink-50/50' : 'hover:ring-1 hover:ring-gray-300'
+                                    }`}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setSelectedBlock(null)
+                                    setSelectedNested({ parentId: block.id, type: 'section', itemIndex: i })
+                                  }}
+                                >
+                                  {/* Render actual visual content based on type */}
+                                  {child.type === 'heading' && (() => {
+                                    const levelClass = child.level === 1 ? 'text-2xl' : child.level === 3 ? 'text-base' : 'text-lg'
+                                    const HeadingTag = child.level === 1 ? 'h1' : child.level === 3 ? 'h3' : 'h2'
+                                    return (
+                                      <HeadingTag style={{ color: child.textColor || '#1a1a1a', textAlign: child.textAlign, fontFamily: child.fontFamily }} className={`font-semibold ${levelClass}`}>
+                                        {child.content || 'Heading'}
+                                      </HeadingTag>
+                                    )
+                                  })()}
+                                  {child.type === 'text' && (
+                                    <p style={{ color: child.textColor || '#6b7280', textAlign: child.textAlign, fontFamily: child.fontFamily }} className="text-sm">
+                                      {child.content || 'Text content...'}
+                                    </p>
+                                  )}
+                                  {child.type === 'image' && (
+                                    <div style={{ textAlign: child.textAlign || 'left' }}>
+                                      {child.src ? (
+                                        <img
+                                          src={child.src}
+                                          alt={child.alt}
+                                          style={{
+                                            width: `${child.fontSize || 100}%`,
+                                            borderRadius: child.borderRadius || 0,
+                                            display: 'inline-block'
+                                          }}
+                                        />
+                                      ) : (
+                                        <div className="h-20 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">Image</div>
+                                      )}
+                                    </div>
+                                  )}
+                                  {child.type === 'button' && (
+                                    <div style={{ textAlign: child.textAlign || 'left' }}>
+                                      <span style={{
+                                        backgroundColor: child.buttonColor || '#00bed6',
+                                        color: child.buttonTextColor || '#fff',
+                                        fontFamily: child.fontFamily
+                                      }} className="inline-block px-4 py-2 rounded text-sm font-medium">
+                                        {child.buttonText || 'Button'}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {/* Delete button on hover */}
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={`absolute -right-2 -top-2 h-5 w-5 bg-white shadow text-destructive transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      const newChildren = block.children?.filter((_, idx) => idx !== i) || []
+                                      updateBlockWithHistory(block.id, { children: newChildren })
+                                      if (isSelected) setSelectedNested(null)
+                                    }}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        ) : (
+                          <div className={`text-center py-6 border-2 border-dashed rounded-lg transition-colors ${draggedBlock ? 'border-cyan-500 bg-cyan-50' : 'border-gray-300'
+                            }`}>
+                            <p className="text-xs text-muted-foreground">
+                              {draggedBlock ? '⬇ Drop block here' : 'Drag blocks here'}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {block.type === "columns" && (
+                      <div
+                        className="-mx-4 py-4 px-4"
+                        style={{ backgroundColor: block.backgroundColor || '#ffffff' }}
+                      >
+                        <div className="flex gap-3">
+                          {(block.columns || [[], []]).map((col, colIndex) => (
+                            <div
+                              key={colIndex}
+                              className={`flex-1 min-h-[60px] p-3 rounded transition-all ${draggedBlock ? 'ring-2 ring-purple-500 bg-purple-50/50' : ''
+                                }`}
+                              style={{ backgroundColor: draggedBlock ? undefined : 'rgba(0,0,0,0.02)' }}
+                              onDragOver={handleDragOver}
+                              onDrop={(e) => handleDropIntoColumn(e, block.id, colIndex)}
+                            >
+                              {col.length > 0 ? (
+                                <div className="space-y-2">
+                                  {col.map((item, i) => {
+                                    const isSelected = selectedNested?.parentId === block.id && selectedNested?.type === 'column' && selectedNested?.columnIndex === colIndex && selectedNested?.itemIndex === i
+                                    return (
+                                      <div
+                                        key={i}
+                                        className={`relative p-1.5 rounded cursor-pointer transition-all ${isSelected ? 'ring-2 ring-pink-500 bg-pink-50/50' : 'hover:ring-1 hover:ring-gray-300'
+                                          }`}
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          setSelectedBlock(null)
+                                          setSelectedNested({ parentId: block.id, type: 'column', columnIndex: colIndex, itemIndex: i })
+                                        }}
+                                      >
+                                        {/* Render actual visual content based on type */}
+                                        {item.type === 'heading' && (() => {
+                                          const levelClass = item.level === 1 ? 'text-xl' : item.level === 3 ? 'text-sm' : 'text-base'
+                                          const HeadingTag = item.level === 1 ? 'h1' : item.level === 3 ? 'h3' : 'h2'
+                                          return (
+                                            <HeadingTag style={{ color: item.textColor || '#1a1a1a', textAlign: item.textAlign, fontFamily: item.fontFamily }} className={`font-semibold ${levelClass}`}>
+                                              {item.content || 'Heading'}
+                                            </HeadingTag>
+                                          )
+                                        })()}
+                                        {item.type === 'text' && (
+                                          <p style={{ color: item.textColor || '#6b7280', textAlign: item.textAlign, fontFamily: item.fontFamily }} className="text-sm">
+                                            {item.content || 'Text...'}
+                                          </p>
+                                        )}
+                                        {item.type === 'image' && (
+                                          <div style={{ textAlign: item.textAlign || 'left' }}>
+                                            {item.src ? (
+                                              <img
+                                                src={item.src}
+                                                alt={item.alt}
+                                                style={{
+                                                  width: `${item.fontSize || 100}%`,
+                                                  borderRadius: item.borderRadius || 0,
+                                                  display: 'inline-block'
+                                                }}
+                                              />
+                                            ) : (
+                                              <div className="h-16 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">Image</div>
+                                            )}
+                                          </div>
+                                        )}
+                                        {item.type === 'button' && (
+                                          <div style={{ textAlign: item.textAlign || 'left' }}>
+                                            <span style={{
+                                              backgroundColor: item.buttonColor || '#00bed6',
+                                              color: item.buttonTextColor || '#fff',
+                                              fontFamily: item.fontFamily
+                                            }} className="inline-block px-3 py-1.5 rounded text-sm font-medium">
+                                              {item.buttonText || 'Button'}
+                                            </span>
+                                          </div>
+                                        )}
+                                        {/* Delete button on hover */}
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className={`absolute -right-1 -top-1 h-4 w-4 bg-white shadow text-destructive transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'}`}
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            const newCols = [...(block.columns || [[], []])]
+                                            newCols[colIndex] = newCols[colIndex].filter((_, idx) => idx !== i)
+                                            updateBlockWithHistory(block.id, { columns: newCols })
+                                            if (isSelected) setSelectedNested(null)
+                                          }}
+                                        >
+                                          <Trash2 className="h-2.5 w-2.5" />
+                                        </Button>
+                                      </div>
+                                    )
+                                  })}
+                                </div>
+                              ) : (
+                                <div className={`text-center py-4 border-2 border-dashed rounded transition-colors ${draggedBlock ? 'border-purple-500' : 'border-gray-200'
+                                  }`}>
+                                  <p className="text-[10px] text-muted-foreground">
+                                    {draggedBlock ? 'Drop here' : 'Drop blocks'}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {block.type === "footer" && (
+                      <div
+                        className="-mx-4 py-4 px-4"
+                        style={{ backgroundColor: block.backgroundColor || '#f8fafc', color: block.textColor || '#6b7280', textAlign: block.textAlign || 'center' }}
+                      >
+                        {/* Social Icons in Footer */}
+                        {block.socialLinks && block.socialLinks.length > 0 && (
+                          <div className="flex justify-center gap-3 mb-3">
+                            {block.socialLinks.map((link, i) => {
+                              const iconUrls: Record<string, string> = {
+                                facebook: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Facebook_icon_2013.svg',
+                                instagram: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg',
+                                linkedin: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png',
+                                twitter: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg',
+                                youtube: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg',
+                                tiktok: 'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg',
+                              }
+                              return (
+                                <div key={i} className="w-6 h-6 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                                  <img
+                                    src={iconUrls[link.platform] || iconUrls.facebook}
+                                    alt={link.platform}
+                                    className="w-4 h-4 object-contain"
+                                  />
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )}
+                        <p className="font-medium text-sm">© {new Date().getFullYear()} {block.companyName || "Company Name"}</p>
+                        <p className="text-xs">{block.address || "Address"}</p>
+                        <p className="text-xs underline mt-1 cursor-pointer">{block.unsubscribeText || "Unsubscribe"}</p>
                       </div>
                     )}
 
@@ -468,16 +1009,237 @@ export default function TemplateEditorPage() {
               )}
             </div>
 
-            {/* Email Footer */}
-            <div className="bg-gray-800 p-4 text-center text-gray-400 text-xs">
-              © 2025 Fenix Brokers
-            </div>
           </div>
         </main>
 
         {/* Settings Panel */}
         <aside className="w-72 border-l border-border bg-card p-4 overflow-y-auto">
           <p className="text-xs font-medium text-muted-foreground mb-3">SETTINGS</p>
+
+          {/* Nested element editor */}
+          {selectedNested && !selectedBlock && (() => {
+            const nestedData = getSelectedNestedData()
+            if (!nestedData) return null
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-medium capitalize">{nestedData.type} (Nested)</div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs"
+                    onClick={() => setSelectedNested(null)}
+                  >
+                    Back
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Inside {selectedNested.type === 'section' ? 'Section' : `Column ${(selectedNested.columnIndex || 0) + 1}`}
+                </p>
+
+                {/* Heading editor */}
+                {nestedData.type === 'heading' && (
+                  <>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Content</Label>
+                      <Textarea
+                        value={nestedData.content || ''}
+                        onChange={(e) => updateNestedElement({ content: e.target.value })}
+                        rows={2}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Heading Level</Label>
+                      <Select value={String(nestedData.level || 2)} onValueChange={(v) => updateNestedElement({ level: parseInt(v) })}>
+                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">H1 - Large</SelectItem>
+                          <SelectItem value="2">H2 - Medium</SelectItem>
+                          <SelectItem value="3">H3 - Small</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Font Family</Label>
+                      <Select value={nestedData.fontFamily || "Arial, sans-serif"} onValueChange={(v) => updateNestedElement({ fontFamily: v })}>
+                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {emailFonts.map(font => (
+                            <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Text Color</Label>
+                      <Input type="color" value={nestedData.textColor || '#1a1a1a'} onChange={(e) => updateNestedElement({ textColor: e.target.value })} className="h-8" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Alignment</Label>
+                      <Select value={nestedData.textAlign || 'left'} onValueChange={(v) => updateNestedElement({ textAlign: v as 'left' | 'center' | 'right' })}>
+                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="left">Left</SelectItem>
+                          <SelectItem value="center">Center</SelectItem>
+                          <SelectItem value="right">Right</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </>
+                )}
+
+                {/* Text editor */}
+                {nestedData.type === 'text' && (
+                  <>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Content</Label>
+                      <Textarea
+                        value={nestedData.content || ''}
+                        onChange={(e) => updateNestedElement({ content: e.target.value })}
+                        rows={4}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Font Family</Label>
+                      <Select value={nestedData.fontFamily || "Arial, sans-serif"} onValueChange={(v) => updateNestedElement({ fontFamily: v })}>
+                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {emailFonts.map(font => (
+                            <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Text Color</Label>
+                      <Input type="color" value={nestedData.textColor || '#6b7280'} onChange={(e) => updateNestedElement({ textColor: e.target.value })} className="h-8" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Alignment</Label>
+                      <Select value={nestedData.textAlign || 'left'} onValueChange={(v) => updateNestedElement({ textAlign: v as 'left' | 'center' | 'right' })}>
+                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="left">Left</SelectItem>
+                          <SelectItem value="center">Center</SelectItem>
+                          <SelectItem value="right">Right</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </>
+                )}
+
+                {/* Button editor */}
+                {nestedData.type === 'button' && (
+                  <>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Button Text</Label>
+                      <Input value={nestedData.buttonText || ''} onChange={(e) => updateNestedElement({ buttonText: e.target.value })} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Font Family</Label>
+                      <Select value={nestedData.fontFamily || "Arial, sans-serif"} onValueChange={(v) => updateNestedElement({ fontFamily: v })}>
+                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {emailFonts.map(font => (
+                            <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">URL</Label>
+                      <Input value={nestedData.buttonUrl || ''} onChange={(e) => updateNestedElement({ buttonUrl: e.target.value })} placeholder="https://..." />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Button Color</Label>
+                        <Input type="color" value={nestedData.buttonColor || '#00bed6'} onChange={(e) => updateNestedElement({ buttonColor: e.target.value })} className="h-8" />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Text Color</Label>
+                        <Input type="color" value={nestedData.buttonTextColor || '#ffffff'} onChange={(e) => updateNestedElement({ buttonTextColor: e.target.value })} className="h-8" />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Button Position</Label>
+                      <div className="flex gap-1">
+                        {(['left', 'center', 'right'] as const).map(align => (
+                          <Button
+                            key={align}
+                            variant={nestedData.textAlign === align ? "default" : "outline"}
+                            size="sm"
+                            className="flex-1 h-7 text-xs capitalize"
+                            onClick={() => updateNestedElement({ textAlign: align })}
+                          >
+                            {align}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Image editor */}
+                {nestedData.type === 'image' && (
+                  <>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Image URL</Label>
+                      <Input value={nestedData.src || ''} onChange={(e) => updateNestedElement({ src: e.target.value })} placeholder="https://..." />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Alt Text</Label>
+                      <Input value={nestedData.alt || ''} onChange={(e) => updateNestedElement({ alt: e.target.value })} placeholder="Image description" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Width: {nestedData.fontSize || 100}%</Label>
+                      <input
+                        type="range"
+                        min="25"
+                        max="100"
+                        step="5"
+                        value={nestedData.fontSize || 100}
+                        onChange={(e) => updateNestedElement({ fontSize: parseInt(e.target.value) })}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Alignment</Label>
+                      <div className="flex gap-1">
+                        {(['left', 'center', 'right'] as const).map(align => (
+                          <Button
+                            key={align}
+                            variant={nestedData.textAlign === align ? "default" : "outline"}
+                            size="sm"
+                            className="flex-1 h-7 text-xs capitalize"
+                            onClick={() => updateNestedElement({ textAlign: align })}
+                          >
+                            {align}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Border Radius: {nestedData.borderRadius || 0}px</Label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="24"
+                        value={nestedData.borderRadius || 0}
+                        onChange={(e) => updateNestedElement({ borderRadius: parseInt(e.target.value) })}
+                        className="w-full"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            )
+          })()}
+
           {selectedBlockData ? (
             <div className="space-y-4">
               <div className="text-sm font-medium capitalize">{selectedBlockData.type} Block</div>
@@ -501,27 +1263,62 @@ export default function TemplateEditorPage() {
                     </Select>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Text</Label>
-                    <Input
-                      value={selectedBlockData.content || ""}
-                      onChange={(e) => updateBlock(selectedBlock!, { content: e.target.value })}
-                      onBlur={() => saveToHistory(blocks)}
-                      className="h-8"
-                    />
+                    <Label className="text-xs">Font Family</Label>
+                    <Select
+                      value={selectedBlockData.fontFamily || "Arial, sans-serif"}
+                      onValueChange={(v) => updateBlockWithHistory(selectedBlock!, { fontFamily: v })}
+                    >
+                      <SelectTrigger className="h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {emailFonts.map(font => (
+                          <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
+                  <RichTextEditor
+                    value={selectedBlockData.content || ""}
+                    onChange={(val) => updateBlock(selectedBlock!, { content: val })}
+                    onBlur={() => saveToHistory(blocks)}
+                    label="Heading Text"
+                    placeholder="Enter heading..."
+                    textColor={selectedBlockData.textColor || "#1a1a1a"}
+                    onTextColorChange={(color) => updateBlockWithHistory(selectedBlock!, { textColor: color })}
+                    minHeight="60px"
+                  />
                 </>
               )}
 
               {selectedBlockData.type === "text" && (
-                <div className="space-y-1">
-                  <Label className="text-xs">Content</Label>
-                  <Textarea
+                <>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Font Family</Label>
+                    <Select
+                      value={selectedBlockData.fontFamily || "Arial, sans-serif"}
+                      onValueChange={(v) => updateBlockWithHistory(selectedBlock!, { fontFamily: v })}
+                    >
+                      <SelectTrigger className="h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {emailFonts.map(font => (
+                          <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <RichTextEditor
                     value={selectedBlockData.content || ""}
-                    onChange={(e) => updateBlock(selectedBlock!, { content: e.target.value })}
+                    onChange={(value) => updateBlock(selectedBlock!, { content: value })}
                     onBlur={() => saveToHistory(blocks)}
-                    rows={5}
+                    label="Content"
+                    placeholder="Enter your text here..."
+                    textColor={selectedBlockData.textColor || "#1a1a1a"}
+                    onTextColorChange={(color) => updateBlockWithHistory(selectedBlock!, { textColor: color })}
                   />
-                </div>
+                </>
               )}
 
               {selectedBlockData.type === "image" && (
@@ -548,6 +1345,50 @@ export default function TemplateEditorPage() {
                       placeholder="Image description"
                     />
                   </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Width: {selectedBlockData.fontSize || 100}%</Label>
+                    <input
+                      type="range"
+                      min="25"
+                      max="100"
+                      step="5"
+                      value={selectedBlockData.fontSize || 100}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { fontSize: parseInt(e.target.value) })}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>25%</span>
+                      <span>50%</span>
+                      <span>100%</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Alignment</Label>
+                    <div className="flex gap-1">
+                      {(['left', 'center', 'right'] as const).map(align => (
+                        <Button
+                          key={align}
+                          variant={selectedBlockData.textAlign === align ? "default" : "outline"}
+                          size="sm"
+                          className="flex-1 h-7 text-xs capitalize"
+                          onClick={() => updateBlockWithHistory(selectedBlock!, { textAlign: align })}
+                        >
+                          {align}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Border Radius: {selectedBlockData.borderRadius || 0}px</Label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="24"
+                      value={selectedBlockData.borderRadius || 0}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { borderRadius: parseInt(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
                 </>
               )}
 
@@ -563,6 +1404,22 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
+                    <Label className="text-xs">Font Family</Label>
+                    <Select
+                      value={selectedBlockData.fontFamily || "Arial, sans-serif"}
+                      onValueChange={(v) => updateBlockWithHistory(selectedBlock!, { fontFamily: v })}
+                    >
+                      <SelectTrigger className="h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {emailFonts.map(font => (
+                          <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
                     <Label className="text-xs">Button URL</Label>
                     <Input
                       value={selectedBlockData.buttonUrl || ""}
@@ -570,6 +1427,139 @@ export default function TemplateEditorPage() {
                       onBlur={() => saveToHistory(blocks)}
                       className="h-8"
                       placeholder="https://..."
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Button Color</Label>
+                      <input
+                        type="color"
+                        value={selectedBlockData.buttonColor || "#00bed6"}
+                        onChange={(e) => updateBlockWithHistory(selectedBlock!, { buttonColor: e.target.value })}
+                        className="w-full h-8 rounded border cursor-pointer"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Text Color</Label>
+                      <input
+                        type="color"
+                        value={selectedBlockData.buttonTextColor || "#ffffff"}
+                        onChange={(e) => updateBlockWithHistory(selectedBlock!, { buttonTextColor: e.target.value })}
+                        className="w-full h-8 rounded border cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Button Position</Label>
+                    <div className="flex gap-1">
+                      {(['left', 'center', 'right'] as const).map(align => (
+                        <Button
+                          key={align}
+                          variant={selectedBlockData.textAlign === align ? "default" : "outline"}
+                          size="sm"
+                          className="flex-1 h-7 text-xs capitalize"
+                          onClick={() => updateBlockWithHistory(selectedBlock!, { textAlign: align })}
+                        >
+                          {align}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {selectedBlockData.type === "logo" && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => openMediaPicker(selectedBlock!)}
+                  >
+                    <ImageIcon className="h-4 w-4 mr-2" />
+                    {selectedBlockData.src ? "Change Logo" : "Select Logo"}
+                  </Button>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Background Color</Label>
+                    <input
+                      type="color"
+                      value={selectedBlockData.backgroundColor || "#0a0a0a"}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { backgroundColor: e.target.value })}
+                      className="w-full h-8 rounded border cursor-pointer"
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedBlockData.type === "section" && (
+                <>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Drag blocks from the canvas into this section
+                  </p>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Background Color</Label>
+                    <input
+                      type="color"
+                      value={selectedBlockData.backgroundColor || "#f8fafc"}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { backgroundColor: e.target.value })}
+                      className="w-full h-8 rounded border cursor-pointer"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Padding: {selectedBlockData.padding || 25}px</Label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="60"
+                      value={selectedBlockData.padding || 25}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { padding: parseInt(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+                  {selectedBlockData.children && selectedBlockData.children.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-3">
+                      Contains {selectedBlockData.children.length} block(s)
+                    </p>
+                  )}
+                </>
+              )}
+
+              {selectedBlockData.type === "columns" && (
+                <>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Drag blocks from the canvas into columns
+                  </p>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold">Layout</Label>
+                    <div className="grid grid-cols-3 gap-1">
+                      {[2, 3, 4].map(num => (
+                        <Button
+                          key={num}
+                          variant={(selectedBlockData.columns?.length || 2) === num ? "default" : "outline"}
+                          size="sm"
+                          className="text-xs h-8"
+                          onClick={() => {
+                            const currentCols = selectedBlockData.columns || [[], []]
+                            let newCols: typeof currentCols = []
+                            for (let i = 0; i < num; i++) {
+                              newCols.push(currentCols[i] || [])
+                            }
+                            updateBlockWithHistory(selectedBlock!, { columns: newCols })
+                          }}
+                        >
+                          {num} Col
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-xs">Background Color</Label>
+                    <input
+                      type="color"
+                      value={selectedBlockData.backgroundColor || "#ffffff"}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { backgroundColor: e.target.value })}
+                      className="w-full h-8 rounded border cursor-pointer"
                     />
                   </div>
                 </>
@@ -605,13 +1595,161 @@ export default function TemplateEditorPage() {
                       placeholder="https://..."
                     />
                   </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Accent Color</Label>
+                    <div className="flex gap-1 flex-wrap">
+                      {brandColors.slice(0, 4).map(c => (
+                        <button
+                          key={c.value}
+                          className="w-6 h-6 rounded border-2"
+                          style={{ backgroundColor: c.value, borderColor: selectedBlockData.buttonColor === c.value ? '#000' : 'transparent' }}
+                          onClick={() => updateBlockWithHistory(selectedBlock!, { buttonColor: c.value })}
+                          title={c.label}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </>
               )}
 
-              {(selectedBlockData.type === "divider" || selectedBlockData.type === "spacer") && (
-                <p className="text-sm text-muted-foreground">
-                  No settings for this block.
-                </p>
+              {selectedBlockData.type === "footer" && (
+                <>
+                  {/* Social Links Management */}
+                  <Label className="text-xs font-semibold">Social Links</Label>
+                  {(selectedBlockData.socialLinks || []).map((link, index) => (
+                    <div key={index} className="flex gap-1 items-center">
+                      <Select
+                        value={link.platform}
+                        onValueChange={(value) => {
+                          const newLinks = [...(selectedBlockData.socialLinks || [])]
+                          newLinks[index] = { ...link, platform: value as typeof link.platform }
+                          updateBlockWithHistory(selectedBlock!, { socialLinks: newLinks })
+                        }}
+                      >
+                        <SelectTrigger className="h-7 text-xs flex-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {socialPlatforms.map(p => (
+                            <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        value={link.url}
+                        onChange={(e) => {
+                          const newLinks = [...(selectedBlockData.socialLinks || [])]
+                          newLinks[index] = { ...link, url: e.target.value }
+                          updateBlock(selectedBlock!, { socialLinks: newLinks })
+                        }}
+                        onBlur={() => saveToHistory(blocks)}
+                        className="h-7 text-xs flex-1"
+                        placeholder="URL"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => {
+                          const newLinks = (selectedBlockData.socialLinks || []).filter((_, i) => i !== index)
+                          updateBlockWithHistory(selectedBlock!, { socialLinks: newLinks })
+                        }}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      const newLinks = [...(selectedBlockData.socialLinks || []), { platform: 'instagram' as const, url: '' }]
+                      updateBlockWithHistory(selectedBlock!, { socialLinks: newLinks })
+                    }}
+                  >
+                    + Add Social Link
+                  </Button>
+
+                  <div className="border-t pt-3 mt-3" />
+
+                  <div className="space-y-1">
+                    <Label className="text-xs">Company Name</Label>
+                    <Input
+                      value={selectedBlockData.companyName || ""}
+                      onChange={(e) => updateBlock(selectedBlock!, { companyName: e.target.value })}
+                      onBlur={() => saveToHistory(blocks)}
+                      className="h-8"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Address</Label>
+                    <Input
+                      value={selectedBlockData.address || ""}
+                      onChange={(e) => updateBlock(selectedBlock!, { address: e.target.value })}
+                      onBlur={() => saveToHistory(blocks)}
+                      className="h-8"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Unsubscribe Text</Label>
+                    <Input
+                      value={selectedBlockData.unsubscribeText || ""}
+                      onChange={(e) => updateBlock(selectedBlock!, { unsubscribeText: e.target.value })}
+                      onBlur={() => saveToHistory(blocks)}
+                      className="h-8"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Background Color</Label>
+                    <input
+                      type="color"
+                      value={selectedBlockData.backgroundColor || "#f8fafc"}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { backgroundColor: e.target.value })}
+                      className="w-full h-8 rounded border cursor-pointer"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Text Color</Label>
+                    <input
+                      type="color"
+                      value={selectedBlockData.textColor || "#6b7280"}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { textColor: e.target.value })}
+                      className="w-full h-8 rounded border cursor-pointer"
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedBlockData.type === "divider" && (
+                <div className="space-y-1">
+                  <Label className="text-xs">Line Color</Label>
+                  <div className="flex gap-1 flex-wrap">
+                    {brandColors.map(c => (
+                      <button
+                        key={c.value}
+                        className="w-6 h-6 rounded border-2"
+                        style={{ backgroundColor: c.value, borderColor: selectedBlockData.borderColor === c.value ? '#000' : 'transparent' }}
+                        onClick={() => updateBlockWithHistory(selectedBlock!, { borderColor: c.value })}
+                        title={c.label}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedBlockData.type === "spacer" && (
+                <div className="space-y-1">
+                  <Label className="text-xs">Height: {selectedBlockData.padding || 30}px</Label>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    value={selectedBlockData.padding || 30}
+                    onChange={(e) => updateBlockWithHistory(selectedBlock!, { padding: parseInt(e.target.value) })}
+                    className="w-full"
+                  />
+                </div>
               )}
 
               <Button
@@ -729,6 +1867,118 @@ export default function TemplateEditorPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Email Preview Dialog */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-7xl max-h-[90vh] p-0 overflow-hidden">
+          <DialogHeader className="p-4 border-b">
+            <DialogTitle>Email Preview</DialogTitle>
+            <DialogDescription>
+              This is how your email will appear in recipients&apos; inboxes
+            </DialogDescription>
+          </DialogHeader>
+          <div className="h-[80vh] overflow-auto bg-gray-100 p-6">
+            <div className="max-w-[650px] mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+              <iframe
+                srcDoc={previewHtml}
+                title="Email Preview"
+                className="w-full h-full min-h-[700px] border-0"
+                sandbox="allow-same-origin"
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Floating Structure Navigator Panel */}
+      {showStructure && (
+        <div
+          className="fixed w-64 bg-zinc-900 text-zinc-100 rounded-lg shadow-2xl z-50 overflow-hidden"
+          style={{ left: structurePos.x, top: structurePos.y }}
+        >
+          <div
+            className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 cursor-move select-none"
+            onMouseDown={(e) => {
+              e.preventDefault()
+              const startX = e.clientX - structurePos.x
+              const startY = e.clientY - structurePos.y
+              const onMove = (e: MouseEvent) => {
+                setStructurePos({ x: e.clientX - startX, y: e.clientY - startY })
+              }
+              const onUp = () => {
+                window.removeEventListener('mousemove', onMove)
+                window.removeEventListener('mouseup', onUp)
+              }
+              window.addEventListener('mousemove', onMove)
+              window.addEventListener('mouseup', onUp)
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <Layers className="h-4 w-4" />
+              <span className="text-sm font-medium">Structure</span>
+            </div>
+            <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-white" onClick={() => setShowStructure(false)}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="max-h-[400px] overflow-y-auto p-2 text-xs">
+            {blocks.length === 0 ? (
+              <p className="text-zinc-500 text-center py-4">No blocks</p>
+            ) : (
+              <div className="space-y-0.5">
+                {blocks.map((block, i) => (
+                  <div key={block.id}>
+                    <div
+                      className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors ${selectedBlock === block.id ? 'bg-zinc-700' : 'hover:bg-zinc-800'
+                        }`}
+                      onClick={() => setSelectedBlock(block.id)}
+                    >
+                      <Box className="h-3 w-3 text-zinc-500" />
+                      <span className="capitalize">{block.type}</span>
+                      {(block.type === 'section' && block.children?.length) || (block.type === 'columns' && block.columns?.some(c => c.length > 0)) ? (
+                        <ChevronRight className="h-3 w-3 ml-auto text-zinc-500" />
+                      ) : null}
+                    </div>
+                    {/* Section children */}
+                    {block.type === 'section' && block.children && block.children.length > 0 && (
+                      <div className="ml-4 border-l border-zinc-800 pl-2 mt-0.5 space-y-0.5">
+                        {block.children.map((child, ci) => (
+                          <div key={ci} className="flex items-center gap-2 px-2 py-1 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">
+                            <Box className="h-2.5 w-2.5 text-zinc-600" />
+                            <span className="capitalize">{child.type}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* Column children */}
+                    {block.type === 'columns' && block.columns && (
+                      <div className="ml-4 border-l border-zinc-800 pl-2 mt-0.5 space-y-0.5">
+                        {block.columns.map((col, colIdx) => (
+                          col.length > 0 && (
+                            <div key={colIdx}>
+                              <div className="flex items-center gap-2 px-2 py-0.5 text-zinc-500">
+                                <span>Col {colIdx + 1}</span>
+                              </div>
+                              <div className="ml-3 border-l border-zinc-800 pl-2 space-y-0.5">
+                                {col.map((item, itemIdx) => (
+                                  <div key={itemIdx} className="flex items-center gap-2 px-2 py-1 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">
+                                    <Box className="h-2.5 w-2.5 text-zinc-600" />
+                                    <span className="capitalize">{item.type}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

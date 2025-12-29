@@ -112,7 +112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <img
                   src="/logos/PNG/logo-fenix-brokers-1.png"
                   alt="Fenix Admin"
-                  className="h-8 w-auto object-contain"
+                  className="h-10 w-auto object-contain rounded-lg"
                 />
               </Link>
               <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
