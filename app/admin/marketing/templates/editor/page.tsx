@@ -16,7 +16,7 @@ import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 import { getPresetById, type TemplateBlock } from "@/lib/template-presets"
 import { createTemplate, getTemplateById, updateTemplate, generatePreviewHtml } from "@/app/actions/templates"
-import { getMediaFiles, uploadMedia, type MediaItem } from "@/app/actions/media"
+import { getMediaFiles, uploadMedia, deleteMedia, type MediaItem } from "@/app/actions/media"
 import {
   Dialog,
   DialogContent,
@@ -108,6 +108,7 @@ export default function TemplateEditorPage() {
   const [mediaUploading, setMediaUploading] = useState(false)
   const [mediaSearch, setMediaSearch] = useState("")
   const [mediaSelected, setMediaSelected] = useState<string | null>(null)
+  const [deletingMediaId, setDeletingMediaId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const initializedRef = useRef(false)
 
@@ -518,26 +519,33 @@ export default function TemplateEditorPage() {
       const batch = fileArray.slice(i, i + BATCH_SIZE)
 
       await Promise.all(batch.map(async (file) => {
-        // limit to 4.5MB (Vercel Serverless Function limit)
-        if (file.size > 4.5 * 1024 * 1024) {
-          toast({ title: `File too large: ${file.name}`, description: "Max file size is 4.5MB on Vercel", variant: "destructive" })
+        // limit to 4MB (Safe margin for Vercel 4.5MB limit)
+        if (file.size > 4 * 1024 * 1024) {
+          toast({ title: `File too large: ${file.name}`, description: "Max file size is 4MB on Vercel", variant: "destructive" })
           failureCount++
           return
         }
 
-        const formData = new FormData()
-        formData.append("file", file)
+        try {
+          const formData = new FormData()
+          formData.append("file", file)
 
-        const result = await uploadMedia(formData)
-        if (result.data) {
-          setMediaFiles(prev => [result.data!, ...prev])
-          // Select the first uploaded file
-          if (!mediaSelected) {
-            setMediaSelected(result.data.url)
+          const result = await uploadMedia(formData)
+          if (result.data) {
+            setMediaFiles(prev => [result.data!, ...prev])
+            // Select the first uploaded file
+            if (!mediaSelected) {
+              setMediaSelected(result.data.url)
+            }
+            successCount++
+          } else {
+            console.error(`Failed to upload ${file.name}:`, result.error)
+            toast({ title: `Upload failed: ${file.name}`, description: result.error || "Server error", variant: "destructive" })
+            failureCount++
           }
-          successCount++
-        } else {
-          console.error(`Failed to upload ${file.name}:`, result.error)
+        } catch (err) {
+          console.error(`Exception uploading ${file.name}:`, err)
+          toast({ title: `Upload error: ${file.name}`, description: "Network or server error (check file size)", variant: "destructive" })
           failureCount++
         }
       }))
@@ -2030,7 +2038,44 @@ export default function TemplateEditorPage() {
           <div className="flex justify-between items-center pt-4 border-t mt-4">
             <div className="flex items-center gap-2">
               {mediaSelected && (
-                <img src={mediaSelected} alt="" className="h-10 w-10 rounded object-cover" />
+                <div className="flex items-center gap-2">
+                  <img src={mediaSelected} alt="" className="h-10 w-10 rounded object-cover border" />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={!!deletingMediaId}
+                    onClick={async () => {
+                      const file = mediaFiles.find(f => f.url === mediaSelected)
+                      if (!file) return
+
+                      if (!confirm("Are you sure you want to delete this image?")) return
+
+                      setDeletingMediaId(file.id)
+                      const result = await deleteMedia(file.id)
+                      setDeletingMediaId(null)
+
+                      if (result.success) {
+                        setMediaFiles(prev => prev.filter(f => f.id !== file.id))
+                        setMediaSelected(null)
+                        toast({ title: "Image deleted" })
+                      } else {
+                        toast({ title: "Delete failed", description: result.error, variant: "destructive" })
+                      }
+                    }}
+                  >
+                    {deletingMediaId === mediaFiles.find(f => f.url === mediaSelected)?.id ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </>
+                    )}
+                  </Button>
+                </div>
               )}
             </div>
             <div className="flex gap-2">
