@@ -78,6 +78,13 @@ export default function MediaPage() {
             const result = await uploadMedia(formData)
             if (result.data) {
                 successCount++
+            } else {
+                console.error(`Upload failed for ${file.name}:`, result.error)
+                toast({
+                    title: `Upload failed: ${file.name}`,
+                    description: result.error || "Unknown error",
+                    variant: "destructive"
+                })
             }
         }
 

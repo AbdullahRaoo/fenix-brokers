@@ -71,7 +71,8 @@ export async function uploadMedia(formData: FormData): Promise<{ data: MediaItem
         return { data: dbData as MediaItem, error: null }
     } catch (error) {
         console.error("Error in uploadMedia:", error)
-        return { data: null, error: "Failed to upload file" }
+        const errorMessage = error instanceof Error ? error.message : "Failed to upload file"
+        return { data: null, error: `Upload failed: ${errorMessage}` }
     }
 }
 
