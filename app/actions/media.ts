@@ -75,6 +75,40 @@ export async function uploadMedia(formData: FormData): Promise<{ data: MediaItem
     }
 }
 
+// Create media database record (for client-side uploads)
+export async function createMediaRecord(metadata: {
+    storage_path: string
+    display_name: string
+    url: string
+    mime_type: string
+    size_bytes: number
+}): Promise<{ data: MediaItem | null; error: string | null }> {
+    try {
+        const { data: dbData, error: dbError } = await supabaseAdmin
+            .from("media")
+            .insert({
+                storage_path: metadata.storage_path,
+                display_name: metadata.display_name,
+                url: metadata.url,
+                mime_type: metadata.mime_type,
+                size_bytes: metadata.size_bytes,
+            })
+            .select()
+            .single()
+
+        if (dbError) {
+            console.error("Database error:", dbError)
+            return { data: null, error: dbError.message }
+        }
+
+        revalidatePath("/admin/media")
+        return { data: dbData as MediaItem, error: null }
+    } catch (error) {
+        console.error("Error in createMediaRecord:", error)
+        return { data: null, error: "Failed to create media record" }
+    }
+}
+
 // List all media files from database
 export async function getMediaFiles(): Promise<{ data: MediaItem[] | null; error: string | null }> {
     try {

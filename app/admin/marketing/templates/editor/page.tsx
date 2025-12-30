@@ -16,8 +16,9 @@ import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
 import { getPresetById, type TemplateBlock } from "@/lib/template-presets"
 import { createTemplate, getTemplateById, updateTemplate, generatePreviewHtml } from "@/app/actions/templates"
-import { getMediaFiles, uploadMedia, deleteMedia, type MediaItem } from "@/app/actions/media"
+import { getMediaFiles, deleteMedia, createMediaRecord, type MediaItem } from "@/app/actions/media"
 import { compressImage } from "@/lib/image-compression"
+import { supabase } from "@/lib/supabase"
 import {
   Dialog,
   DialogContent,
@@ -522,44 +523,68 @@ export default function TemplateEditorPage() {
       await Promise.all(batch.map(async (file) => {
         let fileToUpload = file
 
-        // If file is > 4MB, try to compress it first
-        if (file.size > 4 * 1024 * 1024) {
+        // Optional: Compress large files for faster upload (not required anymore)
+        if (file.size > 5 * 1024 * 1024) {
           try {
             toast({ title: `Compressing large image: ${file.name}...` })
             fileToUpload = await compressImage(file, { maxSizeMB: 4 })
-
-            // If still too big after compression, warn user
-            if (fileToUpload.size > 4.5 * 1024 * 1024) {
-              toast({ title: `File too large: ${file.name}`, description: "Could not compress below 4.5MB limit", variant: "destructive" })
-              failureCount++
-              return
-            }
           } catch (error) {
-            console.error("Compression failed:", error)
-            toast({ title: `Compression failed: ${file.name}`, description: "Uploading original (might fail if > 4.5MB)", variant: "destructive" })
+            console.error("Compression failed, uploading original:", error)
           }
         }
 
         try {
-          const formData = new FormData()
-          formData.append("file", fileToUpload)
+          // Generate unique filename
+          const ext = file.name.split(".").pop()
+          const timestamp = Date.now()
+          const randomStr = Math.random().toString(36).substring(2, 8)
+          const fileName = `${timestamp}-${randomStr}.${ext}`
 
-          const result = await uploadMedia(formData)
+          // Upload directly to Supabase Storage (no Server Action limit!)
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from("media")
+            .upload(fileName, fileToUpload, {
+              cacheControl: "3600",
+              upsert: false,
+            })
+
+          if (uploadError) {
+            console.error(`Storage upload failed for ${file.name}:`, uploadError)
+            toast({ title: `Upload failed: ${file.name}`, description: uploadError.message, variant: "destructive" })
+            failureCount++
+            return
+          }
+
+          // Get public URL
+          const { data: urlData } = supabase.storage
+            .from("media")
+            .getPublicUrl(uploadData.path)
+
+          // Create database record via lightweight Server Action
+          const result = await createMediaRecord({
+            storage_path: fileName,
+            display_name: file.name.replace(/\.[^/.]+$/, ""),
+            url: urlData.publicUrl,
+            mime_type: fileToUpload.type,
+            size_bytes: fileToUpload.size,
+          })
+
           if (result.data) {
             setMediaFiles(prev => [result.data!, ...prev])
-            // Select the first uploaded file
             if (!mediaSelected) {
               setMediaSelected(result.data.url)
             }
             successCount++
           } else {
-            console.error(`Failed to upload ${file.name}:`, result.error)
-            toast({ title: `Upload failed: ${file.name}`, description: result.error || "Server error", variant: "destructive" })
+            console.error(`Failed to create DB record for ${file.name}:`, result.error)
+            toast({ title: `DB error: ${file.name}`, description: result.error, variant: "destructive" })
+            // Clean up uploaded file
+            await supabase.storage.from("media").remove([fileName])
             failureCount++
           }
         } catch (err) {
           console.error(`Exception uploading ${file.name}:`, err)
-          toast({ title: `Upload error: ${file.name}`, description: "Network or server error (check file size)", variant: "destructive" })
+          toast({ title: `Upload error: ${file.name}`, description: "Unexpected error", variant: "destructive" })
           failureCount++
         }
       }))
