@@ -251,6 +251,24 @@ export function RichTextEditor({
                                 title="Text Color (select text first for partial coloring)"
                             />
                         </div>
+
+                        <div className="w-px h-5 bg-border mx-1" />
+
+                        {/* Font Size Selector */}
+                        <select
+                            className="h-7 px-1 text-xs border rounded bg-background"
+                            onChange={(e) => execCommand('fontSize', e.target.value)}
+                            defaultValue="3"
+                            title="Font Size"
+                        >
+                            <option value="1">12px</option>
+                            <option value="2">14px</option>
+                            <option value="3">16px</option>
+                            <option value="4">18px</option>
+                            <option value="5">24px</option>
+                            <option value="6">28px</option>
+                            <option value="7">32px</option>
+                        </select>
                     </div>
 
                     {/* Editable Area */}

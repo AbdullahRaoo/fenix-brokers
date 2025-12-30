@@ -1,8 +1,9 @@
 // Pre-built email template presets - Modern, Outlook-compatible designs
 
 export interface SocialLink {
-    platform: 'facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube' | 'tiktok'
+    platform: 'facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube' | 'tiktok' | 'custom'
     url: string
+    iconUrl?: string // For custom icons
 }
 
 export interface TemplateBlock {

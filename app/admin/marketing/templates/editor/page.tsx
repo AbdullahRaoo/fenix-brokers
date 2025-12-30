@@ -49,6 +49,7 @@ const socialPlatforms = [
   { value: 'twitter', label: 'Twitter/X' },
   { value: 'youtube', label: 'YouTube' },
   { value: 'tiktok', label: 'TikTok' },
+  { value: 'custom', label: 'Custom' },
 ]
 
 // Brand colors for quick selection
@@ -306,6 +307,58 @@ export default function TemplateEditorPage() {
     const newBlocks = [...blocks]
     const swapIndex = direction === "up" ? index - 1 : index + 1
       ;[newBlocks[index], newBlocks[swapIndex]] = [newBlocks[swapIndex], newBlocks[index]]
+    setBlocks(newBlocks)
+    saveToHistory(newBlocks)
+  }
+
+  // Move nested element within a section or column
+  const moveNestedElement = (parentId: string, parentType: 'section' | 'column', columnIndex: number | undefined, itemIndex: number, direction: 'up' | 'down') => {
+    const newBlocks = blocks.map(block => {
+      if (block.id !== parentId) return block
+
+      if (parentType === 'section' && block.children) {
+        const children = [...block.children]
+        const swapIndex = direction === 'up' ? itemIndex - 1 : itemIndex + 1
+        if (swapIndex < 0 || swapIndex >= children.length) return block
+          ;[children[itemIndex], children[swapIndex]] = [children[swapIndex], children[itemIndex]]
+        return { ...block, children }
+      }
+
+      if (parentType === 'column' && block.columns && columnIndex !== undefined) {
+        const newColumns = block.columns.map((col, ci) => {
+          if (ci !== columnIndex) return col
+          const colArr = [...col]
+          const swapIndex = direction === 'up' ? itemIndex - 1 : itemIndex + 1
+          if (swapIndex < 0 || swapIndex >= colArr.length) return col
+            ;[colArr[itemIndex], colArr[swapIndex]] = [colArr[swapIndex], colArr[itemIndex]]
+          return colArr
+        })
+        return { ...block, columns: newColumns }
+      }
+
+      return block
+    })
+
+    setBlocks(newBlocks)
+    saveToHistory(newBlocks)
+
+    // Update selection to follow the moved element
+    if (selectedNested?.parentId === parentId && selectedNested?.itemIndex === itemIndex) {
+      const newIndex = direction === 'up' ? itemIndex - 1 : itemIndex + 1
+      setSelectedNested({ ...selectedNested, itemIndex: newIndex })
+    }
+  }
+
+  // Swap columns within a columns block (left  right)
+  const swapColumns = (blockId: string, colIndex: number, direction: 'left' | 'right') => {
+    const newBlocks = blocks.map(block => {
+      if (block.id !== blockId || !block.columns) return block
+      const cols = [...block.columns]
+      const swapIndex = direction === 'left' ? colIndex - 1 : colIndex + 1
+      if (swapIndex < 0 || swapIndex >= cols.length) return block
+        ;[cols[colIndex], cols[swapIndex]] = [cols[swapIndex], cols[colIndex]]
+      return { ...block, columns: cols }
+    })
     setBlocks(newBlocks)
     saveToHistory(newBlocks)
   }
@@ -763,12 +816,34 @@ export default function TemplateEditorPage() {
                     )}
                     {block.type === "section" && (
                       <div
-                        className={`-mx-4 py-4 px-4 transition-all ${draggedBlock ? 'ring-2 ring-cyan-500 ring-inset' : ''
+                        className={`-mx-4 py-4 px-4 transition-all relative ${draggedBlock ? 'ring-2 ring-cyan-500 ring-inset' : ''
                           }`}
                         style={{ backgroundColor: block.backgroundColor || '#f8fafc', padding: block.padding || 20 }}
                         onDragOver={handleDragOver}
                         onDrop={(e) => handleDropIntoSection(e, block.id)}
                       >
+                        {/* Internal move controls */}
+                        <div className="absolute top-1 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 rounded px-1 py-0.5 shadow-sm">
+                          <span className="text-[10px] text-muted-foreground mr-1">Section</span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-5 w-5"
+                            onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'up'); }}
+                            disabled={index === 0}
+                          >
+                            <ChevronUp className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-5 w-5"
+                            onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'down'); }}
+                            disabled={index === blocks.length - 1}
+                          >
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        </div>
                         {block.children && block.children.length > 0 ? (
                           <div className="space-y-2">
                             {block.children.map((child, i) => {
@@ -789,15 +864,19 @@ export default function TemplateEditorPage() {
                                     const levelClass = child.level === 1 ? 'text-2xl' : child.level === 3 ? 'text-base' : 'text-lg'
                                     const HeadingTag = child.level === 1 ? 'h1' : child.level === 3 ? 'h3' : 'h2'
                                     return (
-                                      <HeadingTag style={{ color: child.textColor || '#1a1a1a', textAlign: child.textAlign, fontFamily: child.fontFamily }} className={`font-semibold ${levelClass}`}>
-                                        {child.content || 'Heading'}
-                                      </HeadingTag>
+                                      <HeadingTag
+                                        style={{ color: child.textColor || '#1a1a1a', textAlign: child.textAlign, fontFamily: child.fontFamily }}
+                                        className={`font-semibold ${levelClass}`}
+                                        dangerouslySetInnerHTML={{ __html: child.content || 'Heading' }}
+                                      />
                                     )
                                   })()}
                                   {child.type === 'text' && (
-                                    <p style={{ color: child.textColor || '#6b7280', textAlign: child.textAlign, fontFamily: child.fontFamily }} className="text-sm">
-                                      {child.content || 'Text content...'}
-                                    </p>
+                                    <div
+                                      style={{ color: child.textColor || '#6b7280', textAlign: child.textAlign, fontFamily: child.fontFamily }}
+                                      className="text-sm prose prose-sm max-w-none"
+                                      dangerouslySetInnerHTML={{ __html: child.content || 'Text content...' }}
+                                    />
                                   )}
                                   {child.type === 'image' && (
                                     <div style={{ textAlign: child.textAlign || 'left' }}>
@@ -828,19 +907,47 @@ export default function TemplateEditorPage() {
                                     </div>
                                   )}
                                   {/* Delete button on hover */}
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className={`absolute -right-2 -top-2 h-5 w-5 bg-white shadow text-destructive transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      const newChildren = block.children?.filter((_, idx) => idx !== i) || []
-                                      updateBlockWithHistory(block.id, { children: newChildren })
-                                      if (isSelected) setSelectedNested(null)
-                                    }}
-                                  >
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button>
+                                  <div className={`absolute -right-2 -top-2 flex gap-0.5 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                                    {i > 0 && (
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-5 w-5 bg-white shadow"
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          moveNestedElement(block.id, 'section', undefined, i, 'up')
+                                        }}
+                                      >
+                                        <ChevronUp className="h-3 w-3" />
+                                      </Button>
+                                    )}
+                                    {block.children && i < block.children.length - 1 && (
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-5 w-5 bg-white shadow"
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          moveNestedElement(block.id, 'section', undefined, i, 'down')
+                                        }}
+                                      >
+                                        <ChevronDown className="h-3 w-3" />
+                                      </Button>
+                                    )}
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-5 w-5 bg-white shadow text-destructive"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        const newChildren = block.children?.filter((_, idx) => idx !== i) || []
+                                        updateBlockWithHistory(block.id, { children: newChildren })
+                                        if (isSelected) setSelectedNested(null)
+                                      }}
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
                                 </div>
                               )
                             })}
@@ -857,9 +964,31 @@ export default function TemplateEditorPage() {
                     )}
                     {block.type === "columns" && (
                       <div
-                        className="-mx-4 py-4 px-4"
+                        className="-mx-4 py-4 px-4 relative"
                         style={{ backgroundColor: block.backgroundColor || '#ffffff' }}
                       >
+                        {/* Internal move controls */}
+                        <div className="absolute top-1 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 rounded px-1 py-0.5 shadow-sm z-10">
+                          <span className="text-[10px] text-muted-foreground mr-1">Columns</span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-5 w-5"
+                            onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'up'); }}
+                            disabled={index === 0}
+                          >
+                            <ChevronUp className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-5 w-5"
+                            onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'down'); }}
+                            disabled={index === blocks.length - 1}
+                          >
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        </div>
                         <div className="flex gap-3">
                           {(block.columns || [[], []]).map((col, colIndex) => (
                             <div
@@ -890,15 +1019,19 @@ export default function TemplateEditorPage() {
                                           const levelClass = item.level === 1 ? 'text-xl' : item.level === 3 ? 'text-sm' : 'text-base'
                                           const HeadingTag = item.level === 1 ? 'h1' : item.level === 3 ? 'h3' : 'h2'
                                           return (
-                                            <HeadingTag style={{ color: item.textColor || '#1a1a1a', textAlign: item.textAlign, fontFamily: item.fontFamily }} className={`font-semibold ${levelClass}`}>
-                                              {item.content || 'Heading'}
-                                            </HeadingTag>
+                                            <HeadingTag
+                                              style={{ color: item.textColor || '#1a1a1a', textAlign: item.textAlign, fontFamily: item.fontFamily }}
+                                              className={`font-semibold ${levelClass}`}
+                                              dangerouslySetInnerHTML={{ __html: item.content || 'Heading' }}
+                                            />
                                           )
                                         })()}
                                         {item.type === 'text' && (
-                                          <p style={{ color: item.textColor || '#6b7280', textAlign: item.textAlign, fontFamily: item.fontFamily }} className="text-sm">
-                                            {item.content || 'Text...'}
-                                          </p>
+                                          <div
+                                            style={{ color: item.textColor || '#6b7280', textAlign: item.textAlign, fontFamily: item.fontFamily }}
+                                            className="text-sm prose prose-sm max-w-none"
+                                            dangerouslySetInnerHTML={{ __html: item.content || 'Text...' }}
+                                          />
                                         )}
                                         {item.type === 'image' && (
                                           <div style={{ textAlign: item.textAlign || 'left' }}>
@@ -929,20 +1062,48 @@ export default function TemplateEditorPage() {
                                           </div>
                                         )}
                                         {/* Delete button on hover */}
-                                        <Button
-                                          variant="ghost"
-                                          size="icon"
-                                          className={`absolute -right-1 -top-1 h-4 w-4 bg-white shadow text-destructive transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'}`}
-                                          onClick={(e) => {
-                                            e.stopPropagation()
-                                            const newCols = [...(block.columns || [[], []])]
-                                            newCols[colIndex] = newCols[colIndex].filter((_, idx) => idx !== i)
-                                            updateBlockWithHistory(block.id, { columns: newCols })
-                                            if (isSelected) setSelectedNested(null)
-                                          }}
-                                        >
-                                          <Trash2 className="h-2.5 w-2.5" />
-                                        </Button>
+                                        <div className={`absolute -right-1 -top-1 flex gap-0.5 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                                          {i > 0 && (
+                                            <Button
+                                              variant="ghost"
+                                              size="icon"
+                                              className="h-4 w-4 bg-white shadow"
+                                              onClick={(e) => {
+                                                e.stopPropagation()
+                                                moveNestedElement(block.id, 'column', colIndex, i, 'up')
+                                              }}
+                                            >
+                                              <ChevronUp className="h-2.5 w-2.5" />
+                                            </Button>
+                                          )}
+                                          {i < col.length - 1 && (
+                                            <Button
+                                              variant="ghost"
+                                              size="icon"
+                                              className="h-4 w-4 bg-white shadow"
+                                              onClick={(e) => {
+                                                e.stopPropagation()
+                                                moveNestedElement(block.id, 'column', colIndex, i, 'down')
+                                              }}
+                                            >
+                                              <ChevronDown className="h-2.5 w-2.5" />
+                                            </Button>
+                                          )}
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-4 w-4 bg-white shadow text-destructive"
+                                            onClick={(e) => {
+                                              e.stopPropagation()
+                                              const newCols = [...(block.columns || [[], []])]
+                                              newCols[colIndex] = newCols[colIndex].filter((_, idx) => idx !== i)
+                                              updateBlockWithHistory(block.id, { columns: newCols })
+                                              if (isSelected) setSelectedNested(null)
+                                            }}
+                                          >
+                                            <Trash2 className="h-2.5 w-2.5" />
+                                          </Button>
+                                        </div>
                                       </div>
                                     )
                                   })}
@@ -980,7 +1141,7 @@ export default function TemplateEditorPage() {
                               return (
                                 <div key={i} className="w-6 h-6 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
                                   <img
-                                    src={iconUrls[link.platform] || iconUrls.facebook}
+                                    src={link.platform === 'custom' ? (link.iconUrl || '') : (iconUrls[link.platform] || iconUrls.facebook)}
                                     alt={link.platform}
                                     className="w-4 h-4 object-contain"
                                   />
@@ -1041,14 +1202,6 @@ export default function TemplateEditorPage() {
                 {nestedData.type === 'heading' && (
                   <>
                     <div className="space-y-1">
-                      <Label className="text-xs">Content</Label>
-                      <Textarea
-                        value={nestedData.content || ''}
-                        onChange={(e) => updateNestedElement({ content: e.target.value })}
-                        rows={2}
-                      />
-                    </div>
-                    <div className="space-y-1">
                       <Label className="text-xs">Heading Level</Label>
                       <Select value={String(nestedData.level || 2)} onValueChange={(v) => updateNestedElement({ level: parseInt(v) })}>
                         <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
@@ -1070,35 +1223,21 @@ export default function TemplateEditorPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Text Color</Label>
-                      <Input type="color" value={nestedData.textColor || '#1a1a1a'} onChange={(e) => updateNestedElement({ textColor: e.target.value })} className="h-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Alignment</Label>
-                      <Select value={nestedData.textAlign || 'left'} onValueChange={(v) => updateNestedElement({ textAlign: v as 'left' | 'center' | 'right' })}>
-                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="left">Left</SelectItem>
-                          <SelectItem value="center">Center</SelectItem>
-                          <SelectItem value="right">Right</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    <RichTextEditor
+                      value={nestedData.content || ""}
+                      onChange={(val) => updateNestedElement({ content: val })}
+                      label="Heading Text"
+                      placeholder="Enter heading..."
+                      textColor={nestedData.textColor || "#1a1a1a"}
+                      onTextColorChange={(color) => updateNestedElement({ textColor: color })}
+                      minHeight="60px"
+                    />
                   </>
                 )}
 
                 {/* Text editor */}
                 {nestedData.type === 'text' && (
                   <>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Content</Label>
-                      <Textarea
-                        value={nestedData.content || ''}
-                        onChange={(e) => updateNestedElement({ content: e.target.value })}
-                        rows={4}
-                      />
-                    </div>
                     <div className="space-y-1">
                       <Label className="text-xs">Font Family</Label>
                       <Select value={nestedData.fontFamily || "Arial, sans-serif"} onValueChange={(v) => updateNestedElement({ fontFamily: v })}>
@@ -1110,21 +1249,14 @@ export default function TemplateEditorPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Text Color</Label>
-                      <Input type="color" value={nestedData.textColor || '#6b7280'} onChange={(e) => updateNestedElement({ textColor: e.target.value })} className="h-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Alignment</Label>
-                      <Select value={nestedData.textAlign || 'left'} onValueChange={(v) => updateNestedElement({ textAlign: v as 'left' | 'center' | 'right' })}>
-                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="left">Left</SelectItem>
-                          <SelectItem value="center">Center</SelectItem>
-                          <SelectItem value="right">Right</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    <RichTextEditor
+                      value={nestedData.content || ""}
+                      onChange={(val) => updateNestedElement({ content: val })}
+                      label="Content"
+                      placeholder="Enter your text here..."
+                      textColor={nestedData.textColor || "#1a1a1a"}
+                      onTextColorChange={(color) => updateNestedElement({ textColor: color })}
+                    />
                   </>
                 )}
 
@@ -1646,6 +1778,19 @@ export default function TemplateEditorPage() {
                         className="h-7 text-xs flex-1"
                         placeholder="URL"
                       />
+                      {link.platform === 'custom' && (
+                        <Input
+                          value={link.iconUrl || ''}
+                          onChange={(e) => {
+                            const newLinks = [...(selectedBlockData.socialLinks || [])]
+                            newLinks[index] = { ...link, iconUrl: e.target.value }
+                            updateBlock(selectedBlock!, { socialLinks: newLinks })
+                          }}
+                          onBlur={() => saveToHistory(blocks)}
+                          className="h-7 text-xs flex-1"
+                          placeholder="Icon URL"
+                        />
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"
@@ -1929,23 +2074,75 @@ export default function TemplateEditorPage() {
                 {blocks.map((block, i) => (
                   <div key={block.id}>
                     <div
-                      className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors ${selectedBlock === block.id ? 'bg-zinc-700' : 'hover:bg-zinc-800'
+                      className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors group ${selectedBlock === block.id ? 'bg-zinc-700' : 'hover:bg-zinc-800'
                         }`}
                       onClick={() => setSelectedBlock(block.id)}
                     >
                       <Box className="h-3 w-3 text-zinc-500" />
-                      <span className="capitalize">{block.type}</span>
+                      <span className="capitalize flex-1">{block.type}</span>
+                      {/* Move buttons */}
+                      <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {i > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-5 w-5 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                            onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'up'); }}
+                          >
+                            <ChevronUp className="h-3 w-3" />
+                          </Button>
+                        )}
+                        {i < blocks.length - 1 && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-5 w-5 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                            onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'down'); }}
+                          >
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
                       {(block.type === 'section' && block.children?.length) || (block.type === 'columns' && block.columns?.some(c => c.length > 0)) ? (
-                        <ChevronRight className="h-3 w-3 ml-auto text-zinc-500" />
+                        <ChevronRight className="h-3 w-3 text-zinc-500" />
                       ) : null}
                     </div>
                     {/* Section children */}
                     {block.type === 'section' && block.children && block.children.length > 0 && (
                       <div className="ml-4 border-l border-zinc-800 pl-2 mt-0.5 space-y-0.5">
                         {block.children.map((child, ci) => (
-                          <div key={ci} className="flex items-center gap-2 px-2 py-1 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">
+                          <div
+                            key={ci}
+                            className="flex items-center gap-2 px-2 py-1 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 group cursor-pointer"
+                            onClick={() => {
+                              setSelectedBlock(null)
+                              setSelectedNested({ parentId: block.id, type: 'section', itemIndex: ci })
+                            }}
+                          >
                             <Box className="h-2.5 w-2.5 text-zinc-600" />
-                            <span className="capitalize">{child.type}</span>
+                            <span className="capitalize flex-1">{child.type}</span>
+                            <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              {ci > 0 && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-4 w-4 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                                  onClick={(e) => { e.stopPropagation(); moveNestedElement(block.id, 'section', undefined, ci, 'up'); }}
+                                >
+                                  <ChevronUp className="h-2.5 w-2.5" />
+                                </Button>
+                              )}
+                              {ci < (block.children?.length || 0) - 1 && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-4 w-4 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                                  onClick={(e) => { e.stopPropagation(); moveNestedElement(block.id, 'section', undefined, ci, 'down'); }}
+                                >
+                                  <ChevronDown className="h-2.5 w-2.5" />
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -1954,21 +2151,74 @@ export default function TemplateEditorPage() {
                     {block.type === 'columns' && block.columns && (
                       <div className="ml-4 border-l border-zinc-800 pl-2 mt-0.5 space-y-0.5">
                         {block.columns.map((col, colIdx) => (
-                          col.length > 0 && (
-                            <div key={colIdx}>
-                              <div className="flex items-center gap-2 px-2 py-0.5 text-zinc-500">
-                                <span>Col {colIdx + 1}</span>
+                          <div key={colIdx}>
+                            <div className="flex items-center gap-2 px-2 py-0.5 text-zinc-500 group hover:bg-zinc-800 rounded">
+                              <span className="flex-1">Col {colIdx + 1}</span>
+                              <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {colIdx > 0 && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-4 w-4 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                                    onClick={(e) => { e.stopPropagation(); swapColumns(block.id, colIdx, 'left'); }}
+                                    title="Move column left"
+                                  >
+                                    <ChevronUp className="h-2.5 w-2.5 -rotate-90" />
+                                  </Button>
+                                )}
+                                {colIdx < (block.columns?.length || 0) - 1 && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-4 w-4 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                                    onClick={(e) => { e.stopPropagation(); swapColumns(block.id, colIdx, 'right'); }}
+                                    title="Move column right"
+                                  >
+                                    <ChevronDown className="h-2.5 w-2.5 -rotate-90" />
+                                  </Button>
+                                )}
                               </div>
+                            </div>
+                            {col.length > 0 && (
                               <div className="ml-3 border-l border-zinc-800 pl-2 space-y-0.5">
                                 {col.map((item, itemIdx) => (
-                                  <div key={itemIdx} className="flex items-center gap-2 px-2 py-1 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">
+                                  <div
+                                    key={itemIdx}
+                                    className="flex items-center gap-2 px-2 py-1 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 group cursor-pointer"
+                                    onClick={() => {
+                                      setSelectedBlock(null)
+                                      setSelectedNested({ parentId: block.id, type: 'column', columnIndex: colIdx, itemIndex: itemIdx })
+                                    }}
+                                  >
                                     <Box className="h-2.5 w-2.5 text-zinc-600" />
-                                    <span className="capitalize">{item.type}</span>
+                                    <span className="capitalize flex-1">{item.type}</span>
+                                    <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      {itemIdx > 0 && (
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-4 w-4 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                                          onClick={(e) => { e.stopPropagation(); moveNestedElement(block.id, 'column', colIdx, itemIdx, 'up'); }}
+                                        >
+                                          <ChevronUp className="h-2.5 w-2.5" />
+                                        </Button>
+                                      )}
+                                      {itemIdx < col.length - 1 && (
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-4 w-4 text-zinc-400 hover:text-white hover:bg-zinc-600"
+                                          onClick={(e) => { e.stopPropagation(); moveNestedElement(block.id, 'column', colIdx, itemIdx, 'down'); }}
+                                        >
+                                          <ChevronDown className="h-2.5 w-2.5" />
+                                        </Button>
+                                      )}
+                                    </div>
                                   </div>
                                 ))}
                               </div>
-                            </div>
-                          )
+                            )}
+                          </div>
                         ))}
                       </div>
                     )}
@@ -1978,7 +2228,8 @@ export default function TemplateEditorPage() {
             )}
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   )
 }
