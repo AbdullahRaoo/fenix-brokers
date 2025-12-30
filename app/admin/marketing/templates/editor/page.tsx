@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast"
 import { getPresetById, type TemplateBlock } from "@/lib/template-presets"
 import { createTemplate, getTemplateById, updateTemplate, generatePreviewHtml } from "@/app/actions/templates"
 import { getMediaFiles, uploadMedia, deleteMedia, type MediaItem } from "@/app/actions/media"
+import { compressImage } from "@/lib/image-compression"
 import {
   Dialog,
   DialogContent,
@@ -519,16 +520,29 @@ export default function TemplateEditorPage() {
       const batch = fileArray.slice(i, i + BATCH_SIZE)
 
       await Promise.all(batch.map(async (file) => {
-        // limit to 4MB (Safe margin for Vercel 4.5MB limit)
+        let fileToUpload = file
+
+        // If file is > 4MB, try to compress it first
         if (file.size > 4 * 1024 * 1024) {
-          toast({ title: `File too large: ${file.name}`, description: "Max file size is 4MB on Vercel", variant: "destructive" })
-          failureCount++
-          return
+          try {
+            toast({ title: `Compressing large image: ${file.name}...` })
+            fileToUpload = await compressImage(file, { maxSizeMB: 4 })
+
+            // If still too big after compression, warn user
+            if (fileToUpload.size > 4.5 * 1024 * 1024) {
+              toast({ title: `File too large: ${file.name}`, description: "Could not compress below 4.5MB limit", variant: "destructive" })
+              failureCount++
+              return
+            }
+          } catch (error) {
+            console.error("Compression failed:", error)
+            toast({ title: `Compression failed: ${file.name}`, description: "Uploading original (might fail if > 4.5MB)", variant: "destructive" })
+          }
         }
 
         try {
           const formData = new FormData()
-          formData.append("file", file)
+          formData.append("file", fileToUpload)
 
           const result = await uploadMedia(formData)
           if (result.data) {
@@ -2029,7 +2043,7 @@ export default function TemplateEditorPage() {
                   )}
                 </div>
                 <Button onClick={() => fileInputRef.current?.click()} disabled={mediaUploading}>
-                  {mediaUploading ? "Uploading..." : "Choose File"}
+                  {mediaUploading ? "Compressing & Uploading..." : "Choose File"}
                 </Button>
               </div>
             </TabsContent>
