@@ -1354,13 +1354,32 @@ export default function TemplateEditorPage() {
                 {/* Image editor */}
                 {nestedData.type === 'image' && (
                   <>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Image URL</Label>
-                      <Input value={nestedData.src || ''} onChange={(e) => updateNestedElement({ src: e.target.value })} placeholder="https://..." />
-                    </div>
+                    {nestedData.src && (
+                      <img src={nestedData.src} alt="" className="w-full h-24 object-cover rounded mb-2" />
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full mb-2"
+                      onClick={() => {
+                        if (selectedNested) {
+                          const parentBlock = blocks.find(b => b.id === selectedNested.parentId)
+                          if (!parentBlock) return
+
+                          if (selectedNested.type === 'section') {
+                            openMediaPicker(`${selectedNested.parentId}-section-${selectedNested.itemIndex}`)
+                          } else {
+                            openMediaPicker(`${selectedNested.parentId}-col${selectedNested.columnIndex}-${selectedNested.itemIndex}`)
+                          }
+                        }
+                      }}
+                    >
+                      <ImageIcon className="h-4 w-4 mr-2" />
+                      {nestedData.src ? "Change Image" : "Select Image"}
+                    </Button>
                     <div className="space-y-1">
                       <Label className="text-xs">Alt Text</Label>
-                      <Input value={nestedData.alt || ''} onChange={(e) => updateNestedElement({ alt: e.target.value })} placeholder="Image description" />
+                      <Input value={nestedData.alt || ''} onChange={(e) => updateNestedElement({ alt: e.target.value })} placeholder="Image description" className="h-8" />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">Width: {nestedData.fontSize || 100}%</Label>

@@ -63,8 +63,15 @@ export default function MediaPage() {
 
         setIsUploading(true)
         let successCount = 0
+        const rejectedFiles: string[] = []
 
         for (const file of Array.from(uploadedFiles)) {
+            // Enforce 4MB hard limit
+            if (file.size > 4 * 1024 * 1024) {
+                rejectedFiles.push(file.name)
+                continue
+            }
+
             const formData = new FormData()
             formData.append("file", file)
 
@@ -74,10 +81,21 @@ export default function MediaPage() {
             }
         }
 
-        toast({
-            title: "Upload complete",
-            description: `${successCount} file${successCount !== 1 ? "s" : ""} uploaded`,
-        })
+        if (successCount > 0) {
+            toast({
+                title: "Upload complete",
+                description: `${successCount} file${successCount !== 1 ? "s" : ""} uploaded`,
+            })
+        }
+
+        if (rejectedFiles.length > 0) {
+            toast({
+                title: `${rejectedFiles.length} file(s) rejected (>4MB)`,
+                description: rejectedFiles.join(", "),
+                variant: "destructive",
+                duration: 10000
+            })
+        }
 
         await loadFiles()
         setIsUploading(false)
@@ -217,7 +235,7 @@ export default function MediaPage() {
                     <p className="text-muted-foreground">Manage images and files for products and emails</p>
                 </div>
                 <Can permission="media.upload">
-                    <div className="flex gap-2">
+                    <div className="text-center">
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -240,6 +258,7 @@ export default function MediaPage() {
                                 </>
                             )}
                         </Button>
+                        <p className="text-xs text-muted-foreground mt-1">Max file size: 4MB per image</p>
                     </div>
                 </Can>
             </div>
