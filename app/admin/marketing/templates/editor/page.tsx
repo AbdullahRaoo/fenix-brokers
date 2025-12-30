@@ -514,6 +514,7 @@ export default function TemplateEditorPage() {
     const fileArray = Array.from(files)
     let successCount = 0
     let failureCount = 0
+    const rejectedFiles: string[] = []
 
     // Process files in batches of 3
     const BATCH_SIZE = 3
@@ -521,16 +522,11 @@ export default function TemplateEditorPage() {
       const batch = fileArray.slice(i, i + BATCH_SIZE)
 
       await Promise.all(batch.map(async (file) => {
-        let fileToUpload = file
-
-        // Optional: Compress large files for faster upload (not required anymore)
-        if (file.size > 5 * 1024 * 1024) {
-          try {
-            toast({ title: `Compressing large image: ${file.name}...` })
-            fileToUpload = await compressImage(file, { maxSizeMB: 4 })
-          } catch (error) {
-            console.error("Compression failed, uploading original:", error)
-          }
+        // Enforce 4MB hard limit
+        if (file.size > 4 * 1024 * 1024) {
+          rejectedFiles.push(file.name)
+          failureCount++
+          return
         }
 
         try {
@@ -540,10 +536,10 @@ export default function TemplateEditorPage() {
           const randomStr = Math.random().toString(36).substring(2, 8)
           const fileName = `${timestamp}-${randomStr}.${ext}`
 
-          // Upload directly to Supabase Storage (no Server Action limit!)
+          // Upload directly to Supabase Storage
           const { data: uploadData, error: uploadError } = await supabase.storage
             .from("media")
-            .upload(fileName, fileToUpload, {
+            .upload(fileName, file, {
               cacheControl: "3600",
               upsert: false,
             })
@@ -565,8 +561,8 @@ export default function TemplateEditorPage() {
             storage_path: fileName,
             display_name: file.name.replace(/\.[^/.]+$/, ""),
             url: urlData.publicUrl,
-            mime_type: fileToUpload.type,
-            size_bytes: fileToUpload.size,
+            mime_type: file.type,
+            size_bytes: file.size,
           })
 
           if (result.data) {
@@ -594,7 +590,16 @@ export default function TemplateEditorPage() {
       toast({ title: `Uploaded ${successCount} images` })
     }
 
-    if (failureCount > 0) {
+    if (rejectedFiles.length > 0) {
+      toast({
+        title: `${rejectedFiles.length} file(s) rejected (>4MB)`,
+        description: rejectedFiles.join(", "),
+        variant: "destructive",
+        duration: 10000
+      })
+    }
+
+    if (failureCount > 0 && rejectedFiles.length === 0) {
       toast({ title: `Failed to upload ${failureCount} images`, variant: "destructive" })
     }
 
@@ -2068,8 +2073,9 @@ export default function TemplateEditorPage() {
                   )}
                 </div>
                 <Button onClick={() => fileInputRef.current?.click()} disabled={mediaUploading}>
-                  {mediaUploading ? "Compressing & Uploading..." : "Choose File"}
+                  {mediaUploading ? "Uploading..." : "Choose Files"}
                 </Button>
+                <p className="text-xs text-muted-foreground mt-2">Max file size: 4MB per image</p>
               </div>
             </TabsContent>
           </Tabs>
