@@ -508,16 +508,40 @@ export default function TemplateEditorPage() {
     if (!files || files.length === 0) return
 
     setMediaUploading(true)
-    const formData = new FormData()
-    formData.append("file", files[0])
+    const fileArray = Array.from(files)
+    let successCount = 0
+    let failureCount = 0
 
-    const result = await uploadMedia(formData)
-    if (result.data) {
-      setMediaFiles(prev => [result.data!, ...prev])
-      setMediaSelected(result.data.url)
-      toast({ title: "Image uploaded" })
-    } else {
-      toast({ title: "Upload failed", description: result.error, variant: "destructive" })
+    // Process files in batches of 3
+    const BATCH_SIZE = 3
+    for (let i = 0; i < fileArray.length; i += BATCH_SIZE) {
+      const batch = fileArray.slice(i, i + BATCH_SIZE)
+
+      await Promise.all(batch.map(async (file) => {
+        const formData = new FormData()
+        formData.append("file", file)
+
+        const result = await uploadMedia(formData)
+        if (result.data) {
+          setMediaFiles(prev => [result.data!, ...prev])
+          // Select the first uploaded file
+          if (!mediaSelected) {
+            setMediaSelected(result.data.url)
+          }
+          successCount++
+        } else {
+          console.error(`Failed to upload ${file.name}:`, result.error)
+          failureCount++
+        }
+      }))
+    }
+
+    if (successCount > 0) {
+      toast({ title: `Uploaded ${successCount} images` })
+    }
+
+    if (failureCount > 0) {
+      toast({ title: `Failed to upload ${failureCount} images`, variant: "destructive" })
     }
 
     setMediaUploading(false)
@@ -1977,6 +2001,7 @@ export default function TemplateEditorPage() {
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
+                multiple
                 className="hidden"
                 onChange={handleMediaUpload}
               />
