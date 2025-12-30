@@ -518,6 +518,13 @@ export default function TemplateEditorPage() {
       const batch = fileArray.slice(i, i + BATCH_SIZE)
 
       await Promise.all(batch.map(async (file) => {
+        // limit to 10MB
+        if (file.size > 10 * 1024 * 1024) {
+          toast({ title: `File too large: ${file.name}`, description: "Max file size is 10MB", variant: "destructive" })
+          failureCount++
+          return
+        }
+
         const formData = new FormData()
         formData.append("file", file)
 
