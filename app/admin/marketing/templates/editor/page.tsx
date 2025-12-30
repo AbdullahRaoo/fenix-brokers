@@ -518,9 +518,9 @@ export default function TemplateEditorPage() {
       const batch = fileArray.slice(i, i + BATCH_SIZE)
 
       await Promise.all(batch.map(async (file) => {
-        // limit to 10MB
-        if (file.size > 10 * 1024 * 1024) {
-          toast({ title: `File too large: ${file.name}`, description: "Max file size is 10MB", variant: "destructive" })
+        // limit to 4.5MB (Vercel Serverless Function limit)
+        if (file.size > 4.5 * 1024 * 1024) {
+          toast({ title: `File too large: ${file.name}`, description: "Max file size is 4.5MB on Vercel", variant: "destructive" })
           failureCount++
           return
         }
