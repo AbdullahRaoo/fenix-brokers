@@ -235,14 +235,17 @@ export default function CatalogPage() {
 
                   {/* Stock badge */}
                   <div className="absolute top-3 right-3">
-                    <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${product.stock_status === 'in_stock'
+                    <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${(product.stock_status || '').toLowerCase() === 'in stock' || product.stock_status === 'in_stock'
                       ? 'bg-emerald-500/90 text-white'
-                      : product.stock_status === 'low_stock'
+                      : (product.stock_status || '').toLowerCase() === 'low stock' || product.stock_status === 'low_stock'
                         ? 'bg-amber-500/90 text-white'
-                        : 'bg-red-500/90 text-white'
+                        : (product.stock_status || '').toLowerCase() === 'pre-order'
+                          ? 'bg-blue-500/90 text-white'
+                          : 'bg-red-500/90 text-white'
                       }`}>
-                      {product.stock_status === 'in_stock' ? 'In Stock' :
-                        product.stock_status === 'low_stock' ? 'Low Stock' : 'Out of Stock'}
+                      {(product.stock_status || '').toLowerCase() === 'in stock' || product.stock_status === 'in_stock' ? 'In Stock' :
+                        (product.stock_status || '').toLowerCase() === 'low stock' || product.stock_status === 'low_stock' ? 'Low Stock' :
+                          (product.stock_status || '').toLowerCase() === 'pre-order' ? 'Pre-Order' : 'Out of Stock'}
                     </span>
                   </div>
 

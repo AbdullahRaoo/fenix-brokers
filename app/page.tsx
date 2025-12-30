@@ -389,7 +389,7 @@ export default function HomePage() {
                 className="fade-in-up group relative overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 hover:shadow-2xl hover:-translate-y-1"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className={`${index === 0 || index === 5 ? "aspect-[4/5]" : "aspect-[4/3]"} relative overflow-hidden`}>
+                <div className="aspect-[4/3] relative overflow-hidden">
                   <img
                     src={category.image || "/placeholder.svg"}
                     alt={category.name}
@@ -401,7 +401,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <span className="inline-block px-3 py-1 bg-primary/20 backdrop-blur-sm text-primary text-xs font-medium rounded-full mb-2">
+                  <span className="inline-block px-2.5 py-1 bg-primary/90 backdrop-blur-sm text-white text-xs font-semibold rounded-full mb-2 shadow-lg">
                     {category.count} products
                   </span>
                   <h3 className="text-xl font-semibold mb-1 text-balance group-hover:text-primary transition-colors">{category.name}</h3>
@@ -481,8 +481,8 @@ export default function HomePage() {
               <div className="relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl blur-2xl" />
                 <img
-                  src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=600&q=80"
-                  alt="Business Partnership"
+                  src="/logos/PNG/logo-fenix-brokers-11.png"
+                  alt="Fenix Brokers"
                   className="relative rounded-2xl shadow-xl w-full"
                 />
               </div>
