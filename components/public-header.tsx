@@ -189,7 +189,7 @@ export function PublicHeader() {
                         <p className="text-sm font-medium truncate">{product.title}</p>
                         <p className="text-xs text-muted-foreground">{product.brand}</p>
                       </div>
-                      {product.price && (
+                      {product.show_price && product.price && (
                         <span className="text-sm font-semibold text-primary">${product.price}</span>
                       )}
                     </Link>

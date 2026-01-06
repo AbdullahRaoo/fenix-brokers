@@ -365,7 +365,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                   </SelectTrigger>
                   <SelectContent>
                     {categoryOptions.length === 0 ? (
-                      <SelectItem value="" disabled>No categories - create one first</SelectItem>
+                      <SelectItem value="__no_categories__" disabled>No categories - create one first</SelectItem>
                     ) : (
                       categoryOptions.map((cat) => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>

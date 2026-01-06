@@ -313,7 +313,7 @@ export default function NewProductPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {categories.length === 0 ? (
-                      <SelectItem value="" disabled>No categories - create one first</SelectItem>
+                      <SelectItem value="__no_categories__" disabled>No categories - create one first</SelectItem>
                     ) : (
                       categories.map((cat) => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
