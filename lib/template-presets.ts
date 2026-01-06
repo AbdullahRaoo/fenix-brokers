@@ -86,7 +86,7 @@ export const templatePresets: TemplatePreset[] = [
         category: "promotional",
         blocks: [
             // Header with logo
-            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.dark },
+            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.white },
 
             // Hero Section
             {
@@ -139,7 +139,7 @@ export const templatePresets: TemplatePreset[] = [
         category: "newsletter",
         blocks: [
             // Header
-            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.dark },
+            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.white },
 
             // Intro Section
             {
@@ -205,7 +205,7 @@ export const templatePresets: TemplatePreset[] = [
         category: "promotional",
         blocks: [
             // Header
-            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.dark },
+            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.white },
 
             // Sale Banner Section
             {
@@ -270,7 +270,7 @@ export const templatePresets: TemplatePreset[] = [
         category: "welcome",
         blocks: [
             // Header
-            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.dark },
+            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.white },
 
             // Welcome Section
             {
@@ -315,7 +315,7 @@ export const templatePresets: TemplatePreset[] = [
         thumbnail: "/templates/blank.png",
         category: "newsletter",
         blocks: [
-            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.dark },
+            { id: genId(), type: "logo", src: LOGO_URL, alt: "Fenix Brokers", textAlign: 'center', padding: 25, backgroundColor: BRAND.white },
 
             // Main Content Section 
             {

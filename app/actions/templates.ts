@@ -214,15 +214,15 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
     switch (block.type) {
       case "logo":
         // Logo block with per-side padding
-        const logoHeight = block.fontSize || 120
-        const logoBorderRadius = brdRadius
+        const logoHeight = block.fontSize || 50
+        const logoBorderRadius = block.borderRadius ?? 5
         const logoPadTop = block.paddingTop ?? 25
         const logoPadRight = block.paddingRight ?? 0
         const logoPadBottom = block.paddingBottom ?? 25
         const logoPadLeft = block.paddingLeft ?? 0
         return `
           <tr>
-            <td style="padding: ${logoPadTop}px ${logoPadRight}px ${logoPadBottom}px ${logoPadLeft}px; background-color: ${bgColor || '#0a0a0a'};" align="${txtAlign}">
+            <td style="padding: ${logoPadTop}px ${logoPadRight}px ${logoPadBottom}px ${logoPadLeft}px; background-color: ${bgColor || '#ffffff'};" align="${txtAlign}">
               <img src="${block.src || ''}" alt="${escapeHtml(block.alt || 'Logo')}" height="${logoHeight}" style="display: inline-block; height: ${logoHeight}px; width: auto; border: 0;${logoBorderRadius ? ` border-radius: ${logoBorderRadius}px;` : ''}" />
             </td>
           </tr>`

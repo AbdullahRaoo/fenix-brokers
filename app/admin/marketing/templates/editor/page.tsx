@@ -846,7 +846,7 @@ export default function TemplateEditorPage() {
                       <div
                         className="-mx-4"
                         style={{
-                          backgroundColor: block.backgroundColor || '#0a0a0a',
+                          backgroundColor: block.backgroundColor || '#ffffff',
                           textAlign: block.textAlign || 'center',
                           paddingTop: block.paddingTop ?? 25,
                           paddingRight: block.paddingRight ?? 0,
@@ -859,8 +859,8 @@ export default function TemplateEditorPage() {
                             src={block.src}
                             alt={block.alt}
                             style={{
-                              height: block.fontSize || 120,
-                              borderRadius: block.borderRadius || 0,
+                              height: block.fontSize || 50,
+                              borderRadius: block.borderRadius ?? 5,
                               display: 'inline-block'
                             }}
                           />
@@ -1712,13 +1712,13 @@ export default function TemplateEditorPage() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Logo Size: {selectedBlockData.fontSize || 120}px</Label>
+                    <Label className="text-xs">Logo Size: {selectedBlockData.fontSize || 50}px</Label>
                     <input
                       type="range"
                       min="40"
                       max="300"
                       step="10"
-                      value={selectedBlockData.fontSize || 120}
+                      value={selectedBlockData.fontSize || 50}
                       onChange={(e) => updateBlockWithHistory(selectedBlock!, { fontSize: parseInt(e.target.value) })}
                       className="w-full"
                     />
@@ -1729,12 +1729,12 @@ export default function TemplateEditorPage() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Border Radius: {selectedBlockData.borderRadius || 0}px</Label>
+                    <Label className="text-xs">Border Radius: {selectedBlockData.borderRadius ?? 5}px</Label>
                     <input
                       type="range"
                       min="0"
                       max="50"
-                      value={selectedBlockData.borderRadius || 0}
+                      value={selectedBlockData.borderRadius ?? 5}
                       onChange={(e) => updateBlockWithHistory(selectedBlock!, { borderRadius: parseInt(e.target.value) })}
                       className="w-full"
                     />
@@ -1792,7 +1792,7 @@ export default function TemplateEditorPage() {
                     <Label className="text-xs">Background Color</Label>
                     <input
                       type="color"
-                      value={selectedBlockData.backgroundColor || "#0a0a0a"}
+                      value={selectedBlockData.backgroundColor || "#ffffff"}
                       onChange={(e) => updateBlockWithHistory(selectedBlock!, { backgroundColor: e.target.value })}
                       className="w-full h-8 rounded border cursor-pointer"
                     />
