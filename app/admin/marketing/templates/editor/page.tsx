@@ -108,6 +108,7 @@ export default function TemplateEditorPage() {
   const [mediaUploading, setMediaUploading] = useState(false)
   const [mediaSearch, setMediaSearch] = useState("")
   const [mediaSelected, setMediaSelected] = useState<string | null>(null)
+  const [mediaPickerIsNested, setMediaPickerIsNested] = useState(false)
   const [deletingMediaId, setDeletingMediaId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const initializedRef = useRef(false)
@@ -493,8 +494,18 @@ export default function TemplateEditorPage() {
   // Media picker functions
   const openMediaPicker = async (blockId: string) => {
     setMediaPickerBlockId(blockId)
-    const block = blocks.find(b => b.id === blockId)
-    setMediaSelected(block?.src || null)
+
+    // Check if this is for a nested element
+    if (blockId === 'nested' && selectedNested) {
+      setMediaPickerIsNested(true)
+      const nestedData = getSelectedNestedData()
+      setMediaSelected(nestedData?.src || null)
+    } else {
+      setMediaPickerIsNested(false)
+      const block = blocks.find(b => b.id === blockId)
+      setMediaSelected(block?.src || null)
+    }
+
     setMediaPickerOpen(true)
     setMediaLoading(true)
     const result = await getMediaFiles()
@@ -565,13 +576,20 @@ export default function TemplateEditorPage() {
   }
 
   const confirmMediaSelection = () => {
-    if (mediaPickerBlockId && mediaSelected) {
-      updateBlockWithHistory(mediaPickerBlockId, { src: mediaSelected })
+    if (mediaSelected) {
+      if (mediaPickerIsNested && selectedNested) {
+        // Update nested element inside section or column
+        updateNestedElement({ src: mediaSelected })
+      } else if (mediaPickerBlockId) {
+        // Update regular top-level block
+        updateBlockWithHistory(mediaPickerBlockId, { src: mediaSelected })
+      }
     }
     setMediaPickerOpen(false)
     setMediaPickerBlockId(null)
     setMediaSelected(null)
     setMediaSearch("")
+    setMediaPickerIsNested(false)
   }
 
   const handleSave = () => {
@@ -1376,18 +1394,7 @@ export default function TemplateEditorPage() {
                       variant="outline"
                       size="sm"
                       className="w-full mb-2"
-                      onClick={() => {
-                        if (selectedNested) {
-                          const parentBlock = blocks.find(b => b.id === selectedNested.parentId)
-                          if (!parentBlock) return
-
-                          if (selectedNested.type === 'section') {
-                            openMediaPicker(`${selectedNested.parentId}-section-${selectedNested.itemIndex}`)
-                          } else {
-                            openMediaPicker(`${selectedNested.parentId}-col${selectedNested.columnIndex}-${selectedNested.itemIndex}`)
-                          }
-                        }
-                      }}
+                      onClick={() => openMediaPicker('nested')}
                     >
                       <ImageIcon className="h-4 w-4 mr-2" />
                       {nestedData.src ? "Change Image" : "Select Image"}
