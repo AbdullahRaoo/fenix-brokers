@@ -844,11 +844,26 @@ export default function TemplateEditorPage() {
                     )}
                     {block.type === "logo" && (
                       <div
-                        className="-mx-4 py-4"
-                        style={{ backgroundColor: block.backgroundColor || '#0a0a0a', textAlign: block.textAlign || 'center' }}
+                        className="-mx-4"
+                        style={{
+                          backgroundColor: block.backgroundColor || '#0a0a0a',
+                          textAlign: block.textAlign || 'center',
+                          paddingTop: block.paddingTop ?? 25,
+                          paddingRight: block.paddingRight ?? 0,
+                          paddingBottom: block.paddingBottom ?? 25,
+                          paddingLeft: block.paddingLeft ?? 0
+                        }}
                       >
                         {block.src ? (
-                          <img src={block.src} alt={block.alt} className="h-10 inline-block" />
+                          <img
+                            src={block.src}
+                            alt={block.alt}
+                            style={{
+                              height: block.fontSize || 120,
+                              borderRadius: block.borderRadius || 0,
+                              display: 'inline-block'
+                            }}
+                          />
                         ) : (
                           <span className="text-white font-bold">Logo</span>
                         )}
@@ -1670,6 +1685,109 @@ export default function TemplateEditorPage() {
                     <ImageIcon className="h-4 w-4 mr-2" />
                     {selectedBlockData.src ? "Change Logo" : "Select Logo"}
                   </Button>
+                  {selectedBlockData.src && (
+                    <div className="p-2 bg-muted rounded-lg">
+                      <img
+                        src={selectedBlockData.src}
+                        alt="Logo preview"
+                        className="w-full h-auto max-h-16 object-contain"
+                        style={{ borderRadius: selectedBlockData.borderRadius || 0 }}
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <Label className="text-xs">Logo Alignment</Label>
+                    <div className="flex gap-1">
+                      {(['left', 'center', 'right'] as const).map(align => (
+                        <Button
+                          key={align}
+                          variant={selectedBlockData.textAlign === align ? "default" : "outline"}
+                          size="sm"
+                          className="flex-1 h-7 text-xs capitalize"
+                          onClick={() => updateBlockWithHistory(selectedBlock!, { textAlign: align })}
+                        >
+                          {align}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Logo Size: {selectedBlockData.fontSize || 120}px</Label>
+                    <input
+                      type="range"
+                      min="40"
+                      max="300"
+                      step="10"
+                      value={selectedBlockData.fontSize || 120}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { fontSize: parseInt(e.target.value) })}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>40px</span>
+                      <span>170px</span>
+                      <span>300px</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Border Radius: {selectedBlockData.borderRadius || 0}px</Label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="50"
+                      value={selectedBlockData.borderRadius || 0}
+                      onChange={(e) => updateBlockWithHistory(selectedBlock!, { borderRadius: parseInt(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold">Padding (per side)</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-[10px] text-muted-foreground">Top: {selectedBlockData.paddingTop ?? 25}px</Label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="60"
+                          value={selectedBlockData.paddingTop ?? 25}
+                          onChange={(e) => updateBlockWithHistory(selectedBlock!, { paddingTop: parseInt(e.target.value) })}
+                          className="w-full h-2"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[10px] text-muted-foreground">Bottom: {selectedBlockData.paddingBottom ?? 25}px</Label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="60"
+                          value={selectedBlockData.paddingBottom ?? 25}
+                          onChange={(e) => updateBlockWithHistory(selectedBlock!, { paddingBottom: parseInt(e.target.value) })}
+                          className="w-full h-2"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[10px] text-muted-foreground">Left: {selectedBlockData.paddingLeft ?? 0}px</Label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="60"
+                          value={selectedBlockData.paddingLeft ?? 0}
+                          onChange={(e) => updateBlockWithHistory(selectedBlock!, { paddingLeft: parseInt(e.target.value) })}
+                          className="w-full h-2"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[10px] text-muted-foreground">Right: {selectedBlockData.paddingRight ?? 0}px</Label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="60"
+                          value={selectedBlockData.paddingRight ?? 0}
+                          onChange={(e) => updateBlockWithHistory(selectedBlock!, { paddingRight: parseInt(e.target.value) })}
+                          className="w-full h-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Background Color</Label>
                     <input

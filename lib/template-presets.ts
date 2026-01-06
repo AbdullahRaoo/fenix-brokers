@@ -24,7 +24,11 @@ export interface TemplateBlock {
     fontWeight?: 'normal' | 'bold'
     fontSize?: number // in pixels (also used for image width percentage)
     borderRadius?: number // in pixels
-    padding?: number // in pixels
+    padding?: number // in pixels (uniform padding)
+    paddingTop?: number // in pixels
+    paddingRight?: number // in pixels
+    paddingBottom?: number // in pixels
+    paddingLeft?: number // in pixels
     fontFamily?: string // for email-safe fonts
 
     // Button specific styling
