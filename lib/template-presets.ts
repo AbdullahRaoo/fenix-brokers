@@ -74,7 +74,8 @@ const BRAND = {
     border: '#e2e8f0',       // Slate 200 - borders
 }
 
-// Logo URL
+// Default logo URL - the actual logo is fetched from site_settings.logo_url in the database
+// This is used as a fallback when settings haven't been configured
 const LOGO_URL = '/logos/PNG/logo-fenix-brokers-1.png'
 
 export const templatePresets: TemplatePreset[] = [

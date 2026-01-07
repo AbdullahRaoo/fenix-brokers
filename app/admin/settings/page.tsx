@@ -6,18 +6,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Upload, Loader2, CheckCircle } from "lucide-react"
+import { Upload, Loader2, CheckCircle, X } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { getSession, updateAdminUser, changePassword, type AdminUser } from "@/app/actions/auth"
+import { MediaPicker } from "@/components/media-picker"
+import { getSetting, updateSettings } from "@/app/actions/settings"
 
 export default function SettingsPage() {
   const { toast } = useToast()
   const [user, setUser] = useState<AdminUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
+  const [isSavingSettings, setIsSavingSettings] = useState(false)
 
   // General Settings
-  const [siteName, setSiteName] = useState("Fenix Brokers")
+  const [siteName, setSiteName] = useState("")
   const [logo, setLogo] = useState("")
 
   // Profile
@@ -26,23 +29,56 @@ export default function SettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
 
   useEffect(() => {
-    async function loadUser() {
+    async function loadData() {
       setIsLoading(true)
+
+      // Load user session
       const session = await getSession()
       if (session.user) {
         setUser(session.user)
         setName(session.user.name)
       }
+
+      // Load site settings from database
+      const [logoResult, siteNameResult] = await Promise.all([
+        getSetting("logo_url"),
+        getSetting("site_name")
+      ])
+
+      if (logoResult.data?.value) {
+        setLogo(logoResult.data.value)
+      }
+      if (siteNameResult.data?.value) {
+        setSiteName(siteNameResult.data.value)
+      }
+
       setIsLoading(false)
     }
-    loadUser()
+    loadData()
   }, [])
 
-  const handleSaveGeneral = () => {
-    toast({
-      title: "Settings saved",
-      description: "General settings have been updated.",
-    })
+  const handleSaveGeneral = async () => {
+    setIsSavingSettings(true)
+
+    const result = await updateSettings([
+      { key: "logo_url", value: logo || null },
+      { key: "site_name", value: siteName || null }
+    ])
+
+    setIsSavingSettings(false)
+
+    if (result.success) {
+      toast({
+        title: "Settings saved",
+        description: "General settings have been updated.",
+      })
+    } else {
+      toast({
+        title: "Error",
+        description: result.error || "Failed to save settings",
+        variant: "destructive"
+      })
+    }
   }
 
   const handleSaveProfile = () => {
@@ -210,8 +246,15 @@ export default function SettingsPage() {
                 <Label htmlFor="logo">Logo</Label>
                 <div className="flex items-center gap-4">
                   {logo ? (
-                    <div className="w-16 h-16 rounded-lg border border-border overflow-hidden bg-muted">
+                    <div className="relative w-16 h-16 rounded-lg border border-border overflow-hidden bg-muted">
                       <img src={logo} alt="Logo" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setLogo("")}
+                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-sm hover:bg-destructive/90"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
                     </div>
                   ) : (
                     <div className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted">
@@ -219,15 +262,23 @@ export default function SettingsPage() {
                     </div>
                   )}
                   <div>
-                    <Button variant="outline" size="sm">
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Logo
-                    </Button>
+                    <MediaPicker
+                      onSelect={(url) => setLogo(url)}
+                      trigger={
+                        <Button variant="outline" size="sm" type="button">
+                          <Upload className="h-4 w-4 mr-2" />
+                          {logo ? "Change Logo" : "Upload Logo"}
+                        </Button>
+                      }
+                    />
                   </div>
                 </div>
               </div>
 
-              <Button onClick={handleSaveGeneral}>Save Settings</Button>
+              <Button onClick={handleSaveGeneral} disabled={isSavingSettings}>
+                {isSavingSettings ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                Save Settings
+              </Button>
             </CardContent>
           </Card>
 

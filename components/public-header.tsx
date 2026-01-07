@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { getProducts } from "@/app/actions/products"
+import { getSiteLogo } from "@/app/actions/settings"
 import type { Product } from "@/types/database"
 
 const navLinks = [
@@ -30,8 +31,14 @@ export function PublicHeader() {
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [showResults, setShowResults] = useState(false)
+  const [logoUrl, setLogoUrl] = useState("/logos/PNG/logo-fenix-brokers-1.png")
   const searchRef = useRef<HTMLDivElement>(null)
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Load logo from database settings
+  useEffect(() => {
+    getSiteLogo().then(url => setLogoUrl(url))
+  }, [])
 
   // Handle scroll effect
   useEffect(() => {
@@ -105,7 +112,7 @@ export function PublicHeader() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0 group">
             <img
-              src="/logos/PNG/logo-fenix-brokers-1.png"
+              src={logoUrl}
               alt="Fenix Brokers"
               className={cn(
                 "w-auto object-contain rounded-lg transition-all duration-300",
