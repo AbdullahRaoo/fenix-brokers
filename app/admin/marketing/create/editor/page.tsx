@@ -104,7 +104,7 @@ export default function EditorPage() {
     {
       id: "1",
       type: "text",
-      content: "Welcome to our latest newsletter!",
+      content: "¡Bienvenido a nuestro último boletín!",
     },
   ])
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null)

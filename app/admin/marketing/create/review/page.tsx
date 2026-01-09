@@ -13,8 +13,8 @@ import { useToast } from "@/hooks/use-toast"
 export default function ReviewPage() {
   const router = useRouter()
   const { toast } = useToast()
-  const [subjectLine, setSubjectLine] = useState("New Products Available")
-  const [preheader, setPreheader] = useState("Check out our latest additions")
+  const [subjectLine, setSubjectLine] = useState("Nuevos Productos Disponibles")
+  const [preheader, setPreheader] = useState("Descubre nuestras últimas novedades")
   const [testEmail, setTestEmail] = useState("")
   const [emailBlocks, setEmailBlocks] = useState([])
 

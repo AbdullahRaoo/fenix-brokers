@@ -222,7 +222,7 @@ export function PublicHeader() {
 
             {/* CTA Button */}
             <Button asChild className="hidden sm:flex bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
-              <Link href="/contact">Get a Quote</Link>
+              <Link href="/contact">Solicitar Cotización</Link>
             </Button>
 
             {/* Mobile Menu */}
@@ -266,7 +266,7 @@ export function PublicHeader() {
             <div className="relative">
               <Input
                 type="search"
-                placeholder="Search products..."
+                placeholder="Buscar productos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pr-10"

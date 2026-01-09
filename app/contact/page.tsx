@@ -261,7 +261,7 @@ export default function ContactPage() {
       <section className="py-16 bg-muted/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold mb-2">Encúe´ntranos</h2>
+            <h2 className="text-2xl font-bold mb-2">Encuéntranos</h2>
             <p className="text-muted-foreground">Visita nuestra sede en Las Palmas de Gran Canaria</p>
           </div>
 

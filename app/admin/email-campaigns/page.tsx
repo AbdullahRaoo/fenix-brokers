@@ -13,74 +13,74 @@ import { useToast } from "@/hooks/use-toast"
 const productsData = [
   {
     id: "PROD-001",
-    name: "Industrial LED Light Panel 60W",
+    name: "Panel LED Industrial 60W",
     brand: "LumenTech",
-    category: "Electronics",
+    category: "Electrónica",
     image: "/industrial-led-panel.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
   {
     id: "PROD-002",
-    name: "Heavy Duty Power Drill Set",
+    name: "Kit de Taladro de Alta Potencia",
     brand: "PowerMax",
-    category: "Industrial Equipment",
+    category: "Equipo Industrial",
     image: "/power-drill-set.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
   {
     id: "PROD-003",
-    name: "Office Chair Ergonomic Pro",
+    name: "Silla de Oficina Ergonómica Pro",
     brand: "ComfortSeating",
-    category: "Office Supplies",
+    category: "Suministros de Oficina",
     image: "/ergonomic-office-chair.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
   {
     id: "PROD-004",
-    name: "Steel Beam 20ft I-Section",
+    name: "Viga de Acero I 6m",
     brand: "SteelCore",
-    category: "Construction Materials",
+    category: "Materiales de Construcción",
     image: "/steel-i-beam.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
   {
     id: "PROD-005",
-    name: "Commercial Coffee Maker 12-Cup",
+    name: "Cafetera Comercial 12 Tazas",
     brand: "BrewMaster",
-    category: "Office Supplies",
+    category: "Suministros de Oficina",
     image: "/commercial-coffee-maker.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
   {
     id: "PROD-006",
-    name: "Warehouse Shelving Unit",
+    name: "Estantería de Almacén",
     brand: "StoragePro",
-    category: "Industrial Equipment",
+    category: "Equipo Industrial",
     image: "/warehouse-shelving-unit.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
   {
     id: "PROD-007",
-    name: "Security Camera System 8-Channel",
+    name: "Sistema de Cámaras de Seguridad 8 Canales",
     brand: "SecureVision",
-    category: "Electronics",
+    category: "Electrónica",
     image: "/security-camera-system.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
   {
     id: "PROD-008",
-    name: "Concrete Mix Pro Grade 50lb",
+    name: "Mezcla de Concreto Pro 25kg",
     brand: "BuildStrong",
-    category: "Construction Materials",
+    category: "Materiales de Construcción",
     image: "/concrete-mix-bags.jpg",
-    price: "Request Quote",
+    price: "Solicitar Cotización",
   },
 ]
 
 export default function EmailCampaignsPage() {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
-  const [subjectLine, setSubjectLine] = useState("New Wholesale Products Available")
-  const [preheader, setPreheader] = useState("Check out our latest additions to the catalog")
+  const [subjectLine, setSubjectLine] = useState("Nuevos Productos Mayoristas Disponibles")
+  const [preheader, setPreheader] = useState("Descubre las últimas novedades de nuestro catálogo")
   const [viewMode, setViewMode] = useState<"preview" | "code">("preview")
   const { toast } = useToast()
 

@@ -165,7 +165,7 @@ export default function AboutPage() {
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-50" />
                 <img
                   src="/images/our-story.png"
-                  alt="Our Team"
+                  alt="Nuestro Equipo"
                   className="relative rounded-2xl shadow-xl w-full aspect-[4/3] object-cover"
                 />
                 {/* Floating card */}

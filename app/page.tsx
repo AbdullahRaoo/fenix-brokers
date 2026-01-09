@@ -239,7 +239,7 @@ export default function HomePage() {
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-50" />
                 <img
                   src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80"
-                  alt="Luxury Cosmetics"
+                  alt="Cosméticos de Lujo"
                   className="relative rounded-2xl shadow-2xl w-full object-cover aspect-[4/3]"
                   style={{ transform: `translateY(${scrollY * 0.03}px)` }}
                 />
@@ -544,23 +544,23 @@ export default function HomePage() {
             {[
               {
                 name: "Sarah Chen",
-                role: "Owner, Glow Beauty Boutique",
+                role: "Propietaria, Glow Beauty Boutique",
                 image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80",
-                quote: "Fenix Brokers transformed our inventory. The authenticity guarantee and competitive pricing helped us increase margins by 40%. Outstanding partner!",
+                quote: "Fenix Brokers transformó nuestro inventario. La garantía de autenticidad y los precios competitivos nos ayudaron a aumentar los márgenes en un 40%. ¡Un socio excepcional!",
                 rating: 5,
               },
               {
-                name: "Maria Rodriguez",
-                role: "Purchasing Manager, Luxe Cosmetics",
+                name: "María Rodríguez",
+                role: "Gerente de Compras, Luxe Cosmetics",
                 image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80",
-                quote: "Their customer service is exceptional. They understand the beauty industry and always recommend products that resonate with our customers.",
+                quote: "Su servicio al cliente es excepcional. Entienden la industria de la belleza y siempre recomiendan productos que conectan con nuestros clientes.",
                 rating: 5,
               },
               {
                 name: "Emma Thompson",
                 role: "CEO, Belle Beauty Chain",
                 image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&q=80",
-                quote: "We've been partnering with Fenix for 5 years. Their reliability and product range have been instrumental in our expansion to 12 locations.",
+                quote: "Llevamos 5 años colaborando con Fenix. Su fiabilidad y variedad de productos han sido fundamentales en nuestra expansión a 12 ubicaciones.",
                 rating: 5,
               },
             ].map((testimonial, index) => (

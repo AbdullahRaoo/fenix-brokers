@@ -175,7 +175,7 @@ export async function sendCampaign(campaignId: string) {
                 try {
                     // Personalize HTML content
                     const personalizedHtml = template.html_content
-                        ?.replace(/\{\{name\}\}/g, subscriber.name || "Subscriber")
+                        ?.replace(/\{\{name\}\}/g, subscriber.name || "Suscriptor")
                         .replace(/\{\{email\}\}/g, subscriber.email)
                         .replace(/\{\{unsubscribe_url\}\}/g, `https://fenixbrokers.com/unsubscribe?email=${encodeURIComponent(subscriber.email)}`)
 

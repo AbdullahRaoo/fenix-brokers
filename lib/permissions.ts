@@ -66,14 +66,14 @@ export function getPermissions(role: Role, ...perms: Permission[]): Record<Permi
 
 // Role display names
 export const roleLabels: Record<Role, string> = {
-    admin: "Administrator",
+    admin: "Administrador",
     editor: "Editor",
-    viewer: "Viewer",
+    viewer: "Visor",
 }
 
 // Role descriptions
 export const roleDescriptions: Record<Role, string> = {
-    admin: "Full access to all features including user management and deletion",
-    editor: "Can create and edit content, send campaigns, but cannot delete or manage users",
-    viewer: "Read-only access to view dashboard data",
+    admin: "Acceso completo a todas las funciones incluyendo gestión de usuarios y eliminación",
+    editor: "Puede crear y editar contenido, enviar campañas, pero no puede eliminar ni gestionar usuarios",
+    viewer: "Acceso de solo lectura para ver datos del panel",
 }
