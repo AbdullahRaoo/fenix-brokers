@@ -230,9 +230,17 @@ export default function TemplateEditorPage() {
     columns: type === "columns" ? [[], []] : undefined,
   })
 
-  const addBlock = (type: TemplateBlock["type"]) => {
+  const addBlock = (type: TemplateBlock["type"], insertIndex?: number) => {
     const newBlock = createBlockFromType(type)
-    const newBlocks = [...blocks, newBlock]
+    let newBlocks: TemplateBlock[]
+    if (insertIndex !== undefined && insertIndex >= 0 && insertIndex <= blocks.length) {
+      // Insert at specific position
+      newBlocks = [...blocks]
+      newBlocks.splice(insertIndex, 0, newBlock)
+    } else {
+      // Append to end (default behavior)
+      newBlocks = [...blocks, newBlock]
+    }
     setBlocks(newBlocks)
     saveToHistory(newBlocks)
     setSelectedBlock(newBlock.id)
@@ -378,6 +386,18 @@ export default function TemplateEditorPage() {
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault()
+    e.stopPropagation()
+
+    // Check if this is a new block from sidebar
+    const blockType = e.dataTransfer.getData('blockType')
+    if (blockType) {
+      // Insert new block at the target position
+      const dropIndex = blocks.findIndex(b => b.id === targetId)
+      addBlock(blockType as TemplateBlock["type"], dropIndex)
+      return
+    }
+
+    // Otherwise, handle existing block reorder
     if (!draggedBlock || draggedBlock === targetId) return
 
     const dragIndex = blocks.findIndex(b => b.id === draggedBlock)
@@ -793,7 +813,7 @@ export default function TemplateEditorPage() {
                     )}
                     {block.type === "text" && (
                       <div
-                        className="prose prose-sm max-w-none"
+                        className="prose prose-sm max-w-none [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_li]:my-1"
                         style={{ color: block.textColor || '#6b7280', fontFamily: block.fontFamily || 'Arial, sans-serif', textAlign: block.textAlign || 'left' }}
                         dangerouslySetInnerHTML={{ __html: block.content || "Texto del párrafo..." }}
                       />
