@@ -412,8 +412,8 @@ export default function TemplateEditorPage() {
     setDraggedBlock(null)
   }
 
-  // Drop into a section's children
-  const handleDropIntoSection = (e: React.DragEvent, sectionId: string) => {
+  // Drop into a section's children (at end or at specific index)
+  const handleDropIntoSection = (e: React.DragEvent, sectionId: string, insertIndex?: number) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -424,11 +424,18 @@ export default function TemplateEditorPage() {
       if (blockType === 'section' || blockType === 'columns' || blockType === 'footer') return
 
       const newBlock = createBlockFromType(blockType as TemplateBlock["type"])
-      const newBlocks = blocks.map(b =>
-        b.id === sectionId
-          ? { ...b, children: [...(b.children || []), newBlock] }
-          : b
-      )
+      const newBlocks = blocks.map(b => {
+        if (b.id === sectionId) {
+          const children = [...(b.children || [])]
+          if (insertIndex !== undefined && insertIndex >= 0 && insertIndex <= children.length) {
+            children.splice(insertIndex, 0, newBlock)
+          } else {
+            children.push(newBlock)
+          }
+          return { ...b, children }
+        }
+        return b
+      })
       setBlocks(newBlocks)
       saveToHistory(newBlocks)
       return
@@ -445,14 +452,17 @@ export default function TemplateEditorPage() {
     // Remove block from main blocks array
     const newBlocks = blocks.filter(b => b.id !== draggedBlock)
 
-    // Add to section's children
+    // Add to section's children at specific position
     const sectionIndex = newBlocks.findIndex(b => b.id === sectionId)
     if (sectionIndex !== -1) {
       const section = newBlocks[sectionIndex]
-      newBlocks[sectionIndex] = {
-        ...section,
-        children: [...(section.children || []), { ...draggedBlockData }]
+      const children = [...(section.children || [])]
+      if (insertIndex !== undefined && insertIndex >= 0 && insertIndex <= children.length) {
+        children.splice(insertIndex, 0, { ...draggedBlockData })
+      } else {
+        children.push({ ...draggedBlockData })
       }
+      newBlocks[sectionIndex] = { ...section, children }
     }
 
     setBlocks(newBlocks)
@@ -460,8 +470,8 @@ export default function TemplateEditorPage() {
     setDraggedBlock(null)
   }
 
-  // Drop into a column
-  const handleDropIntoColumn = (e: React.DragEvent, columnsBlockId: string, columnIndex: number) => {
+  // Drop into a column (at end or at specific index)
+  const handleDropIntoColumn = (e: React.DragEvent, columnsBlockId: string, columnIndex: number, insertIndex?: number) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -475,7 +485,13 @@ export default function TemplateEditorPage() {
       const newBlocks = blocks.map(b => {
         if (b.id === columnsBlockId) {
           const newColumns = [...(b.columns || [[], []])]
-          newColumns[columnIndex] = [...newColumns[columnIndex], newBlock]
+          const colItems = [...newColumns[columnIndex]]
+          if (insertIndex !== undefined && insertIndex >= 0 && insertIndex <= colItems.length) {
+            colItems.splice(insertIndex, 0, newBlock)
+          } else {
+            colItems.push(newBlock)
+          }
+          newColumns[columnIndex] = colItems
           return { ...b, columns: newColumns }
         }
         return b
@@ -497,12 +513,18 @@ export default function TemplateEditorPage() {
     // Remove block from main blocks array
     const newBlocks = blocks.filter(b => b.id !== draggedBlock)
 
-    // Add to column
+    // Add to column at specific position
     const colsIndex = newBlocks.findIndex(b => b.id === columnsBlockId)
     if (colsIndex !== -1) {
       const colsBlock = newBlocks[colsIndex]
       const newColumns = [...(colsBlock.columns || [[], []])]
-      newColumns[columnIndex] = [...newColumns[columnIndex], { ...draggedBlockData }]
+      const colItems = [...newColumns[columnIndex]]
+      if (insertIndex !== undefined && insertIndex >= 0 && insertIndex <= colItems.length) {
+        colItems.splice(insertIndex, 0, { ...draggedBlockData })
+      } else {
+        colItems.push({ ...draggedBlockData })
+      }
+      newColumns[columnIndex] = colItems
       newBlocks[colsIndex] = { ...colsBlock, columns: newColumns }
     }
 
@@ -946,6 +968,8 @@ export default function TemplateEditorPage() {
                                   key={i}
                                   className={`relative p-2 rounded cursor-pointer transition-all ${isSelected ? 'ring-2 ring-pink-500 bg-pink-50/50' : 'hover:ring-1 hover:ring-gray-300'
                                     }`}
+                                  onDragOver={handleDragOver}
+                                  onDrop={(e) => handleDropIntoSection(e, block.id, i)}
                                   onClick={(e) => {
                                     e.stopPropagation()
                                     setSelectedBlock(null)
