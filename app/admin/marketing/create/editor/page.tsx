@@ -203,7 +203,7 @@ export default function EditorPage() {
       case "image":
         return (
           <div className="p-4">
-            <img src={block.imageUrl || "/placeholder.svg"} alt="Email content" className="w-full h-auto rounded" />
+            <img src={block.imageUrl || "/placeholder.svg"} alt="Contenido del email" className="w-full h-auto rounded" />
           </div>
         )
       case "button":

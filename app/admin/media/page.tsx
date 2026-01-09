@@ -81,8 +81,8 @@ export default function MediaPage() {
             } else {
                 console.error(`Upload failed for ${file.name}:`, result.error)
                 toast({
-                    title: `Upload failed: ${file.name}`,
-                    description: result.error || "Unknown error",
+                    title: `Error al subir: ${file.name}`,
+                    description: result.error || "Error desconocido",
                     variant: "destructive"
                 })
             }
@@ -384,7 +384,7 @@ export default function MediaPage() {
                                                 variant="secondary"
                                                 size="icon"
                                                 onClick={() => handleCopyUrl(file.url)}
-                                                title="Copy URL"
+                                                title="Copiar URL"
                                             >
                                                 {copiedUrl === file.url ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                                             </Button>
@@ -392,7 +392,7 @@ export default function MediaPage() {
                                                 variant="secondary"
                                                 size="icon"
                                                 onClick={() => openEditModal(file)}
-                                                title="Edit"
+                                                title="Editar"
                                             >
                                                 <Edit className="h-4 w-4" />
                                             </Button>
@@ -400,7 +400,7 @@ export default function MediaPage() {
                                                 variant="secondary"
                                                 size="icon"
                                                 onClick={() => window.open(file.url, "_blank")}
-                                                title="View"
+                                                title="Ver"
                                             >
                                                 <ExternalLink className="h-4 w-4" />
                                             </Button>
@@ -454,13 +454,13 @@ export default function MediaPage() {
                                         </p>
                                     </div>
                                     <div className="flex gap-1">
-                                        <Button variant="ghost" size="icon" onClick={() => handleCopyUrl(file.url)} title="Copy URL">
+                                        <Button variant="ghost" size="icon" onClick={() => handleCopyUrl(file.url)} title="Copiar URL">
                                             {copiedUrl === file.url ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                                         </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => openEditModal(file)} title="Edit">
+                                        <Button variant="ghost" size="icon" onClick={() => openEditModal(file)} title="Editar">
                                             <Edit className="h-4 w-4" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => window.open(file.url, "_blank")} title="View">
+                                        <Button variant="ghost" size="icon" onClick={() => window.open(file.url, "_blank")} title="Ver">
                                             <ExternalLink className="h-4 w-4" />
                                         </Button>
                                         <Can permission="media.delete">

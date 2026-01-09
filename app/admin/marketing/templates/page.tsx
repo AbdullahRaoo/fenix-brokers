@@ -8,22 +8,22 @@ import Link from "next/link"
 const templates = [
   {
     id: "1",
-    name: "Weekly Deals Newsletter",
-    description: "Highlight featured products and special offers",
+    name: "Boletín de Ofertas Semanales",
+    description: "Destaca productos destacados y ofertas especiales",
     thumbnail: "/newsletter-email-layout.jpg",
     lastModified: "2025-01-15",
   },
   {
     id: "2",
-    name: "Product Showcase",
-    description: "Showcase new arrivals and catalog updates",
+    name: "Exhibición de Productos",
+    description: "Muestra nuevos productos y actualizaciones del catálogo",
     thumbnail: "/promotional-email-template.png",
     lastModified: "2025-01-10",
   },
   {
     id: "3",
-    name: "Simple Text Update",
-    description: "Clean text-based newsletter template",
+    name: "Actualización de Texto Simple",
+    description: "Plantilla de boletín limpia basada en texto",
     thumbnail: "/blank-email-template.png",
     lastModified: "2025-01-05",
   },

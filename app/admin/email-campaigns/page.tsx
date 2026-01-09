@@ -289,7 +289,7 @@ ${selectedProductsData
                       <iframe
                         srcDoc={generateEmailHTML()}
                         className="w-full h-[600px] bg-white"
-                        title="Email Preview"
+                        title="Vista Previa del Email"
                       />
                     </div>
                   ) : (

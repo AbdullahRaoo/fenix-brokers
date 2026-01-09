@@ -92,7 +92,7 @@ export default function SubscribersPage() {
     }
 
     // Create CSV content
-    const headers = ["Name", "Email", "Company", "Status", "Subscribed Date"]
+    const headers = ["Nombre", "Email", "Empresa", "Estado", "Fecha de Suscripción"]
     const rows = subscribers.map((sub) => [
       sub.name || "",
       sub.email,

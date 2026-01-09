@@ -230,7 +230,7 @@ export default function ReviewPage() {
             </CardHeader>
             <CardContent>
               <div className="border border-border rounded-lg overflow-hidden">
-                <iframe srcDoc={generateEmailHTML()} className="w-full h-[700px] bg-white" title="Email Preview" />
+                <iframe srcDoc={generateEmailHTML()} className="w-full h-[700px] bg-white" title="Vista Previa del Email" />
               </div>
             </CardContent>
           </Card>

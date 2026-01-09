@@ -209,9 +209,9 @@ export default function TemplateEditorPage() {
   const createBlockFromType = (type: TemplateBlock["type"]): TemplateBlock => ({
     id: genId(),
     type,
-    content: type === "heading" ? "New Heading" : type === "text" ? "Enter your text here..." : undefined,
+    content: type === "heading" ? "Nuevo Encabezado" : type === "text" ? "Ingresa tu texto aquí..." : undefined,
     level: type === "heading" ? 2 : undefined,
-    buttonText: type === "button" ? "Click Here" : undefined,
+    buttonText: type === "button" ? "Haz clic aquí" : undefined,
     buttonUrl: type === "button" ? "#" : undefined,
     src: type === "image" || type === "product" ? "" : type === "logo" ? "/logos/PNG/logo-fenix-brokers-1.png" : undefined,
     alt: type === "image" ? "" : type === "logo" ? "Fenix Brokers" : undefined,
@@ -224,7 +224,7 @@ export default function TemplateEditorPage() {
     ] : undefined,
     companyName: type === "footer" ? "Fenix Brokers" : undefined,
     address: type === "footer" ? "35004 Las Palmas de GC, Spain" : undefined,
-    unsubscribeText: type === "footer" ? "Unsubscribe" : undefined,
+    unsubscribeText: type === "footer" ? "Darse de baja" : undefined,
     textColor: type === "footer" ? "#6b7280" : undefined,
     children: type === "section" ? [] : undefined,
     columns: type === "columns" ? [[], []] : undefined,
@@ -788,14 +788,14 @@ export default function TemplateEditorPage() {
                       <div
                         className={`font-bold ${block.level === 1 ? "text-2xl" : block.level === 2 ? "text-xl" : "text-lg"}`}
                         style={{ color: block.textColor || '#1a1a1a', fontFamily: block.fontFamily || 'Arial, sans-serif' }}
-                        dangerouslySetInnerHTML={{ __html: block.content || "Heading" }}
+                        dangerouslySetInnerHTML={{ __html: block.content || "Encabezado" }}
                       />
                     )}
                     {block.type === "text" && (
                       <div
                         className="prose prose-sm max-w-none"
                         style={{ color: block.textColor || '#6b7280', fontFamily: block.fontFamily || 'Arial, sans-serif', textAlign: block.textAlign || 'left' }}
-                        dangerouslySetInnerHTML={{ __html: block.content || "Paragraph text..." }}
+                        dangerouslySetInnerHTML={{ __html: block.content || "Texto del párrafo..." }}
                       />
                     )}
                     {block.type === "image" && (
@@ -835,7 +835,7 @@ export default function TemplateEditorPage() {
                             fontFamily: block.fontFamily || 'Arial, sans-serif'
                           }}
                         >
-                          {block.buttonText || "Button"}
+                          {block.buttonText || "Botón"}
                         </span>
                       </div>
                     )}
@@ -1223,9 +1223,9 @@ export default function TemplateEditorPage() {
                             })}
                           </div>
                         )}
-                        <p className="font-medium text-sm">© {new Date().getFullYear()} {block.companyName || "Company Name"}</p>
-                        <p className="text-xs">{block.address || "Address"}</p>
-                        <p className="text-xs underline mt-1 cursor-pointer">{block.unsubscribeText || "Unsubscribe"}</p>
+                        <p className="font-medium text-sm">© {new Date().getFullYear()} {block.companyName || "Nombre de la Empresa"}</p>
+                        <p className="text-xs">{block.address || "Dirección"}</p>
+                        <p className="text-xs underline mt-1 cursor-pointer">{block.unsubscribeText || "Darse de baja"}</p>
                       </div>
                     )}
 
@@ -1286,7 +1286,7 @@ export default function TemplateEditorPage() {
                       </Select>
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">Font Family</Label>
+                      <Label className="text-xs">Fuente</Label>
                       <Select value={nestedData.fontFamily || "Arial, sans-serif"} onValueChange={(v) => updateNestedElement({ fontFamily: v })}>
                         <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
                         <SelectContent>
@@ -1299,8 +1299,8 @@ export default function TemplateEditorPage() {
                     <RichTextEditor
                       value={nestedData.content || ""}
                       onChange={(val) => updateNestedElement({ content: val })}
-                      label="Heading Text"
-                      placeholder="Enter heading..."
+                      label="Texto del Encabezado"
+                      placeholder="Ingresa encabezado..."
                       textColor={nestedData.textColor || "#1a1a1a"}
                       onTextColorChange={(color) => updateNestedElement({ textColor: color })}
                       minHeight="60px"
@@ -1312,7 +1312,7 @@ export default function TemplateEditorPage() {
                 {nestedData.type === 'text' && (
                   <>
                     <div className="space-y-1">
-                      <Label className="text-xs">Font Family</Label>
+                      <Label className="text-xs">Fuente</Label>
                       <Select value={nestedData.fontFamily || "Arial, sans-serif"} onValueChange={(v) => updateNestedElement({ fontFamily: v })}>
                         <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
                         <SelectContent>
@@ -1325,8 +1325,8 @@ export default function TemplateEditorPage() {
                     <RichTextEditor
                       value={nestedData.content || ""}
                       onChange={(val) => updateNestedElement({ content: val })}
-                      label="Content"
-                      placeholder="Enter your text here..."
+                      label="Contenido"
+                      placeholder="Ingresa tu texto aquí..."
                       textColor={nestedData.textColor || "#1a1a1a"}
                       onTextColorChange={(color) => updateNestedElement({ textColor: color })}
                     />
@@ -1337,11 +1337,11 @@ export default function TemplateEditorPage() {
                 {nestedData.type === 'button' && (
                   <>
                     <div className="space-y-1">
-                      <Label className="text-xs">Button Text</Label>
+                      <Label className="text-xs">Texto del Botón</Label>
                       <Input value={nestedData.buttonText || ''} onChange={(e) => updateNestedElement({ buttonText: e.target.value })} />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">Font Family</Label>
+                      <Label className="text-xs">Fuente</Label>
                       <Select value={nestedData.fontFamily || "Arial, sans-serif"} onValueChange={(v) => updateNestedElement({ fontFamily: v })}>
                         <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
                         <SelectContent>
@@ -1357,16 +1357,16 @@ export default function TemplateEditorPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label className="text-xs">Button Color</Label>
+                        <Label className="text-xs">Color del Botón</Label>
                         <Input type="color" value={nestedData.buttonColor || '#00bed6'} onChange={(e) => updateNestedElement({ buttonColor: e.target.value })} className="h-8" />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs">Text Color</Label>
+                        <Label className="text-xs">Color del Texto</Label>
                         <Input type="color" value={nestedData.buttonTextColor || '#ffffff'} onChange={(e) => updateNestedElement({ buttonTextColor: e.target.value })} className="h-8" />
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">Button Position</Label>
+                      <Label className="text-xs">Posición del Botón</Label>
                       <div className="flex gap-1">
                         {(['left', 'center', 'right'] as const).map(align => (
                           <Button
@@ -1397,11 +1397,11 @@ export default function TemplateEditorPage() {
                       onClick={() => openMediaPicker('nested')}
                     >
                       <ImageIcon className="h-4 w-4 mr-2" />
-                      {nestedData.src ? "Change Image" : "Select Image"}
+                      {nestedData.src ? "Cambiar Imagen" : "Seleccionar Imagen"}
                     </Button>
                     <div className="space-y-1">
-                      <Label className="text-xs">Alt Text</Label>
-                      <Input value={nestedData.alt || ''} onChange={(e) => updateNestedElement({ alt: e.target.value })} placeholder="Image description" className="h-8" />
+                      <Label className="text-xs">Texto Alt</Label>
+                      <Input value={nestedData.alt || ''} onChange={(e) => updateNestedElement({ alt: e.target.value })} placeholder="Descripción de la imagen" className="h-8" />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">Width: {nestedData.fontSize || 100}%</Label>
@@ -1495,8 +1495,8 @@ export default function TemplateEditorPage() {
                     value={selectedBlockData.content || ""}
                     onChange={(val) => updateBlock(selectedBlock!, { content: val })}
                     onBlur={() => saveToHistory(blocks)}
-                    label="Heading Text"
-                    placeholder="Enter heading..."
+                    label="Texto del Encabezado"
+                    placeholder="Ingresa encabezado..."
                     textColor={selectedBlockData.textColor || "#1a1a1a"}
                     onTextColorChange={(color) => updateBlockWithHistory(selectedBlock!, { textColor: color })}
                     minHeight="60px"
@@ -2249,7 +2249,7 @@ export default function TemplateEditorPage() {
             <div className="max-w-[650px] mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
               <iframe
                 srcDoc={previewHtml}
-                title="Email Preview"
+                title="Vista Previa del Email"
                 className="w-full h-full min-h-[700px] border-0"
                 sandbox="allow-same-origin"
               />

@@ -124,7 +124,7 @@ export default function CategoriesPage() {
                 }
             }
         } catch (error) {
-            toast({ title: "Error", description: "An error occurred", variant: "destructive" })
+            toast({ title: "Error", description: "Ocurrió un error", variant: "destructive" })
         }
 
         setIsSubmitting(false)

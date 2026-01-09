@@ -81,8 +81,8 @@ const LOGO_URL = '/logos/PNG/logo-fenix-brokers-1.png'
 export const templatePresets: TemplatePreset[] = [
     {
         id: "product-announcement",
-        name: "Product Announcement",
-        description: "Clean product showcase with hero image",
+        name: "Anuncio de Producto",
+        description: "Vitrina limpia de productos con imagen destacada",
         thumbnail: "/templates/product-announcement.png",
         category: "promotional",
         blocks: [
@@ -92,17 +92,17 @@ export const templatePresets: TemplatePreset[] = [
             // Hero Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "New Arrivals Are Here", level: 1, textAlign: 'center', textColor: BRAND.text },
-                    { id: genId(), type: "text", content: "Discover our latest collection of premium cosmetics and fragrances, carefully curated for wholesale partners.", textAlign: 'center', textColor: BRAND.textMuted },
-                    { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600", alt: "New cosmetics collection", borderRadius: 8 },
-                    { id: genId(), type: "button", buttonText: "Browse Collection", buttonUrl: "https://fenixbrokers.com/catalog", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
+                    { id: genId(), type: "heading", content: "Los Nuevos Productos Han Llegado", level: 1, textAlign: 'center', textColor: BRAND.text },
+                    { id: genId(), type: "text", content: "Descubre nuestra última colección de cosméticos y fragancias premium, cuidadosamente seleccionada para socios mayoristas.", textAlign: 'center', textColor: BRAND.textMuted },
+                    { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600", alt: "Nueva colección de cosméticos", borderRadius: 8 },
+                    { id: genId(), type: "button", buttonText: "Ver Colección", buttonUrl: "https://fenixbrokers.com/catalog", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
                 ]
             },
 
             // Featured Products Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.lightBg, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Featured Products", level: 2, textAlign: 'center', textColor: BRAND.primary },
+                    { id: genId(), type: "heading", content: "Productos Destacados", level: 2, textAlign: 'center', textColor: BRAND.primary },
                 ]
             },
 
@@ -110,21 +110,21 @@ export const templatePresets: TemplatePreset[] = [
             {
                 id: genId(), type: "columns", backgroundColor: BRAND.lightBg, columns: [
                     [
-                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200", alt: "Luxury Perfume Set", borderRadius: 8 },
-                        { id: genId(), type: "heading", content: "Luxury Perfume Set", level: 3, textAlign: 'center', textColor: BRAND.text },
-                        { id: genId(), type: "button", buttonText: "View Details", buttonUrl: "#", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
+                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200", alt: "Set de Perfumes de Lujo", borderRadius: 8 },
+                        { id: genId(), type: "heading", content: "Set de Perfumes de Lujo", level: 3, textAlign: 'center', textColor: BRAND.text },
+                        { id: genId(), type: "button", buttonText: "Ver Detalles", buttonUrl: "#", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
                     ],
                     [
-                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200", alt: "Premium Skincare Bundle", borderRadius: 8 },
-                        { id: genId(), type: "heading", content: "Premium Skincare Bundle", level: 3, textAlign: 'center', textColor: BRAND.text },
-                        { id: genId(), type: "button", buttonText: "View Details", buttonUrl: "#", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
+                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200", alt: "Pack de Cuidado de Piel Premium", borderRadius: 8 },
+                        { id: genId(), type: "heading", content: "Pack de Cuidado de Piel Premium", level: 3, textAlign: 'center', textColor: BRAND.text },
+                        { id: genId(), type: "button", buttonText: "Ver Detalles", buttonUrl: "#", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
                     ],
                 ]
             },
 
             // Footer
             {
-                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, Spain", unsubscribeText: "Unsubscribe from this list", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
+                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, España", unsubscribeText: "Darse de baja de esta lista", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
                 socialLinks: [
                     { platform: 'instagram', url: 'https://instagram.com/fenixbrokers' },
                     { platform: 'linkedin', url: 'https://linkedin.com/company/fenixbrokers' }
@@ -134,8 +134,8 @@ export const templatePresets: TemplatePreset[] = [
     },
     {
         id: "monthly-newsletter",
-        name: "Monthly Newsletter",
-        description: "Regular updates with news and product highlights",
+        name: "Boletín Mensual",
+        description: "Actualizaciones regulares con noticias y productos destacados",
         thumbnail: "/templates/newsletter.png",
         category: "newsletter",
         blocks: [
@@ -145,24 +145,24 @@ export const templatePresets: TemplatePreset[] = [
             // Intro Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Monthly Newsletter", level: 1, textAlign: 'center', textColor: BRAND.text },
-                    { id: genId(), type: "text", content: "Your monthly digest of beauty industry trends, new products, and exclusive deals.", textAlign: 'center', textColor: BRAND.textMuted },
+                    { id: genId(), type: "heading", content: "Boletín Mensual", level: 1, textAlign: 'center', textColor: BRAND.text },
+                    { id: genId(), type: "text", content: "Tu resumen mensual de tendencias de la industria de belleza, nuevos productos y ofertas exclusivas.", textAlign: 'center', textColor: BRAND.textMuted },
                 ]
             },
 
             // News Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.lightBg, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Industry News", level: 2, textColor: BRAND.primary },
-                    { id: genId(), type: "text", content: "The beauty industry continues to see strong growth in clean beauty products. Our new organic skincare line is now available for pre-order with special wholesale pricing.", textColor: BRAND.text },
-                    { id: genId(), type: "button", buttonText: "Read More", buttonUrl: "#", buttonColor: BRAND.primary, buttonTextColor: BRAND.white },
+                    { id: genId(), type: "heading", content: "Noticias de la Industria", level: 2, textColor: BRAND.primary },
+                    { id: genId(), type: "text", content: "La industria de la belleza continúa viendo un fuerte crecimiento en productos de belleza limpia. Nuestra nueva línea de cuidado de piel orgánico ya está disponible para pre-pedido con precios especiales mayoristas.", textColor: BRAND.text },
+                    { id: genId(), type: "button", buttonText: "Leer Más", buttonUrl: "#", buttonColor: BRAND.primary, buttonTextColor: BRAND.white },
                 ]
             },
 
             // Top Sellers Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Top Sellers This Month", level: 2, textAlign: 'center', textColor: BRAND.primary },
+                    { id: genId(), type: "heading", content: "Más Vendidos Este Mes", level: 2, textAlign: 'center', textColor: BRAND.primary },
                 ]
             },
 
@@ -170,12 +170,12 @@ export const templatePresets: TemplatePreset[] = [
             {
                 id: genId(), type: "columns", backgroundColor: BRAND.white, columns: [
                     [
-                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200", alt: "Rose Gold Palette", borderRadius: 8 },
-                        { id: genId(), type: "heading", content: "Rose Gold Palette", level: 3, textAlign: 'center', textColor: BRAND.text },
+                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200", alt: "Paleta Oro Rosa", borderRadius: 8 },
+                        { id: genId(), type: "heading", content: "Paleta Oro Rosa", level: 3, textAlign: 'center', textColor: BRAND.text },
                     ],
                     [
-                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200", alt: "Vitamin C Serum", borderRadius: 8 },
-                        { id: genId(), type: "heading", content: "Vitamin C Serum", level: 3, textAlign: 'center', textColor: BRAND.text },
+                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200", alt: "Sérum Vitamina C", borderRadius: 8 },
+                        { id: genId(), type: "heading", content: "Sérum Vitamina C", level: 3, textAlign: 'center', textColor: BRAND.text },
                     ],
                 ]
             },
@@ -183,14 +183,14 @@ export const templatePresets: TemplatePreset[] = [
             // Pro Tip Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.lightBg, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Pro Tip", level: 2, textColor: BRAND.primary },
-                    { id: genId(), type: "text", content: "Bundle complementary products to increase average order value. Our skincare sets have a 40% higher conversion rate than individual items.", textColor: BRAND.text },
+                    { id: genId(), type: "heading", content: "Consejo Pro", level: 2, textColor: BRAND.primary },
+                    { id: genId(), type: "text", content: "Combina productos complementarios para aumentar el valor promedio del pedido. Nuestros sets de cuidado de piel tienen una tasa de conversión un 40% mayor que los artículos individuales.", textColor: BRAND.text },
                 ]
             },
 
             // Footer
             {
-                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, Spain", unsubscribeText: "Unsubscribe", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
+                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, España", unsubscribeText: "Darse de baja", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
                 socialLinks: [
                     { platform: 'instagram', url: 'https://instagram.com/fenixbrokers' },
                     { platform: 'linkedin', url: 'https://linkedin.com/company/fenixbrokers' }
@@ -200,8 +200,8 @@ export const templatePresets: TemplatePreset[] = [
     },
     {
         id: "sale-event",
-        name: "Sale Event",
-        description: "Bold promotional email for sales and discounts",
+        name: "Evento de Ofertas",
+        description: "Email promocional llamativo para ventas y descuentos",
         thumbnail: "/templates/sale.png",
         category: "promotional",
         blocks: [
@@ -211,24 +211,24 @@ export const templatePresets: TemplatePreset[] = [
             // Sale Banner Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.primary, padding: 30, children: [
-                    { id: genId(), type: "heading", content: "FLASH SALE", level: 1, textAlign: 'center', textColor: BRAND.white, fontWeight: 'bold' },
-                    { id: genId(), type: "heading", content: "Up to 40% Off Wholesale Prices", level: 2, textAlign: 'center', textColor: BRAND.white },
+                    { id: genId(), type: "heading", content: "VENTA RELÁMPAGO", level: 1, textAlign: 'center', textColor: BRAND.white, fontWeight: 'bold' },
+                    { id: genId(), type: "heading", content: "Hasta 40% de Descuento en Precios Mayoristas", level: 2, textAlign: 'center', textColor: BRAND.white },
                 ]
             },
 
             // Content Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 25, children: [
-                    { id: genId(), type: "text", content: "For 48 hours only, enjoy exclusive discounts on our best-selling cosmetics and fragrances. Stock up and maximize your margins!", textAlign: 'center', textColor: BRAND.textMuted },
-                    { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600", alt: "Sale", borderRadius: 8 },
-                    { id: genId(), type: "button", buttonText: "Shop the Sale", buttonUrl: "https://fenixbrokers.com/sale", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
+                    { id: genId(), type: "text", content: "Solo por 48 horas, disfruta de descuentos exclusivos en nuestros cosméticos y fragancias más vendidos. ¡Abastécete y maximiza tus márgenes!", textAlign: 'center', textColor: BRAND.textMuted },
+                    { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600", alt: "Oferta", borderRadius: 8 },
+                    { id: genId(), type: "button", buttonText: "Comprar la Oferta", buttonUrl: "https://fenixbrokers.com/sale", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
                 ]
             },
 
             // Best Deals Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.lightBg, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Best Deals", level: 2, textColor: BRAND.primary, textAlign: 'center' },
+                    { id: genId(), type: "heading", content: "Mejores Ofertas", level: 2, textColor: BRAND.primary, textAlign: 'center' },
                 ]
             },
 
@@ -236,12 +236,12 @@ export const templatePresets: TemplatePreset[] = [
             {
                 id: genId(), type: "columns", backgroundColor: BRAND.lightBg, columns: [
                     [
-                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200", alt: "Designer Fragrance", borderRadius: 8 },
-                        { id: genId(), type: "heading", content: "Designer Fragrance - 35% OFF", level: 3, textAlign: 'center', textColor: BRAND.text },
+                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200", alt: "Fragancia de Diseñador", borderRadius: 8 },
+                        { id: genId(), type: "heading", content: "Fragancia de Diseñador - 35% DESC", level: 3, textAlign: 'center', textColor: BRAND.text },
                     ],
                     [
-                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1596704017254-9b121068fb31?w=200", alt: "Makeup Kit", borderRadius: 8 },
-                        { id: genId(), type: "heading", content: "Makeup Kit - 40% OFF", level: 3, textAlign: 'center', textColor: BRAND.text },
+                        { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1596704017254-9b121068fb31?w=200", alt: "Kit de Maquillaje", borderRadius: 8 },
+                        { id: genId(), type: "heading", content: "Kit de Maquillaje - 40% DESC", level: 3, textAlign: 'center', textColor: BRAND.text },
                     ],
                 ]
             },
@@ -249,13 +249,13 @@ export const templatePresets: TemplatePreset[] = [
             // Urgency Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 20, children: [
-                    { id: genId(), type: "text", content: "Offer ends in 48 hours. Use code FLASH40 at checkout.", textAlign: 'center', fontWeight: 'bold', textColor: BRAND.primary },
+                    { id: genId(), type: "text", content: "La oferta termina en 48 horas. Usa el código FLASH40 al pagar.", textAlign: 'center', fontWeight: 'bold', textColor: BRAND.primary },
                 ]
             },
 
             // Footer
             {
-                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, Spain", unsubscribeText: "Unsubscribe", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
+                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, España", unsubscribeText: "Darse de baja", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
                 socialLinks: [
                     { platform: 'instagram', url: 'https://instagram.com/fenixbrokers' },
                     { platform: 'linkedin', url: 'https://linkedin.com/company/fenixbrokers' }
@@ -265,8 +265,8 @@ export const templatePresets: TemplatePreset[] = [
     },
     {
         id: "welcome-email",
-        name: "Welcome Email",
-        description: "Warm introduction for new wholesale partners",
+        name: "Email de Bienvenida",
+        description: "Introducción cálida para nuevos socios mayoristas",
         thumbnail: "/templates/welcome.png",
         category: "welcome",
         blocks: [
@@ -276,32 +276,32 @@ export const templatePresets: TemplatePreset[] = [
             // Welcome Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Welcome to Fenix Brokers", level: 1, textAlign: 'center', textColor: BRAND.primary },
-                    { id: genId(), type: "text", content: "We're thrilled to have you as a wholesale partner. You now have access to premium cosmetics and fragrances at the best wholesale prices.", textAlign: 'center', textColor: BRAND.textMuted },
-                    { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600", alt: "Welcome", borderRadius: 8 },
+                    { id: genId(), type: "heading", content: "Bienvenido a Fenix Brokers", level: 1, textAlign: 'center', textColor: BRAND.primary },
+                    { id: genId(), type: "text", content: "Estamos encantados de tenerte como socio mayorista. Ahora tienes acceso a cosméticos y fragancias premium a los mejores precios mayoristas.", textAlign: 'center', textColor: BRAND.textMuted },
+                    { id: genId(), type: "image", src: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600", alt: "Bienvenido", borderRadius: 8 },
                 ]
             },
 
             // Getting Started Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.lightBg, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Getting Started", level: 2, textColor: BRAND.primary },
-                    { id: genId(), type: "text", content: "Here's how to make the most of your partnership:\n\n• Browse our catalog of 500+ products\n• Request quotes for bulk orders\n• Get dedicated support from our team", textColor: BRAND.text },
-                    { id: genId(), type: "button", buttonText: "Browse Catalog", buttonUrl: "https://fenixbrokers.com/catalog", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
+                    { id: genId(), type: "heading", content: "Cómo Empezar", level: 2, textColor: BRAND.primary },
+                    { id: genId(), type: "text", content: "Así puedes aprovechar al máximo tu asociación:\n\n• Explora nuestro catálogo de más de 500 productos\n• Solicita cotizaciones para pedidos al por mayor\n• Obtén soporte dedicado de nuestro equipo", textColor: BRAND.text },
+                    { id: genId(), type: "button", buttonText: "Ver Catálogo", buttonUrl: "https://fenixbrokers.com/catalog", buttonColor: BRAND.primary, buttonTextColor: BRAND.white, textAlign: 'center' },
                 ]
             },
 
             // Support Section
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 25, children: [
-                    { id: genId(), type: "heading", content: "Need Help?", level: 2, textColor: BRAND.primary },
-                    { id: genId(), type: "text", content: "Our team is here for you. Reply to this email or contact us for any questions.", textColor: BRAND.textMuted },
+                    { id: genId(), type: "heading", content: "¿Necesitas Ayuda?", level: 2, textColor: BRAND.primary },
+                    { id: genId(), type: "text", content: "Nuestro equipo está aquí para ti. Responde a este email o contáctanos para cualquier pregunta.", textColor: BRAND.textMuted },
                 ]
             },
 
             // Footer
             {
-                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, Spain", unsubscribeText: "Unsubscribe", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
+                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, España", unsubscribeText: "Darse de baja", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
                 socialLinks: [
                     { platform: 'instagram', url: 'https://instagram.com/fenixbrokers' },
                     { platform: 'linkedin', url: 'https://linkedin.com/company/fenixbrokers' }
@@ -311,8 +311,8 @@ export const templatePresets: TemplatePreset[] = [
     },
     {
         id: "blank",
-        name: "Blank Template",
-        description: "Start from scratch with minimal structure",
+        name: "Plantilla en Blanco",
+        description: "Comienza desde cero con estructura mínima",
         thumbnail: "/templates/blank.png",
         category: "newsletter",
         blocks: [
@@ -321,14 +321,14 @@ export const templatePresets: TemplatePreset[] = [
             // Main Content Section 
             {
                 id: genId(), type: "section", backgroundColor: BRAND.white, padding: 30, children: [
-                    { id: genId(), type: "heading", content: "Your Email Title", level: 1, textAlign: 'center', textColor: BRAND.text },
-                    { id: genId(), type: "text", content: "Start writing your content here. Drag more blocks from the sidebar to build your email.", textAlign: 'center', textColor: BRAND.textMuted },
+                    { id: genId(), type: "heading", content: "Título de Tu Email", level: 1, textAlign: 'center', textColor: BRAND.text },
+                    { id: genId(), type: "text", content: "Comienza a escribir tu contenido aquí. Arrastra más bloques desde la barra lateral para crear tu email.", textAlign: 'center', textColor: BRAND.textMuted },
                 ]
             },
 
             // Footer
             {
-                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, Spain", unsubscribeText: "Unsubscribe", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
+                id: genId(), type: "footer", companyName: "Fenix Brokers", address: "35004 Las Palmas de GC, España", unsubscribeText: "Darse de baja", textAlign: 'center', textColor: BRAND.textMuted, backgroundColor: BRAND.lightBg, padding: 25,
                 socialLinks: [
                     { platform: 'instagram', url: 'https://instagram.com/fenixbrokers' },
                     { platform: 'linkedin', url: 'https://linkedin.com/company/fenixbrokers' }
