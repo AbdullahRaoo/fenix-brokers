@@ -16,7 +16,7 @@ export async function getEmailTemplates() {
     return { data: data as EmailTemplate[], error: null }
   } catch (error) {
     console.error("Error fetching templates:", error)
-    return { data: null, error: "Failed to fetch templates" }
+    return { data: null, error: "Error al obtener plantillas" }
   }
 }
 
@@ -33,7 +33,7 @@ export async function getTemplateById(id: string) {
     return { data: data as EmailTemplate, error: null }
   } catch (error) {
     console.error("Error fetching template:", error)
-    return { data: null, error: "Template not found" }
+    return { data: null, error: "Plantilla no encontrada" }
   }
 }
 
@@ -61,14 +61,14 @@ export async function createTemplate(input: {
 
     if (error) {
       console.error("Supabase error creating template:", error)
-      return { data: null, error: error.message || "Failed to create template" }
+      return { data: null, error: error.message || "Error al crear plantilla" }
     }
 
     revalidatePath("/admin/marketing")
     return { data: data as EmailTemplate, error: null }
   } catch (error) {
     console.error("Error creating template:", error)
-    const errorMessage = error instanceof Error ? error.message : "Failed to create template"
+    const errorMessage = error instanceof Error ? error.message : "Error al crear plantilla"
     return { data: null, error: errorMessage }
   }
 }
@@ -103,7 +103,7 @@ export async function updateTemplate(id: string, input: {
     return { data: data as EmailTemplate, error: null }
   } catch (error) {
     console.error("Error updating template:", error)
-    return { data: null, error: "Failed to update template" }
+    return { data: null, error: "Error al actualizar plantilla" }
   }
 }
 
@@ -133,7 +133,7 @@ export async function deleteTemplate(id: string) {
     return { success: true, error: null }
   } catch (error) {
     console.error("Error deleting template:", error)
-    return { success: false, error: "Failed to delete template. It may still be referenced by campaigns." }
+    return { success: false, error: "Error al eliminar plantilla. Puede estar referenciada por campañas." }
   }
 }
 
@@ -144,7 +144,7 @@ export async function generatePreviewHtml(blocks: object[], templateName: string
     return { html, error: null }
   } catch (error) {
     console.error("Error generating preview:", error)
-    return { html: null, error: "Failed to generate preview" }
+    return { html: null, error: "Error al generar vista previa" }
   }
 }
 

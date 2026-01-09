@@ -33,33 +33,33 @@ interface EmailBlock {
 const blockTemplates = [
   {
     type: "text" as BlockType,
-    name: "Text Block",
+    name: "Bloque de Texto",
     icon: Type,
-    description: "Add a paragraph or heading",
+    description: "Agregar un párrafo o título",
   },
   {
     type: "image" as BlockType,
-    name: "Image Block",
+    name: "Bloque de Imagen",
     icon: ImageIcon,
-    description: "Add an image",
+    description: "Agregar una imagen",
   },
   {
     type: "button" as BlockType,
-    name: "Button Block",
+    name: "Bloque de Botón",
     icon: Square,
-    description: "Add a call-to-action button",
+    description: "Agregar un botón de acción",
   },
   {
     type: "spacer" as BlockType,
-    name: "Spacer",
+    name: "Espaciador",
     icon: GripVertical,
-    description: "Add vertical spacing",
+    description: "Agregar espacio vertical",
   },
   {
     type: "product" as BlockType,
-    name: "Product Block",
+    name: "Bloque de Producto",
     icon: Package,
-    description: "Add a product card",
+    description: "Agregar una tarjeta de producto",
   },
 ]
 
@@ -117,17 +117,17 @@ export default function EditorPage() {
     const newBlock: EmailBlock = {
       id: Date.now().toString(),
       type,
-      content: type === "text" ? "New text block" : undefined,
+      content: type === "text" ? "Nuevo bloque de texto" : undefined,
       imageUrl: type === "image" ? "/email-icon.png" : undefined,
-      buttonText: type === "button" ? "Click Here" : undefined,
+      buttonText: type === "button" ? "Clic Aquí" : undefined,
       buttonUrl: type === "button" ? "#" : undefined,
       spacerHeight: type === "spacer" ? 40 : undefined,
     }
 
     if (type === "product") {
       setShowProductModal(true)
-      // Store the pending block temporarily
-      ;(window as any).pendingProductBlock = newBlock
+        // Store the pending block temporarily
+        ; (window as any).pendingProductBlock = newBlock
     } else {
       setBlocks([...blocks, newBlock])
       setSelectedBlock(newBlock.id)
@@ -145,7 +145,7 @@ export default function EditorPage() {
       }
       setBlocks([...blocks, pendingBlock])
       setSelectedBlock(pendingBlock.id)
-      ;(window as any).pendingProductBlock = null
+        ; (window as any).pendingProductBlock = null
     }
     setShowProductModal(false)
     setProductSearchQuery("")
@@ -229,7 +229,7 @@ export default function EditorPage() {
                 <p className="text-xs text-gray-500 mb-1">{block.product?.brand}</p>
                 <h3 className="font-semibold text-sm mb-3">{block.product?.name}</h3>
                 <div className="inline-block bg-indigo-600 text-white px-4 py-2 rounded text-xs font-semibold">
-                  View Product
+                  Ver Producto
                 </div>
               </div>
             </div>
@@ -246,11 +246,11 @@ export default function EditorPage() {
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/admin/marketing/create">
             <ChevronLeft className="h-4 w-4 mr-2" />
-            Back to Templates
+            Volver a Plantillas
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mb-2">Design Your Email</h1>
-        <p className="text-muted-foreground">Step 2 of 3: Drag and drop blocks to build your email</p>
+        <h1 className="text-3xl font-bold mb-2">Diseña tu Email</h1>
+        <p className="text-muted-foreground">Paso 2 de 3: Arrastra y suelta bloques para construir tu email</p>
       </div>
 
       {/* Progress Indicator */}
@@ -260,21 +260,21 @@ export default function EditorPage() {
             <div className="h-10 w-10 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold mb-2">
               ✓
             </div>
-            <span className="text-sm font-medium">Template</span>
+            <span className="text-sm font-medium">Plantilla</span>
           </div>
           <div className="h-px w-20 bg-border" />
           <div className="flex flex-col items-center">
             <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold mb-2">
               2
             </div>
-            <span className="text-sm font-medium">Design</span>
+            <span className="text-sm font-medium">Diseño</span>
           </div>
           <div className="h-px w-20 bg-border" />
           <div className="flex flex-col items-center">
             <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground flex items-center justify-center font-semibold mb-2">
               3
             </div>
-            <span className="text-sm text-muted-foreground">Review</span>
+            <span className="text-sm text-muted-foreground">Revisar</span>
           </div>
         </div>
       </div>
@@ -284,8 +284,8 @@ export default function EditorPage() {
         <div className="col-span-3">
           <Card className="sticky top-4">
             <CardHeader>
-              <CardTitle>Content Blocks</CardTitle>
-              <CardDescription>Drag blocks onto the canvas</CardDescription>
+              <CardTitle>Bloques de Contenido</CardTitle>
+              <CardDescription>Arrastra bloques al lienzo</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               {blockTemplates.map((template) => (
@@ -311,8 +311,8 @@ export default function EditorPage() {
         <div className="col-span-6">
           <Card>
             <CardHeader>
-              <CardTitle>Email Canvas</CardTitle>
-              <CardDescription>Live preview of your email</CardDescription>
+              <CardTitle>Lienzo de Email</CardTitle>
+              <CardDescription>Vista previa en vivo de tu email</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="border-2 border-dashed border-border rounded-lg bg-muted/30 min-h-[600px]">
@@ -327,7 +327,7 @@ export default function EditorPage() {
                   {blocks.length === 0 ? (
                     <div className="text-center py-20 text-muted-foreground">
                       <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>Drag content blocks here to start building</p>
+                      <p>Arrastra bloques de contenido aquí para comenzar</p>
                     </div>
                   ) : (
                     blocks.map((block, index) => (
@@ -376,15 +376,15 @@ export default function EditorPage() {
         <div className="col-span-3">
           <Card className="sticky top-4">
             <CardHeader>
-              <CardTitle>Block Settings</CardTitle>
-              <CardDescription>Edit the selected block</CardDescription>
+              <CardTitle>Ajustes de Bloque</CardTitle>
+              <CardDescription>Edita el bloque seleccionado</CardDescription>
             </CardHeader>
             <CardContent>
               {selectedBlockData ? (
                 <div className="space-y-4">
                   {selectedBlockData.type === "text" && (
                     <div className="space-y-2">
-                      <Label>Text Content</Label>
+                      <Label>Contenido de Texto</Label>
                       <textarea
                         className="w-full min-h-[100px] px-3 py-2 border border-border rounded-md bg-background"
                         value={selectedBlockData.content}
@@ -394,7 +394,7 @@ export default function EditorPage() {
                   )}
                   {selectedBlockData.type === "image" && (
                     <div className="space-y-2">
-                      <Label>Image URL</Label>
+                      <Label>URL de Imagen</Label>
                       <Input
                         value={selectedBlockData.imageUrl}
                         onChange={(e) => updateBlock(selectedBlockData.id, { imageUrl: e.target.value })}
@@ -404,14 +404,14 @@ export default function EditorPage() {
                   {selectedBlockData.type === "button" && (
                     <>
                       <div className="space-y-2">
-                        <Label>Button Text</Label>
+                        <Label>Texto del Botón</Label>
                         <Input
                           value={selectedBlockData.buttonText}
                           onChange={(e) => updateBlock(selectedBlockData.id, { buttonText: e.target.value })}
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>Button URL</Label>
+                        <Label>URL del Botón</Label>
                         <Input
                           value={selectedBlockData.buttonUrl}
                           onChange={(e) => updateBlock(selectedBlockData.id, { buttonUrl: e.target.value })}
@@ -421,7 +421,7 @@ export default function EditorPage() {
                   )}
                   {selectedBlockData.type === "spacer" && (
                     <div className="space-y-2">
-                      <Label>Height (px)</Label>
+                      <Label>Altura (px)</Label>
                       <Input
                         type="number"
                         value={selectedBlockData.spacerHeight}
@@ -433,7 +433,7 @@ export default function EditorPage() {
                   )}
                   {selectedBlockData.type === "product" && selectedBlockData.product && (
                     <div className="space-y-2">
-                      <Label>Selected Product</Label>
+                      <Label>Producto Seleccionado</Label>
                       <div className="border border-border rounded-lg p-3">
                         <div className="flex gap-3">
                           <img
@@ -452,7 +452,7 @@ export default function EditorPage() {
                           className="w-full mt-3 bg-transparent"
                           onClick={() => setShowProductModal(true)}
                         >
-                          Change Product
+                          Cambiar Producto
                         </Button>
                       </div>
                     </div>
@@ -460,7 +460,7 @@ export default function EditorPage() {
                 </div>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
-                  <p className="text-sm">Select a block to edit its properties</p>
+                  <p className="text-sm">Selecciona un bloque para editar sus propiedades</p>
                 </div>
               )}
             </CardContent>
@@ -472,14 +472,14 @@ export default function EditorPage() {
       <Dialog open={showProductModal} onOpenChange={setShowProductModal}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Select a Product</DialogTitle>
-            <DialogDescription>Choose a product to add to your email</DialogDescription>
+            <DialogTitle>Seleccionar un Producto</DialogTitle>
+            <DialogDescription>Elige un producto para agregar a tu email</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search products..."
+                placeholder="Buscar productos..."
                 value={productSearchQuery}
                 onChange={(e) => setProductSearchQuery(e.target.value)}
                 className="pl-10"
@@ -512,10 +512,10 @@ export default function EditorPage() {
       {/* Action Buttons */}
       <div className="flex items-center justify-between">
         <Button variant="outline" asChild>
-          <Link href="/admin/marketing/create">Back</Link>
+          <Link href="/admin/marketing/create">Volver</Link>
         </Button>
         <Button onClick={handleContinue} size="lg">
-          Continue to Review
+          Continuar a Revisar
         </Button>
       </div>
     </div>

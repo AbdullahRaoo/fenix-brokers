@@ -39,11 +39,11 @@ export default function NewTemplatePage() {
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/admin/marketing">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Marketing
+            Volver a Marketing
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mb-2">Create Email Template</h1>
-        <p className="text-muted-foreground">Choose a starting point for your newsletter</p>
+        <h1 className="text-3xl font-bold mb-2">Crear Plantilla de Email</h1>
+        <p className="text-muted-foreground">Elige un punto de partida para tu boletín</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -80,7 +80,7 @@ export default function NewTemplatePage() {
                         <div className="w-16 h-16 rounded-full bg-muted-foreground/10 flex items-center justify-center mx-auto mb-2">
                           <FileText className="h-8 w-8 text-muted-foreground" />
                         </div>
-                        <p className="text-sm text-muted-foreground">Blank Canvas</p>
+                        <p className="text-sm text-muted-foreground">Lienzo en Blanco</p>
                       </div>
                     </div>
                   ) : (
@@ -117,10 +117,10 @@ export default function NewTemplatePage() {
 
       <div className="flex justify-end gap-4 mt-8 pt-6 border-t">
         <Button variant="outline" asChild>
-          <Link href="/admin/marketing">Cancel</Link>
+          <Link href="/admin/marketing">Cancelar</Link>
         </Button>
         <Button onClick={handleContinue} disabled={!selectedPreset}>
-          Continue to Editor
+          Continuar al Editor
         </Button>
       </div>
     </div>

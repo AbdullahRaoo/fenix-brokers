@@ -131,7 +131,7 @@ export default function ProductsPage() {
         if (result.success) count++
       }
 
-      toast({ title: `${count} product${count !== 1 ? "s" : ""} updated` })
+      toast({ title: `${count} producto${count !== 1 ? "s" : ""} actualizado${count !== 1 ? "s" : ""}` })
       loadProducts()
       loadCounts()
       setSelectedIds(new Set())
@@ -142,7 +142,7 @@ export default function ProductsPage() {
     startTransition(async () => {
       const result = await emptyTrash()
       if (result.success) {
-        toast({ title: "Trash emptied", description: `${result.count} products deleted` })
+        toast({ title: "Papelera vaciada", description: `${result.count} productos eliminados` })
         loadProducts()
         loadCounts()
       } else {
@@ -154,11 +154,11 @@ export default function ProductsPage() {
   const getStatusBadge = (status: Product["status"]) => {
     switch (status) {
       case "published":
-        return <Badge className="bg-green-500/10 text-green-600">Published</Badge>
+        return <Badge className="bg-green-500/10 text-green-600">Publicado</Badge>
       case "draft":
-        return <Badge className="bg-yellow-500/10 text-yellow-600">Draft</Badge>
+        return <Badge className="bg-yellow-500/10 text-yellow-600">Borrador</Badge>
       case "trash":
-        return <Badge className="bg-red-500/10 text-red-600">Trash</Badge>
+        return <Badge className="bg-red-500/10 text-red-600">Papelera</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -168,14 +168,14 @@ export default function ProductsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Products</h1>
-          <p className="text-muted-foreground">Manage your product catalog</p>
+          <h1 className="text-3xl font-bold mb-2">Productos</h1>
+          <p className="text-muted-foreground">Administra tu catálogo de productos</p>
         </div>
         <Can permission="products.create">
           <Button asChild>
             <Link href="/admin/products/new">
               <Plus className="h-4 w-4 mr-2" />
-              Add Product
+              Agregar Producto
             </Link>
           </Button>
         </Can>
@@ -184,10 +184,10 @@ export default function ProductsPage() {
       {/* Status Tabs */}
       <Tabs value={currentTab} onValueChange={(v) => setCurrentTab(v as typeof currentTab)} className="mb-6">
         <TabsList>
-          <TabsTrigger value="all">All ({counts.all})</TabsTrigger>
-          <TabsTrigger value="published">Published ({counts.published})</TabsTrigger>
-          <TabsTrigger value="draft">Draft ({counts.draft})</TabsTrigger>
-          <TabsTrigger value="trash">Trash ({counts.trash})</TabsTrigger>
+          <TabsTrigger value="all">Todos ({counts.all})</TabsTrigger>
+          <TabsTrigger value="published">Publicados ({counts.published})</TabsTrigger>
+          <TabsTrigger value="draft">Borrador ({counts.draft})</TabsTrigger>
+          <TabsTrigger value="trash">Papelera ({counts.trash})</TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -196,14 +196,14 @@ export default function ProductsPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>
-                {currentTab === "all" ? "All Products" : currentTab === "trash" ? "Trash" : `${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Products`}
+                {currentTab === "all" ? "Todos los Productos" : currentTab === "trash" ? "Papelera" : `Productos ${currentTab === "published" ? "Publicados" : "en Borrador"}`}
               </CardTitle>
-              <CardDescription>{products.length} products</CardDescription>
+              <CardDescription>{products.length} productos</CardDescription>
             </div>
             <div className="flex gap-2">
               <form onSubmit={handleSearch} className="flex gap-2">
                 <Input
-                  placeholder="Search..."
+                  placeholder="Buscar..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-48"
@@ -215,16 +215,16 @@ export default function ProductsPage() {
               {currentTab === "trash" && counts.trash > 0 && can("products.delete") && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm">Empty Trash</Button>
+                    <Button variant="destructive" size="sm">Vaciar Papelera</Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Empty Trash?</AlertDialogTitle>
-                      <AlertDialogDescription>This will permanently delete {counts.trash} products.</AlertDialogDescription>
+                      <AlertDialogTitle>¿Vaciar Papelera?</AlertDialogTitle>
+                      <AlertDialogDescription>Esto eliminará permanentemente {counts.trash} productos.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleEmptyTrash} className="bg-destructive">Delete All</AlertDialogAction>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleEmptyTrash} className="bg-destructive">Eliminar Todo</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
@@ -236,14 +236,14 @@ export default function ProductsPage() {
           {selectedIds.size > 0 && (
             <div className="flex items-center gap-4 mt-4 p-3 bg-muted rounded-lg">
               <Checkbox checked={selectedIds.size === products.length} onCheckedChange={toggleSelectAll} />
-              <span className="text-sm font-medium">{selectedIds.size} selected</span>
+              <span className="text-sm font-medium">{selectedIds.size} seleccionados</span>
               <div className="flex gap-2 ml-auto">
                 {currentTab === "trash" ? (
                   <>
                     <Can permission="products.edit">
                       <Button variant="outline" size="sm" onClick={() => handleBulkAction("restore")} disabled={isPending}>
                         <RotateCcw className="h-4 w-4 mr-1" />
-                        Restore
+                        Restaurar
                       </Button>
                     </Can>
                     <Can permission="products.delete">
@@ -251,17 +251,17 @@ export default function ProductsPage() {
                         <AlertDialogTrigger asChild>
                           <Button variant="destructive" size="sm" disabled={isPending}>
                             <Trash2 className="h-4 w-4 mr-1" />
-                            Delete
+                            Eliminar
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Delete {selectedIds.size} products?</AlertDialogTitle>
-                            <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+                            <AlertDialogTitle>¿Eliminar {selectedIds.size} productos?</AlertDialogTitle>
+                            <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleBulkAction("delete")} className="bg-destructive">Delete</AlertDialogAction>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleBulkAction("delete")} className="bg-destructive">Eliminar</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
@@ -272,17 +272,17 @@ export default function ProductsPage() {
                     <Can permission="products.edit">
                       <Button variant="outline" size="sm" onClick={() => handleBulkAction("publish")} disabled={isPending}>
                         <Eye className="h-4 w-4 mr-1" />
-                        Publish
+                        Publicar
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => handleBulkAction("unpublish")} disabled={isPending}>
                         <EyeOff className="h-4 w-4 mr-1" />
-                        Unpublish
+                        Despublicar
                       </Button>
                     </Can>
                     <Can permission="products.delete">
                       <Button variant="outline" size="sm" className="text-destructive" onClick={() => handleBulkAction("trash")} disabled={isPending}>
                         <Trash2 className="h-4 w-4 mr-1" />
-                        Trash
+                        Papelera
                       </Button>
                     </Can>
                   </>
@@ -299,13 +299,13 @@ export default function ProductsPage() {
           ) : products.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               {currentTab === "trash" ? (
-                <p>Trash is empty</p>
+                <p>La papelera está vacía</p>
               ) : (
                 <>
-                  <p>No products found</p>
+                  <p>No se encontraron productos</p>
                   {can("products.create") && (
                     <Button asChild className="mt-4">
-                      <Link href="/admin/products/new">Add your first product</Link>
+                      <Link href="/admin/products/new">Agrega tu primer producto</Link>
                     </Button>
                   )}
                 </>
@@ -318,11 +318,11 @@ export default function ProductsPage() {
                   <TableHead className="w-10">
                     <Checkbox checked={selectedIds.size === products.length && products.length > 0} onCheckedChange={toggleSelectAll} />
                   </TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Producto</TableHead>
+                  <TableHead>Categoría</TableHead>
+                  <TableHead>Precio</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -336,7 +336,7 @@ export default function ProductsPage() {
                         {product.images?.[0] ? (
                           <img src={product.images[0]} alt={product.title} className="w-10 h-10 rounded object-cover" />
                         ) : (
-                          <div className="w-10 h-10 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">No img</div>
+                          <div className="w-10 h-10 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">Sin img</div>
                         )}
                         <div>
                           <p className="font-medium">{product.title}</p>
@@ -360,13 +360,13 @@ export default function ProductsPage() {
                               <Can permission="products.edit">
                                 <DropdownMenuItem onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("restore"); }}>
                                   <RotateCcw className="h-4 w-4 mr-2" />
-                                  Restore
+                                  Restaurar
                                 </DropdownMenuItem>
                               </Can>
                               <Can permission="products.delete">
                                 <DropdownMenuItem className="text-destructive" onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("delete"); }}>
                                   <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete Permanently
+                                  Eliminar Permanentemente
                                 </DropdownMenuItem>
                               </Can>
                             </>
@@ -376,18 +376,18 @@ export default function ProductsPage() {
                                 <DropdownMenuItem asChild>
                                   <Link href={`/admin/products/${product.id}`}>
                                     <Pencil className="h-4 w-4 mr-2" />
-                                    Edit
+                                    Editar
                                   </Link>
                                 </DropdownMenuItem>
                                 {product.status === "draft" ? (
                                   <DropdownMenuItem onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("publish"); }}>
                                     <Eye className="h-4 w-4 mr-2" />
-                                    Publish
+                                    Publicar
                                   </DropdownMenuItem>
                                 ) : (
                                   <DropdownMenuItem onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("unpublish"); }}>
                                     <EyeOff className="h-4 w-4 mr-2" />
-                                    Unpublish
+                                    Despublicar
                                   </DropdownMenuItem>
                                 )}
                               </Can>
@@ -395,7 +395,7 @@ export default function ProductsPage() {
                               <Can permission="products.delete">
                                 <DropdownMenuItem className="text-destructive" onClick={() => { setSelectedIds(new Set([product.id])); handleBulkAction("trash"); }}>
                                   <Trash2 className="h-4 w-4 mr-2" />
-                                  Move to Trash
+                                  Mover a Papelera
                                 </DropdownMenuItem>
                               </Can>
                             </>

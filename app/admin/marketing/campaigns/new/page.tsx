@@ -54,8 +54,8 @@ export default function NewCampaignPage() {
   const handleSave = () => {
     if (!name || !subject || !templateId) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields.",
+        title: "Error de Validación",
+        description: "Por favor completa todos los campos requeridos.",
         variant: "destructive",
       })
       return
@@ -73,7 +73,7 @@ export default function NewCampaignPage() {
         return
       }
 
-      toast({ title: "Campaign created!", description: "You can now send it from the marketing dashboard." })
+      toast({ title: "¡Campaña creada!", description: "Ahora puedes enviarla desde el panel de marketing." })
       router.push("/admin/marketing")
     })
   }
@@ -92,43 +92,43 @@ export default function NewCampaignPage() {
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/admin/marketing">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Marketing
+            Volver a Marketing
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mb-2">Create Campaign</h1>
-        <p className="text-muted-foreground">Set up a new email campaign</p>
+        <h1 className="text-3xl font-bold mb-2">Crear Campaña</h1>
+        <p className="text-muted-foreground">Configura una nueva campaña de correo</p>
       </div>
 
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Campaign Details</CardTitle>
-            <CardDescription>Basic information about your campaign</CardDescription>
+            <CardTitle>Detalles de la Campaña</CardTitle>
+            <CardDescription>Información básica sobre tu campaña</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Campaign Name *</Label>
+              <Label htmlFor="name">Nombre de la Campaña *</Label>
               <Input
                 id="name"
-                placeholder="e.g., January Newsletter"
+                placeholder="ej., Boletín de Enero"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="template">Email Template *</Label>
+              <Label htmlFor="template">Plantilla de Email *</Label>
               {templates.length === 0 ? (
                 <div className="p-4 bg-muted rounded-lg text-center">
-                  <p className="text-sm text-muted-foreground mb-2">No templates available</p>
+                  <p className="text-sm text-muted-foreground mb-2">No hay plantillas disponibles</p>
                   <Button size="sm" asChild>
-                    <Link href="/admin/marketing/templates/new">Create Template</Link>
+                    <Link href="/admin/marketing/templates/new">Crear Plantilla</Link>
                   </Button>
                 </div>
               ) : (
                 <Select value={templateId} onValueChange={handleTemplateChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a template" />
+                    <SelectValue placeholder="Selecciona una plantilla" />
                   </SelectTrigger>
                   <SelectContent>
                     {templates.map(template => (
@@ -142,26 +142,26 @@ export default function NewCampaignPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="subject">Email Subject *</Label>
+              <Label htmlFor="subject">Asunto del Email *</Label>
               <Input
                 id="subject"
-                placeholder="e.g., New Products Available This Month!"
+                placeholder="ej., ¡Nuevos Productos Disponibles Este Mes!"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
               />
-              <p className="text-xs text-muted-foreground">This is what recipients will see in their inbox</p>
+              <p className="text-xs text-muted-foreground">Esto es lo que verán los destinatarios en su bandeja de entrada</p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Recipients</CardTitle>
+            <CardTitle>Destinatarios</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-2xl font-bold text-primary">{subscriberCount}</p>
-              <p className="text-sm text-muted-foreground">Active subscribers will receive this campaign</p>
+              <p className="text-sm text-muted-foreground">Los suscriptores activos recibirán esta campaña</p>
             </div>
           </CardContent>
         </Card>
@@ -172,17 +172,17 @@ export default function NewCampaignPage() {
               {isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Creating...
+                  Creando...
                 </>
               ) : (
-                "Create Campaign"
+                "Crear Campaña"
               )}
             </Button>
             <p className="text-xs text-center text-muted-foreground">
-              Campaign will be saved as Draft. You can send it from the marketing dashboard.
+              La campaña se guardará como Borrador. Puedes enviarla desde el panel de marketing.
             </p>
             <Button variant="outline" className="w-full" asChild>
-              <Link href="/admin/marketing">Cancel</Link>
+              <Link href="/admin/marketing">Cancelar</Link>
             </Button>
           </CardContent>
         </Card>

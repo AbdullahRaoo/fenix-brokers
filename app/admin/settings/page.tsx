@@ -69,13 +69,13 @@ export default function SettingsPage() {
 
     if (result.success) {
       toast({
-        title: "Settings saved",
-        description: "General settings have been updated.",
+        title: "Configuración guardada",
+        description: "La configuración general ha sido actualizada.",
       })
     } else {
       toast({
         title: "Error",
-        description: result.error || "Failed to save settings",
+        description: result.error || "Error al guardar configuración",
         variant: "destructive"
       })
     }
@@ -88,7 +88,7 @@ export default function SettingsPage() {
       const result = await updateAdminUser(user.id, { name })
 
       if (result.success) {
-        toast({ title: "Profile updated" })
+        toast({ title: "Perfil actualizado" })
       } else {
         toast({ title: "Error", description: result.error, variant: "destructive" })
       }
@@ -99,12 +99,12 @@ export default function SettingsPage() {
     if (!user) return
 
     if (newPassword !== confirmPassword) {
-      toast({ title: "Error", description: "Passwords don't match", variant: "destructive" })
+      toast({ title: "Error", description: "Las contraseñas no coinciden", variant: "destructive" })
       return
     }
 
     if (newPassword.length < 6) {
-      toast({ title: "Error", description: "Password must be at least 6 characters", variant: "destructive" })
+      toast({ title: "Error", description: "La contraseña debe tener al menos 6 caracteres", variant: "destructive" })
       return
     }
 
@@ -112,7 +112,7 @@ export default function SettingsPage() {
       const result = await changePassword(user.id, newPassword)
 
       if (result.success) {
-        toast({ title: "Password updated" })
+        toast({ title: "Contraseña actualizada" })
         setNewPassword("")
         setConfirmPassword("")
       } else {
@@ -132,93 +132,93 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Settings</h1>
-        <p className="text-muted-foreground">Manage your profile and preferences</p>
+        <h1 className="text-3xl font-bold mb-2">Configuración</h1>
+        <p className="text-muted-foreground">Administra tu perfil y preferencias</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="general">Site Settings</TabsTrigger>
+          <TabsTrigger value="profile">Perfil</TabsTrigger>
+          <TabsTrigger value="general">Configuración del Sitio</TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
         <TabsContent value="profile" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Your Profile</CardTitle>
-              <CardDescription>Update your personal information</CardDescription>
+              <CardTitle>Tu Perfil</CardTitle>
+              <CardDescription>Actualiza tu información personal</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Correo Electrónico</Label>
                 <Input
                   id="email"
                   value={user?.email || ""}
                   disabled
                   className="bg-muted"
                 />
-                <p className="text-xs text-muted-foreground">Email cannot be changed</p>
+                <p className="text-xs text-muted-foreground">El correo no puede ser cambiado</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="name">Display Name</Label>
+                <Label htmlFor="name">Nombre para Mostrar</Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name"
+                  placeholder="Tu nombre"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label>Role</Label>
+                <Label>Rol</Label>
                 <div className="flex items-center gap-2">
                   <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium capitalize">
                     {user?.role}
                   </span>
-                  <span className="text-xs text-muted-foreground">Contact an admin to change your role</span>
+                  <span className="text-xs text-muted-foreground">Contacta a un administrador para cambiar tu rol</span>
                 </div>
               </div>
 
               <Button onClick={handleSaveProfile} disabled={isPending}>
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Save Profile
+                Guardar Perfil
               </Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Change Password</CardTitle>
-              <CardDescription>Update your account password</CardDescription>
+              <CardTitle>Cambiar Contraseña</CardTitle>
+              <CardDescription>Actualiza la contraseña de tu cuenta</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
+                <Label htmlFor="new-password">Nueva Contraseña</Label>
                 <Input
                   id="new-password"
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
+                  placeholder="Ingresa nueva contraseña"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
                 <Input
                   id="confirm-password"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
+                  placeholder="Confirma la nueva contraseña"
                 />
               </div>
 
               <Button onClick={handleChangePassword} disabled={isPending || !newPassword}>
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Update Password
+                Actualizar Contraseña
               </Button>
             </CardContent>
           </Card>
@@ -228,17 +228,17 @@ export default function SettingsPage() {
         <TabsContent value="general" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Site Branding</CardTitle>
-              <CardDescription>Configure site name and logo</CardDescription>
+              <CardTitle>Marca del Sitio</CardTitle>
+              <CardDescription>Configura el nombre y logo del sitio</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="site-name">Site Name</Label>
+                <Label htmlFor="site-name">Nombre del Sitio</Label>
                 <Input
                   id="site-name"
                   value={siteName}
                   onChange={(e) => setSiteName(e.target.value)}
-                  placeholder="Your site name"
+                  placeholder="Nombre de tu sitio"
                 />
               </div>
 
@@ -267,7 +267,7 @@ export default function SettingsPage() {
                       trigger={
                         <Button variant="outline" size="sm" type="button">
                           <Upload className="h-4 w-4 mr-2" />
-                          {logo ? "Change Logo" : "Upload Logo"}
+                          {logo ? "Cambiar Logo" : "Subir Logo"}
                         </Button>
                       }
                     />
@@ -277,15 +277,15 @@ export default function SettingsPage() {
 
               <Button onClick={handleSaveGeneral} disabled={isSavingSettings}>
                 {isSavingSettings ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Save Settings
+                Guardar Configuración
               </Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Integrations</CardTitle>
-              <CardDescription>Connected services</CardDescription>
+              <CardTitle>Integraciones</CardTitle>
+              <CardDescription>Servicios conectados</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
@@ -293,10 +293,10 @@ export default function SettingsPage() {
                   <CheckCircle className="h-5 w-5 text-green-500" />
                   <div>
                     <p className="font-medium">Supabase</p>
-                    <p className="text-sm text-muted-foreground">Database & Authentication</p>
+                    <p className="text-sm text-muted-foreground">Base de Datos y Autenticación</p>
                   </div>
                 </div>
-                <span className="text-sm text-green-600">Connected</span>
+                <span className="text-sm text-green-600">Conectado</span>
               </div>
 
               <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
@@ -304,10 +304,10 @@ export default function SettingsPage() {
                   <CheckCircle className="h-5 w-5 text-green-500" />
                   <div>
                     <p className="font-medium">Resend</p>
-                    <p className="text-sm text-muted-foreground">Email Delivery</p>
+                    <p className="text-sm text-muted-foreground">Envío de Correos</p>
                   </div>
                 </div>
-                <span className="text-sm text-green-600">Connected</span>
+                <span className="text-sm text-green-600">Conectado</span>
               </div>
             </CardContent>
           </Card>

@@ -27,7 +27,7 @@ export async function getSiteSettings() {
         return { data: data as SiteSetting[], error: null }
     } catch (error) {
         console.error("Error fetching site settings:", error)
-        return { data: null, error: "Failed to fetch site settings" }
+        return { data: null, error: "Error al obtener configuración del sitio" }
     }
 }
 
@@ -52,7 +52,7 @@ export async function getSetting(key: string) {
         return { data: data as SiteSetting, error: null }
     } catch (error) {
         console.error(`Error fetching setting ${key}:`, error)
-        return { data: null, error: "Failed to fetch setting" }
+        return { data: null, error: "Error al obtener configuración" }
     }
 }
 
@@ -85,7 +85,7 @@ export async function updateSetting(key: string, value: string | null) {
         return { data: data as SiteSetting, error: null }
     } catch (error) {
         console.error(`Error updating setting ${key}:`, error)
-        return { data: null, error: "Failed to update setting" }
+        return { data: null, error: "Error al actualizar configuración" }
     }
 }
 
@@ -115,7 +115,7 @@ export async function updateSettings(settings: { key: string; value: string | nu
         return { success: true, error: null }
     } catch (error) {
         console.error("Error updating settings:", error)
-        return { success: false, error: "Failed to update settings" }
+        return { success: false, error: "Error al actualizar configuraciones" }
     }
 }
 

@@ -128,8 +128,8 @@ export default function EmailCampaignsPage() {
             <p style="color: #6b7280; line-height: 1.6;">We're excited to showcase our latest products perfect for your business needs.</p>
             <div class="product-grid">
 ${selectedProductsData
-  .map(
-    (product) => `                <div class="product-card">
+        .map(
+          (product) => `                <div class="product-card">
                     <img src="${product.image}" alt="${product.name}" class="product-image">
                     <div class="product-info">
                         <p class="product-brand">${product.brand}</p>
@@ -138,8 +138,8 @@ ${selectedProductsData
                         <a href="#" class="cta-button">Request Quote</a>
                     </div>
                 </div>`,
-  )
-  .join("\n")}
+        )
+        .join("\n")}
             </div>
         </div>
         <div class="footer">
@@ -154,32 +154,32 @@ ${selectedProductsData
   const handleSendCampaign = () => {
     if (selectedProducts.length === 0) {
       toast({
-        title: "No products selected",
-        description: "Please select at least one product for the campaign.",
+        title: "Sin productos seleccionados",
+        description: "Por favor selecciona al menos un producto para la campaña.",
         variant: "destructive",
       })
       return
     }
 
     toast({
-      title: "Campaign ready!",
-      description: `Email campaign generated with ${selectedProducts.length} products.`,
+      title: "¡Campaña lista!",
+      description: `Campaña de email generada con ${selectedProducts.length} productos.`,
     })
   }
 
   const handleCopyHTML = () => {
     navigator.clipboard.writeText(generateEmailHTML())
     toast({
-      title: "HTML copied!",
-      description: "The email HTML has been copied to your clipboard.",
+      title: "¡HTML copiado!",
+      description: "El HTML del email ha sido copiado al portapapeles.",
     })
   }
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Email Campaign Generator</h1>
-        <p className="text-muted-foreground">Create beautiful email campaigns with selected products</p>
+        <h1 className="text-3xl font-bold mb-2">Generador de Campañas de Email</h1>
+        <p className="text-muted-foreground">Crea hermosas campañas de email con productos seleccionados</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -187,26 +187,26 @@ ${selectedProductsData
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Campaign Settings</CardTitle>
-              <CardDescription>Configure your email campaign details</CardDescription>
+              <CardTitle>Configuración de Campaña</CardTitle>
+              <CardDescription>Configura los detalles de tu campaña de email</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="subject">Subject Line</Label>
+                <Label htmlFor="subject">Línea de Asunto</Label>
                 <Input
                   id="subject"
                   value={subjectLine}
                   onChange={(e) => setSubjectLine(e.target.value)}
-                  placeholder="Enter subject line..."
+                  placeholder="Ingresa línea de asunto..."
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="preheader">Pre-header Text</Label>
+                <Label htmlFor="preheader">Texto de Pre-encabezado</Label>
                 <Input
                   id="preheader"
                   value={preheader}
                   onChange={(e) => setPreheader(e.target.value)}
-                  placeholder="Enter pre-header text..."
+                  placeholder="Ingresa texto de pre-encabezado..."
                 />
               </div>
             </CardContent>
@@ -214,9 +214,9 @@ ${selectedProductsData
 
           <Card>
             <CardHeader>
-              <CardTitle>Select Products</CardTitle>
+              <CardTitle>Seleccionar Productos</CardTitle>
               <CardDescription>
-                Choose products to include in your campaign ({selectedProducts.length} selected)
+                Elige productos para incluir en tu campaña ({selectedProducts.length} seleccionados)
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -259,14 +259,14 @@ ${selectedProductsData
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Campaign Preview</CardTitle>
-                  <CardDescription>Preview your email campaign</CardDescription>
+                  <CardTitle>Vista Previa de Campaña</CardTitle>
+                  <CardDescription>Vista previa de tu campaña de email</CardDescription>
                 </div>
                 <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "preview" | "code")}>
                   <TabsList>
                     <TabsTrigger value="preview">
                       <Eye className="h-4 w-4 mr-2" />
-                      Preview
+                      Vista Previa
                     </TabsTrigger>
                     <TabsTrigger value="code">
                       <Code className="h-4 w-4 mr-2" />
@@ -280,7 +280,7 @@ ${selectedProductsData
               {selectedProducts.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <Mail className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Select products to preview the email campaign</p>
+                  <p>Selecciona productos para ver la vista previa de la campaña</p>
                 </div>
               ) : (
                 <>
@@ -298,7 +298,7 @@ ${selectedProductsData
                         <code>{generateEmailHTML()}</code>
                       </pre>
                       <Button size="sm" variant="secondary" className="absolute top-2 right-2" onClick={handleCopyHTML}>
-                        Copy HTML
+                        Copiar HTML
                       </Button>
                     </div>
                   )}
@@ -306,7 +306,7 @@ ${selectedProductsData
                   <div className="flex gap-3 mt-4">
                     <Button onClick={handleSendCampaign} className="flex-1">
                       <Mail className="h-4 w-4 mr-2" />
-                      Generate Campaign
+                      Generar Campaña
                     </Button>
                   </div>
                 </>

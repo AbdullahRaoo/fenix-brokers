@@ -29,7 +29,7 @@ export async function loginAdmin(email: string, password: string) {
         }
 
         if (!data.user) {
-            return { success: false, error: "Login failed", user: null }
+            return { success: false, error: "Error al iniciar sesión", user: null }
         }
 
         // Check if user exists in our admin_users table
@@ -42,7 +42,7 @@ export async function loginAdmin(email: string, password: string) {
         if (adminError || !adminUser) {
             // Sign out if not an admin user
             await supabaseAdmin.auth.signOut()
-            return { success: false, error: "You are not authorized as an admin", user: null }
+            return { success: false, error: "No está autorizado como administrador", user: null }
         }
 
         // Update last login
@@ -74,7 +74,7 @@ export async function loginAdmin(email: string, password: string) {
         }
     } catch (error) {
         console.error("Login error:", error)
-        return { success: false, error: "An unexpected error occurred", user: null }
+        return { success: false, error: "Ocurrió un error inesperado", user: null }
     }
 }
 
@@ -89,7 +89,7 @@ export async function logoutAdmin() {
         return { success: true, error: null }
     } catch (error) {
         console.error("Logout error:", error)
-        return { success: false, error: "Failed to logout" }
+        return { success: false, error: "Error al cerrar sesión" }
     }
 }
 
@@ -141,7 +141,7 @@ export async function getAdminUsers() {
         return { data: data as AdminUser[], error: null }
     } catch (error) {
         console.error("Error fetching admin users:", error)
-        return { data: null, error: "Failed to fetch users" }
+        return { data: null, error: "Error al obtener usuarios" }
     }
 }
 
@@ -166,7 +166,7 @@ export async function createAdminUser(input: {
         }
 
         if (!authData.user) {
-            return { success: false, error: "Failed to create user" }
+            return { success: false, error: "Error al crear usuario" }
         }
 
         // Create admin_users record
@@ -190,7 +190,7 @@ export async function createAdminUser(input: {
         return { success: true, error: null }
     } catch (error) {
         console.error("Error creating admin user:", error)
-        return { success: false, error: "Failed to create user" }
+        return { success: false, error: "Error al crear usuario" }
     }
 }
 
@@ -217,7 +217,7 @@ export async function updateAdminUser(id: string, input: {
         return { success: true, error: null }
     } catch (error) {
         console.error("Error updating admin user:", error)
-        return { success: false, error: "Failed to update user" }
+        return { success: false, error: "Error al actualizar usuario" }
     }
 }
 
@@ -243,7 +243,7 @@ export async function deleteAdminUser(id: string) {
         return { success: true, error: null }
     } catch (error) {
         console.error("Error deleting admin user:", error)
-        return { success: false, error: "Failed to delete user" }
+        return { success: false, error: "Error al eliminar usuario" }
     }
 }
 
@@ -259,6 +259,6 @@ export async function changePassword(userId: string, newPassword: string) {
         return { success: true, error: null }
     } catch (error) {
         console.error("Error changing password:", error)
-        return { success: false, error: "Failed to change password" }
+        return { success: false, error: "Error al cambiar contraseña" }
     }
 }

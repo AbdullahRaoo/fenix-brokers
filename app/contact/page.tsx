@@ -32,8 +32,8 @@ export default function ContactPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     toast({
-      title: "Message sent!",
-      description: "We'll get back to you within 24 hours.",
+      title: "¡Mensaje enviado!",
+      description: "Te responderemos en un plazo de 24 horas.",
     })
 
     setFormData({ name: "", email: "", company: "", phone: "", subject: "", message: "" })
@@ -49,12 +49,12 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(0,190,214,0.08),transparent_50%)]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl mx-auto text-center">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Contact Us</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Contáctanos</span>
             <h1 className="text-4xl sm:text-5xl font-bold mt-2 mb-6 text-balance">
-              Let's Start Your <span className="text-primary">Beauty Journey</span>
+              Comienza Tu <span className="text-primary">Viaje de Belleza</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Have questions about our products or services? Our team of beauty experts is here to help you find the perfect solutions for your business.
+              ¿Tienes preguntas sobre nuestros productos o servicios? Nuestro equipo de expertos en belleza está aquí para ayudarte a encontrar las soluciones perfectas para tu negocio.
             </p>
           </div>
         </div>
@@ -65,9 +65,9 @@ export default function ContactPage() {
           {/* Contact Info */}
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
+              <h2 className="text-2xl font-bold mb-6">Ponte en Contacto</h2>
               <p className="text-muted-foreground mb-8">
-                Whether you're a small boutique or a large retail chain, we're here to support your beauty business.
+                Ya seas una pequeña boutique o una gran cadena minorista, estamos aquí para apoyar tu negocio de belleza.
               </p>
             </div>
 
@@ -75,8 +75,8 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <Mail className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Email Us</h3>
-              <p className="text-sm text-muted-foreground mb-3">For general inquiries and quotes</p>
+              <h3 className="font-semibold mb-2">Escríbenos</h3>
+              <p className="text-sm text-muted-foreground mb-3">Para consultas generales y cotizaciones</p>
               <a href="mailto:ebono@fenixbrokers.com" className="text-primary hover:underline font-medium">
                 ebono@fenixbrokers.com
               </a>
@@ -86,8 +86,8 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <Phone className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Call Us</h3>
-              <p className="text-sm text-muted-foreground mb-3">Mon-Fri 9am-6pm CET</p>
+              <h3 className="font-semibold mb-2">Llámanos</h3>
+              <p className="text-sm text-muted-foreground mb-3">Lun-Vie 9am-6pm CET</p>
               <a href="tel:+34615582177" className="text-primary hover:underline font-medium">
                 +34 615 582 177
               </a>
@@ -97,10 +97,10 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <MapPin className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Our Location</h3>
+              <h3 className="font-semibold mb-2">Nuestra Ubicación</h3>
               <p className="text-sm text-muted-foreground">
                 35004 Las Palmas de GC<br />
-                Spain
+                España
               </p>
             </div>
 
@@ -109,29 +109,29 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <Building2 className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Contact Person</h3>
+              <h3 className="font-semibold mb-2">Persona de Contacto</h3>
               <p className="text-sm text-muted-foreground mb-1">Eleonora Bono</p>
-              <p className="text-xs text-primary font-medium">Global Cosmetics Broker</p>
+              <p className="text-xs text-primary font-medium">Broker Global de Cosméticos</p>
             </div>
 
             {/* Business Hours */}
             <div className="bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/20 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Clock className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold">Business Hours</h3>
+                <h3 className="font-semibold">Horario de Atención</h3>
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Monday - Friday</span>
+                  <span className="text-muted-foreground">Lunes - Viernes</span>
                   <span className="font-medium">9:00 AM - 6:00 PM</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Saturday</span>
+                  <span className="text-muted-foreground">Sábado</span>
                   <span className="font-medium">10:00 AM - 4:00 PM</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sunday</span>
-                  <span className="font-medium">Closed</span>
+                  <span className="text-muted-foreground">Domingo</span>
+                  <span className="font-medium">Cerrado</span>
                 </div>
               </div>
             </div>
@@ -145,8 +145,8 @@ export default function ContactPage() {
                   <Send className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold">Send us a Message</h2>
-                  <p className="text-sm text-muted-foreground">We typically respond within 24 hours</p>
+                  <h2 className="text-2xl font-bold">Envíanos un Mensaje</h2>
+                  <p className="text-sm text-muted-foreground">Normalmente respondemos en 24 horas</p>
                 </div>
               </div>
 
@@ -154,11 +154,11 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium">
-                      Full Name <span className="text-destructive">*</span>
+                      Nombre Completo <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="name"
-                      placeholder="John Doe"
+                      placeholder="Juan Pérez"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="h-12"
@@ -167,12 +167,12 @@ export default function ContactPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium">
-                      Email Address <span className="text-destructive">*</span>
+                      Correo Electrónico <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="john@company.com"
+                      placeholder="juan@empresa.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="h-12"
@@ -183,12 +183,12 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="company" className="text-sm font-medium">Company Name</Label>
+                    <Label htmlFor="company" className="text-sm font-medium">Nombre de la Empresa</Label>
                     <div className="relative">
                       <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="company"
-                        placeholder="Your company name"
+                        placeholder="Nombre de tu empresa"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                         className="h-12 pl-10"
@@ -196,13 +196,13 @@ export default function ContactPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
+                    <Label htmlFor="phone" className="text-sm font-medium">Número de Teléfono</Label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="phone"
                         type="tel"
-                        placeholder="+1 (234) 567-890"
+                        placeholder="+34 XXX XXX XXX"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="h-12 pl-10"
@@ -212,10 +212,10 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="subject" className="text-sm font-medium">Subject <span className="text-destructive">*</span></Label>
+                  <Label htmlFor="subject" className="text-sm font-medium">Asunto <span className="text-destructive">*</span></Label>
                   <Input
                     id="subject"
-                    placeholder="How can we help you?"
+                    placeholder="¿Cómo podemos ayudarte?"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     className="h-12"
@@ -225,11 +225,11 @@ export default function ContactPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="message" className="text-sm font-medium">
-                    Message <span className="text-destructive">*</span>
+                    Mensaje <span className="text-destructive">*</span>
                   </Label>
                   <Textarea
                     id="message"
-                    placeholder="Tell us about your business needs, product interests, or any questions you have..."
+                    placeholder="Cuéntanos sobre las necesidades de tu negocio, productos de interés o cualquier pregunta que tengas..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     rows={6}
@@ -242,12 +242,12 @@ export default function ContactPage() {
                   {isSubmitting ? (
                     <>
                       <span className="animate-spin mr-2">⏳</span>
-                      Sending...
+                      Enviando...
                     </>
                   ) : (
                     <>
                       <Send className="h-4 w-4 mr-2" />
-                      Send Message
+                      Enviar Mensaje
                     </>
                   )}
                 </Button>
@@ -261,8 +261,8 @@ export default function ContactPage() {
       <section className="py-16 bg-muted/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold mb-2">Find Us</h2>
-            <p className="text-muted-foreground">Visit our headquarters in New York City</p>
+            <h2 className="text-2xl font-bold mb-2">Encúe´ntranos</h2>
+            <p className="text-muted-foreground">Visita nuestra sede en Las Palmas de Gran Canaria</p>
           </div>
 
           <div className="relative rounded-2xl overflow-hidden border border-border shadow-lg">
@@ -273,7 +273,7 @@ export default function ContactPage() {
                 height="100%"
                 style={{ border: 0 }}
                 loading="lazy"
-                title="Fenix Brokers Location"
+                title="Ubicación de Fenix Brokers"
                 className="grayscale hover:grayscale-0 transition-all duration-500"
               />
             </div>
@@ -285,19 +285,19 @@ export default function ContactPage() {
                   <MapPin className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-1">Fenix Brokers HQ</h3>
+                  <h3 className="font-semibold mb-1">Fenix Brokers</h3>
                   <p className="text-sm text-muted-foreground">
-                    123 Business Park Drive, Suite 100<br />
-                    New York, NY 10001
+                    35004 Las Palmas de GC<br />
+                    España
                   </p>
                   <a
-                    href="https://www.google.com/maps/search/?api=1&query=123+Business+Park+Drive+New+York"
+                    href="https://www.google.com/maps/search/?api=1&query=Las+Palmas+de+Gran+Canaria+Spain"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-primary hover:underline mt-2 inline-flex items-center gap-1"
                   >
                     <Globe className="h-3 w-3" />
-                    Get Directions
+                    Cómo Llegar
                   </a>
                 </div>
               </div>

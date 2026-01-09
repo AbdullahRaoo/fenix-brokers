@@ -91,12 +91,12 @@ export default function HomePage() {
 
   // Default fallback images for categories (used only if no image is set in database)
   const defaultCategoryImages: Record<string, { image: string; description: string }> = {
-    "Perfumes": { image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80", description: "Luxury fragrances from top brands" },
-    "Skincare": { image: "https://images.unsplash.com/photo-1570194065650-d99fb4a38b97?w=600&q=80", description: "Professional-grade skincare solutions" },
-    "Makeup": { image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80", description: "High-end cosmetics collection" },
-    "Hair Care": { image: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=600&q=80", description: "Salon-quality hair products" },
-    "Body Care": { image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=80", description: "Luxurious body treatments" },
-    "Gift Sets": { image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&q=80", description: "Curated premium gift collections" },
+    "Perfumes": { image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80", description: "Fragancias de lujo de las mejores marcas" },
+    "Skincare": { image: "https://images.unsplash.com/photo-1570194065650-d99fb4a38b97?w=600&q=80", description: "Soluciones profesionales para el cuidado de la piel" },
+    "Makeup": { image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&q=80", description: "Colección de cosméticos de alta gama" },
+    "Hair Care": { image: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=600&q=80", description: "Productos capilares de calidad de salón" },
+    "Body Care": { image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=80", description: "Tratamientos corporales de lujo" },
+    "Gift Sets": { image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&q=80", description: "Colecciones de regalo premium seleccionadas" },
   }
 
   // Use database category data with fallback to default images
@@ -107,54 +107,54 @@ export default function HomePage() {
       // Prioritize database image, then fallback to default, then generic placeholder
       image: cat.image_url || defaultCategoryImages[cat.name]?.image || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80",
       // Prioritize database description, then fallback to default
-      description: cat.description || defaultCategoryImages[cat.name]?.description || "Premium beauty products"
+      description: cat.description || defaultCategoryImages[cat.name]?.description || "Productos de belleza premium"
     }))
     : []
 
   const clientLogos = ["Sephora", "Ulta Beauty", "Douglas", "Boots", "Marionnaud", "Nocibé", "Macy's", "Nordstrom"]
 
   const stats = [
-    { icon: Package, value: "500+", label: "Premium Brands", suffix: "" },
-    { icon: Users, value: "2,000+", label: "Happy Retailers", suffix: "" },
-    { icon: Globe, value: "50+", label: "Countries Served", suffix: "" },
-    { icon: TrendingUp, value: "98%", label: "Client Satisfaction", suffix: "" },
+    { icon: Package, value: "500+", label: "Marcas Premium", suffix: "" },
+    { icon: Users, value: "2,000+", label: "Minoristas Satisfechos", suffix: "" },
+    { icon: Globe, value: "50+", label: "Países Atendidos", suffix: "" },
+    { icon: TrendingUp, value: "98%", label: "Satisfacción del Cliente", suffix: "" },
   ]
 
   const features = [
     {
       icon: Shield,
-      title: "100% Authentic",
-      description: "Every product sourced directly from authorized distributors with full traceability and authenticity certificates.",
+      title: "100% Auténtico",
+      description: "Cada producto proviene directamente de distribuidores autorizados con trazabilidad completa y certificados de autenticidad.",
       color: "from-cyan-500/20 to-blue-500/20"
     },
     {
       icon: Truck,
-      title: "Global Shipping",
-      description: "Temperature-controlled logistics ensuring product quality. Express delivery available to 50+ countries.",
+      title: "Envío Global",
+      description: "Logística con temperatura controlada asegurando la calidad del producto. Entrega express disponible en más de 50 países.",
       color: "from-emerald-500/20 to-teal-500/20"
     },
     {
       icon: HeadphonesIcon,
-      title: "Expert Support",
-      description: "Dedicated beauty industry specialists helping you build the perfect product mix for your business.",
+      title: "Soporte Experto",
+      description: "Especialistas dedicados en la industria de la belleza que te ayudan a construir la combinación perfecta de productos para tu negocio.",
       color: "from-violet-500/20 to-purple-500/20"
     },
     {
       icon: Zap,
-      title: "Fast Fulfillment",
-      description: "Orders processed within 24 hours. Real-time inventory tracking and automated reorder suggestions.",
+      title: "Cumplimiento Rápido",
+      description: "Pedidos procesados en 24 horas. Seguimiento de inventario en tiempo real y sugerencias de reorden automatizadas.",
       color: "from-amber-500/20 to-orange-500/20"
     },
     {
       icon: Award,
-      title: "Competitive Pricing",
-      description: "Volume discounts up to 40% off retail. Flexible payment terms including Net 30/60 for qualified buyers.",
+      title: "Precios Competitivos",
+      description: "Descuentos por volumen de hasta 40% del precio minorista. Términos de pago flexibles incluyendo Net 30/60 para compradores calificados.",
       color: "from-rose-500/20 to-pink-500/20"
     },
     {
       icon: Heart,
-      title: "Curated Selection",
-      description: "Hand-picked trending products and bestsellers. Exclusive early access to new launches.",
+      title: "Selección Curada",
+      description: "Productos en tendencia y más vendidos seleccionados a mano. Acceso exclusivo anticipado a nuevos lanzamientos.",
       color: "from-indigo-500/20 to-blue-500/20"
     },
   ]
@@ -187,34 +187,34 @@ export default function HomePage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-6 animate-shimmer">
                 <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-primary">Premium Wholesale Partner</span>
+                <span className="text-sm font-medium text-primary">Socio Mayorista Premium</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-balance mb-6 leading-[1.1]">
-                Premium{" "}
+                Cosméticos{" "}
                 <span className="text-primary relative">
-                  Cosmetics
+                  Premium
                   <svg className="absolute -bottom-2 left-0 w-full h-3 text-primary/30" viewBox="0 0 200 12" fill="none">
                     <path d="M2 10C50 4 150 4 198 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
                   </svg>
                 </span>{" "}
-                & Fragrances Wholesale
+                y Fragancias al Por Mayor
               </h1>
 
               <p className="text-lg lg:text-xl text-muted-foreground mb-8 text-pretty leading-relaxed max-w-lg">
-                Source authentic beauty products at unbeatable wholesale prices. From luxury perfumes to professional skincare,
-                we supply <span className="text-foreground font-medium">retailers, salons, and beauty businesses</span> worldwide.
+                Obtén productos de belleza auténticos a precios mayoristas inigualables. Desde perfumes de lujo hasta cuidado de la piel profesional,
+                abastecemos a <span className="text-foreground font-medium">minoristas, salones y negocios de belleza</span> en todo el mundo.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button asChild size="lg" className="text-base shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all">
                   <Link href="/catalog">
-                    Browse Collection <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    Ver Catálogo <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="text-base group">
                   <Link href="/contact">
-                    Request Pricing
+                    Solicitar Precios
                     <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs group-hover:bg-primary group-hover:text-white transition-colors">→</span>
                   </Link>
                 </Button>
@@ -224,11 +224,11 @@ export default function HomePage() {
               <div className="flex items-center gap-6 pt-4 border-t border-border/50">
                 <div className="flex items-center gap-2">
                   <BadgeCheck className="h-5 w-5 text-primary" />
-                  <span className="text-sm text-muted-foreground">Verified Supplier</span>
+                  <span className="text-sm text-muted-foreground">Proveedor Verificado</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
-                  <span className="text-sm text-muted-foreground">24h Response</span>
+                  <span className="text-sm text-muted-foreground">Respuesta en 24h</span>
                 </div>
               </div>
             </div>
@@ -255,7 +255,7 @@ export default function HomePage() {
                     </div>
                     <div>
                       <p className="font-bold text-xl">500+</p>
-                      <p className="text-sm text-muted-foreground">Premium Brands</p>
+                      <p className="text-sm text-muted-foreground">Marcas Premium</p>
                     </div>
                   </div>
                 </div>
@@ -270,8 +270,8 @@ export default function HomePage() {
                       <Star key={i} className="h-4 w-4 fill-primary text-primary" />
                     ))}
                   </div>
-                  <p className="text-sm font-medium">Rated 4.9/5</p>
-                  <p className="text-xs text-muted-foreground">by 2000+ retailers</p>
+                  <p className="text-sm font-medium">Calificación 4.9/5</p>
+                  <p className="text-xs text-muted-foreground">por 2000+ minoristas</p>
                 </div>
               </div>
             </div>
@@ -283,7 +283,7 @@ export default function HomePage() {
       <section className="py-12 bg-muted/30 border-y border-border/40 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-muted-foreground mb-8 font-semibold uppercase tracking-wider">
-            Trusted By Leading Beauty Retailers Worldwide
+            Confianza de los Principales Minoristas de Belleza del Mundo
           </p>
           <div className="relative">
             <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10" />
@@ -328,12 +328,12 @@ export default function HomePage() {
       <section className="py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Why Choose Us</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Por Qué Elegirnos</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4 text-balance">
-              Your Trusted <span className="text-primary">Beauty Partner</span>
+              Tu <span className="text-primary">Socio de Belleza</span> de Confianza
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              We provide everything you need to stock premium beauty products and grow your business
+              Proporcionamos todo lo que necesitas para abastecer productos de belleza premium y hacer crecer tu negocio
             </p>
           </div>
 
@@ -372,12 +372,12 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-16 fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Categories</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Categorías</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4 text-balance">
-              Shop by <span className="text-primary">Category</span>
+              Comprar por <span className="text-primary">Categoría</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Explore our curated selection of premium beauty products across all categories
+              Explora nuestra selección curada de productos de belleza premium en todas las categorías
             </p>
           </div>
 
@@ -402,7 +402,7 @@ export default function HomePage() {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <span className="inline-block px-2.5 py-1 bg-primary/90 backdrop-blur-sm text-white text-xs font-semibold rounded-full mb-2 shadow-lg">
-                    {category.count} products
+                    {category.count} productos
                   </span>
                   <h3 className="text-xl font-semibold mb-1 text-balance group-hover:text-primary transition-colors">{category.name}</h3>
                   <p className="text-sm text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -425,15 +425,15 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12 fade-in-up">
             <div>
-              <span className="text-primary text-sm font-semibold uppercase tracking-wider">New Arrivals</span>
+              <span className="text-primary text-sm font-semibold uppercase tracking-wider">Nuevos Productos</span>
               <h2 className="text-3xl sm:text-4xl font-bold mt-2 mb-2 text-balance">
-                Latest <span className="text-primary">Additions</span>
+                Últimas <span className="text-primary">Novedades</span>
               </h2>
-              <p className="text-muted-foreground text-lg">Fresh products just added to our collection</p>
+              <p className="text-muted-foreground text-lg">Productos nuevos recién agregados a nuestra colección</p>
             </div>
             <Button asChild variant="outline" className="group">
               <Link href="/catalog">
-                View All Products
+                Ver Todos los Productos
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
@@ -456,14 +456,14 @@ export default function HomePage() {
                     />
                     {/* Quick view overlay */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">View Details</span>
+                      <span className="text-white text-sm font-medium">Ver Detalles</span>
                     </div>
                   </div>
                   <div className="p-4">
                     <p className="text-xs text-muted-foreground mb-1">{product.brand}</p>
                     <h3 className="font-medium text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors">{product.title}</h3>
                     <p className="text-base font-bold text-primary">
-                      {product.show_price && product.price ? `$${product.price}` : "Request Quote"}
+                      {product.show_price && product.price ? `$${product.price}` : "Solicitar Cotización"}
                     </p>
                   </div>
                 </div>
@@ -489,21 +489,21 @@ export default function HomePage() {
             </div>
 
             <div className="fade-in-right order-1 lg:order-2">
-              <span className="text-primary text-sm font-semibold uppercase tracking-wider">Partnership</span>
+              <span className="text-primary text-sm font-semibold uppercase tracking-wider">Alianza</span>
               <h2 className="text-3xl sm:text-4xl font-bold mt-3 mb-6 text-balance">
-                Your Beauty Business <span className="text-primary">Partner</span>
+                Tu <span className="text-primary">Socio</span> de Negocios de Belleza
               </h2>
               <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-                With over a decade of experience in the cosmetics industry, Fenix Brokers connects retailers and
-                professionals with premium beauty brands. We handle sourcing, quality control, and logistics so
-                you can focus on growing your business.
+                Con más de una década de experiencia en la industria cosmética, Fenix Brokers conecta minoristas y
+                profesionales con marcas de belleza premium. Nosotros nos encargamos del abastecimiento, control de
+                calidad y logística para que tú puedas enfocarte en hacer crecer tu negocio.
               </p>
 
               <div className="space-y-4 mb-8">
                 {[
-                  { title: "Verified Suppliers", desc: "Direct partnerships with brand-authorized distributors" },
-                  { title: "Flexible Payment Terms", desc: "Net 30/60 terms available for qualified buyers" },
-                  { title: "Low MOQ Options", desc: "Start small and scale as your business grows" },
+                  { title: "Proveedores Verificados", desc: "Alianzas directas con distribuidores autorizados de marcas" },
+                  { title: "Términos de Pago Flexibles", desc: "Términos Net 30/60 disponibles para compradores calificados" },
+                  { title: "Opciones de Pedido Mínimo Bajo", desc: "Comienza pequeño y escala a medida que crece tu negocio" },
                 ].map((item, index) => (
                   <div key={index} className="flex items-start gap-4 p-4 bg-card rounded-xl border border-border hover:border-primary/30 transition-colors">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -519,7 +519,7 @@ export default function HomePage() {
 
               <Button asChild size="lg" className="shadow-lg shadow-primary/20">
                 <Link href="/about">
-                  Learn More About Us <ArrowRight className="ml-2 h-5 w-5" />
+                  Conoce Más Sobre Nosotros <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
@@ -531,12 +531,12 @@ export default function HomePage() {
       <section className="py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Testimonials</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Testimonios</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4 text-balance">
-              What Our <span className="text-primary">Partners</span> Say
+              Lo Que Dicen Nuestros <span className="text-primary">Socios</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Trusted by beauty retailers and professionals worldwide
+              Confianza de minoristas y profesionales de belleza en todo el mundo
             </p>
           </div>
 

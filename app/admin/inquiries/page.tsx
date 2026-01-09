@@ -52,8 +52,8 @@ export default function InquiriesPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Inquiry Management</h1>
-        <p className="text-muted-foreground">Track and respond to customer quote requests</p>
+        <h1 className="text-3xl font-bold mb-2">Gestión de Consultas</h1>
+        <p className="text-muted-foreground">Seguimiento y respuesta a solicitudes de cotización</p>
       </div>
 
       {/* Filters */}
@@ -61,7 +61,7 @@ export default function InquiriesPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by product, company, or email..."
+            placeholder="Buscar por producto, empresa o email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -69,14 +69,14 @@ export default function InquiriesPage() {
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder="Estado" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="New">New</SelectItem>
-            <SelectItem value="Viewed">Viewed</SelectItem>
-            <SelectItem value="In Progress">In Progress</SelectItem>
-            <SelectItem value="Closed">Closed</SelectItem>
+            <SelectItem value="all">Todos los Estados</SelectItem>
+            <SelectItem value="New">Nuevo</SelectItem>
+            <SelectItem value="Viewed">Visto</SelectItem>
+            <SelectItem value="In Progress">En Progreso</SelectItem>
+            <SelectItem value="Closed">Cerrado</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -86,14 +86,14 @@ export default function InquiriesPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Inquiry ID</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>ID Consulta</TableHead>
+              <TableHead>Producto</TableHead>
+              <TableHead>Empresa</TableHead>
+              <TableHead>Contacto</TableHead>
+              <TableHead>Cantidad</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Creado</TableHead>
+              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -101,13 +101,13 @@ export default function InquiriesPage() {
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
-                  <p className="text-muted-foreground">Loading inquiries...</p>
+                  <p className="text-muted-foreground">Cargando consultas...</p>
                 </TableCell>
               </TableRow>
             ) : inquiries.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                  No inquiries found
+                  No se encontraron consultas
                 </TableCell>
               </TableRow>
             ) : (
@@ -135,7 +135,7 @@ export default function InquiriesPage() {
                     <Button variant="ghost" size="sm" asChild>
                       <Link href={`/admin/inquiries/${inquiry.id}`}>
                         <Eye className="h-4 w-4 mr-2" />
-                        View
+                        Ver
                       </Link>
                     </Button>
                   </TableCell>

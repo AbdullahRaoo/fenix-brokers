@@ -90,14 +90,14 @@ export default function MediaPage() {
 
         if (successCount > 0) {
             toast({
-                title: "Upload complete",
-                description: `${successCount} file${successCount !== 1 ? "s" : ""} uploaded`,
+                title: "Subida completa",
+                description: `${successCount} archivo${successCount !== 1 ? "s" : ""} subido${successCount !== 1 ? "s" : ""}`,
             })
         }
 
         if (rejectedFiles.length > 0) {
             toast({
-                title: `${rejectedFiles.length} file(s) rejected (>4MB)`,
+                title: `${rejectedFiles.length} archivo(s) rechazado(s) (>4MB)`,
                 description: rejectedFiles.join(", "),
                 variant: "destructive",
                 duration: 10000
@@ -115,7 +115,7 @@ export default function MediaPage() {
         startTransition(async () => {
             const result = await deleteMedia(id)
             if (result.success) {
-                toast({ title: "File deleted" })
+                toast({ title: "Archivo eliminado" })
                 setFiles(files.filter(f => f.id !== id))
                 setSelectedFiles(prev => {
                     const next = new Set(prev)
@@ -132,7 +132,7 @@ export default function MediaPage() {
         startTransition(async () => {
             const result = await deleteMultipleMedia(Array.from(selectedFiles))
             if (result.success) {
-                toast({ title: `${result.count} files deleted` })
+                toast({ title: `${result.count} archivos eliminados` })
                 await loadFiles()
                 setSelectedFiles(new Set())
             } else {
@@ -144,7 +144,7 @@ export default function MediaPage() {
     const handleCopyUrl = async (url: string) => {
         await navigator.clipboard.writeText(url)
         setCopiedUrl(url)
-        toast({ title: "URL copied to clipboard" })
+        toast({ title: "URL copiada al portapapeles" })
         setTimeout(() => setCopiedUrl(null), 2000)
     }
 
@@ -169,7 +169,7 @@ export default function MediaPage() {
     }
 
     const formatFileSize = (bytes: number | null) => {
-        if (!bytes) return "Unknown"
+        if (!bytes) return "Desconocido"
         if (bytes < 1024) return `${bytes} B`
         if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
         return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
@@ -200,7 +200,7 @@ export default function MediaPage() {
                 return
             }
 
-            toast({ title: "Details updated" })
+            toast({ title: "Detalles actualizados" })
             await loadFiles()
             setEditFile(null)
         })
@@ -219,10 +219,10 @@ export default function MediaPage() {
         }
 
         toast({
-            title: "File renamed",
+            title: "Archivo renombrado",
             description: usage && (usage.products > 0 || usage.templates > 0)
-                ? `Updated ${usage.products} product(s) and ${usage.templates} template(s)`
-                : "URL has been updated"
+                ? `Actualizado ${usage.products} producto(s) y ${usage.templates} plantilla(s)`
+                : "La URL ha sido actualizada"
         })
         await loadFiles()
         setEditFile(null)
@@ -238,8 +238,8 @@ export default function MediaPage() {
         <div>
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">Media Library</h1>
-                    <p className="text-muted-foreground">Manage images and files for products and emails</p>
+                    <h1 className="text-3xl font-bold mb-2">Biblioteca de Medios</h1>
+                    <p className="text-muted-foreground">Administra imágenes y archivos para productos y correos</p>
                 </div>
                 <Can permission="media.upload">
                     <div className="text-center">
@@ -256,16 +256,16 @@ export default function MediaPage() {
                             {isUploading ? (
                                 <>
                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Uploading...
+                                    Subiendo...
                                 </>
                             ) : (
                                 <>
                                     <Upload className="h-4 w-4 mr-2" />
-                                    Upload
+                                    Subir
                                 </>
                             )}
                         </Button>
-                        <p className="text-xs text-muted-foreground mt-1">Max file size: 4MB per image</p>
+                        <p className="text-xs text-muted-foreground mt-1">Tamaño máximo: 4MB por imagen</p>
                     </div>
                 </Can>
             </div>
@@ -274,14 +274,14 @@ export default function MediaPage() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle>Files</CardTitle>
-                            <CardDescription>{files.length} file{files.length !== 1 ? "s" : ""} in library</CardDescription>
+                            <CardTitle>Archivos</CardTitle>
+                            <CardDescription>{files.length} archivo{files.length !== 1 ? "s" : ""} en biblioteca</CardDescription>
                         </div>
                         <div className="flex gap-2">
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    placeholder="Search files..."
+                                    placeholder="Buscar archivos..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     className="pl-9 w-64"
@@ -311,25 +311,25 @@ export default function MediaPage() {
                                 checked={selectedFiles.size === filteredFiles.length}
                                 onCheckedChange={toggleSelectAll}
                             />
-                            <span className="text-sm">{selectedFiles.size} selected</span>
+                            <span className="text-sm">{selectedFiles.size} seleccionado{selectedFiles.size !== 1 ? "s" : ""}</span>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="destructive" size="sm">
                                         <Trash2 className="h-4 w-4 mr-2" />
-                                        Delete Selected
+                                        Eliminar Seleccionados
                                     </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle>Delete {selectedFiles.size} files?</AlertDialogTitle>
+                                        <AlertDialogTitle>¿Eliminar {selectedFiles.size} archivos?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This will permanently delete these files. Any products or templates using them will show broken images.
+                                            Esto eliminará permanentemente estos archivos. Los productos o plantillas que los usen mostrarán imágenes rotas.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                         <AlertDialogAction onClick={handleDeleteSelected} className="bg-destructive">
-                                            Delete
+                                            Eliminar
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
@@ -345,8 +345,8 @@ export default function MediaPage() {
                     ) : filteredFiles.length === 0 ? (
                         <div className="text-center py-16 text-muted-foreground">
                             <ImageIcon className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                            <p className="text-lg mb-2">No media files</p>
-                            <p className="text-sm">Upload images to use in products and emails</p>
+                            <p className="text-lg mb-2">Sin archivos de medios</p>
+                            <p className="text-sm">Sube imágenes para usar en productos y correos</p>
                         </div>
                     ) : viewMode === "grid" ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -413,7 +413,7 @@ export default function MediaPage() {
                                                 disabled={isPending}
                                             >
                                                 <Trash2 className="h-4 w-4 mr-1" />
-                                                Delete
+                                                Eliminar
                                             </Button>
                                         </Can>
                                     </div>
@@ -450,7 +450,7 @@ export default function MediaPage() {
                                     <div className="flex-1 min-w-0">
                                         <p className="font-medium truncate">{file.display_name}</p>
                                         <p className="text-xs text-muted-foreground">
-                                            {formatFileSize(file.size_bytes)} • {file.mime_type || "Unknown type"}
+                                            {formatFileSize(file.size_bytes)} • {file.mime_type || "Tipo desconocido"}
                                         </p>
                                     </div>
                                     <div className="flex gap-1">
@@ -486,14 +486,14 @@ export default function MediaPage() {
             <Dialog open={!!editFile} onOpenChange={(open) => !open && setEditFile(null)}>
                 <DialogContent className="sm:max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>Edit Media</DialogTitle>
-                        <DialogDescription>Update file details or rename to change the URL.</DialogDescription>
+                        <DialogTitle>Editar Medio</DialogTitle>
+                        <DialogDescription>Actualiza detalles del archivo o renombra para cambiar la URL.</DialogDescription>
                     </DialogHeader>
                     {editFile && (
                         <Tabs defaultValue="details">
                             <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="details">Details</TabsTrigger>
-                                <TabsTrigger value="rename">Rename (Change URL)</TabsTrigger>
+                                <TabsTrigger value="details">Detalles</TabsTrigger>
+                                <TabsTrigger value="rename">Renombrar (Cambiar URL)</TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="details" className="space-y-4 mt-4">
@@ -506,28 +506,28 @@ export default function MediaPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="edit-name">Display Name</Label>
+                                    <Label htmlFor="edit-name">Nombre para Mostrar</Label>
                                     <Input
                                         id="edit-name"
                                         value={editName}
                                         onChange={(e) => setEditName(e.target.value)}
-                                        placeholder="Enter display name..."
+                                        placeholder="Ingresa nombre para mostrar..."
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="edit-alt">Alt Text</Label>
+                                    <Label htmlFor="edit-alt">Texto Alternativo</Label>
                                     <Textarea
                                         id="edit-alt"
                                         value={editAlt}
                                         onChange={(e) => setEditAlt(e.target.value)}
-                                        placeholder="Describe this image for accessibility..."
+                                        placeholder="Describe esta imagen para accesibilidad..."
                                         rows={2}
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>Current URL</Label>
+                                    <Label>URL Actual</Label>
                                     <div className="flex gap-2">
                                         <Input value={editFile.url} readOnly className="text-xs font-mono" />
                                         <Button variant="outline" size="icon" onClick={() => handleCopyUrl(editFile.url)}>
@@ -538,21 +538,21 @@ export default function MediaPage() {
 
                                 <Button onClick={handleSaveMetadata} className="w-full" disabled={isPending}>
                                     {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                                    Save Details
+                                    Guardar Detalles
                                 </Button>
                             </TabsContent>
 
                             <TabsContent value="rename" className="space-y-4 mt-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="rename-name">New File Name</Label>
+                                    <Label htmlFor="rename-name">Nuevo Nombre de Archivo</Label>
                                     <Input
                                         id="rename-name"
                                         value={editName}
                                         onChange={(e) => setEditName(e.target.value)}
-                                        placeholder="Enter new name..."
+                                        placeholder="Ingresa nuevo nombre..."
                                     />
                                     <p className="text-xs text-muted-foreground">
-                                        This will create a new URL. Special characters will be replaced with dashes.
+                                        Esto creará una nueva URL. Los caracteres especiales serán reemplazados con guiones.
                                     </p>
                                 </div>
 
@@ -561,10 +561,10 @@ export default function MediaPage() {
                                         <div className="flex items-start gap-2">
                                             <AlertTriangle className="h-4 w-4 text-yellow-600 flex-shrink-0 mt-0.5" />
                                             <div>
-                                                <p className="text-sm font-medium text-yellow-600">This file is in use</p>
+                                                <p className="text-sm font-medium text-yellow-600">Este archivo está en uso</p>
                                                 <p className="text-xs text-yellow-600/80">
-                                                    Used in {usage.products} product{usage.products !== 1 ? "s" : ""} and {usage.templates} template{usage.templates !== 1 ? "s" : ""}.
-                                                    Renaming will automatically update all references.
+                                                    Usado en {usage.products} producto{usage.products !== 1 ? "s" : ""} y {usage.templates} plantilla{usage.templates !== 1 ? "s" : ""}.
+                                                    Renombrar actualizará automáticamente todas las referencias.
                                                 </p>
                                             </div>
                                         </div>
@@ -574,7 +574,7 @@ export default function MediaPage() {
                                 {usage === null && (
                                     <div className="flex items-center justify-center py-2">
                                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                        <span className="text-sm text-muted-foreground">Checking usage...</span>
+                                        <span className="text-sm text-muted-foreground">Verificando uso...</span>
                                     </div>
                                 )}
 
@@ -582,10 +582,10 @@ export default function MediaPage() {
                                     {isRenaming ? (
                                         <>
                                             <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                            Renaming...
+                                            Renombrando...
                                         </>
                                     ) : (
-                                        "Rename & Update References"
+                                        "Renombrar y Actualizar Referencias"
                                     )}
                                 </Button>
                             </TabsContent>

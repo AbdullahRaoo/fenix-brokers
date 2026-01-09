@@ -77,23 +77,23 @@ export default function ReviewPage() {
   const handleSendTest = () => {
     if (!testEmail) {
       toast({
-        title: "Email required",
-        description: "Please enter an email address to send the test.",
+        title: "Email requerido",
+        description: "Por favor ingresa una dirección de email para enviar la prueba.",
         variant: "destructive",
       })
       return
     }
 
     toast({
-      title: "Test email sent!",
-      description: `A test email has been sent to ${testEmail}`,
+      title: "¡Email de prueba enviado!",
+      description: `Se ha enviado un email de prueba a ${testEmail}`,
     })
   }
 
   const handleSendCampaign = () => {
     toast({
-      title: "Campaign scheduled!",
-      description: "Your email campaign has been scheduled successfully.",
+      title: "¡Campaña programada!",
+      description: "Tu campaña de email ha sido programada exitosamente.",
     })
 
     // Clear session storage
@@ -111,11 +111,11 @@ export default function ReviewPage() {
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/admin/marketing/create/editor">
             <ChevronLeft className="h-4 w-4 mr-2" />
-            Back to Editor
+            Volver al Editor
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mb-2">Review & Send</h1>
-        <p className="text-muted-foreground">Step 3 of 3: Review your campaign and send</p>
+        <h1 className="text-3xl font-bold mb-2">Revisar y Enviar</h1>
+        <p className="text-muted-foreground">Paso 3 de 3: Revisa tu campaña y envíala</p>
       </div>
 
       {/* Progress Indicator */}
@@ -125,21 +125,21 @@ export default function ReviewPage() {
             <div className="h-10 w-10 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold mb-2">
               ✓
             </div>
-            <span className="text-sm font-medium">Template</span>
+            <span className="text-sm font-medium">Plantilla</span>
           </div>
           <div className="h-px w-20 bg-border" />
           <div className="flex flex-col items-center">
             <div className="h-10 w-10 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold mb-2">
               ✓
             </div>
-            <span className="text-sm font-medium">Design</span>
+            <span className="text-sm font-medium">Diseño</span>
           </div>
           <div className="h-px w-20 bg-border" />
           <div className="flex flex-col items-center">
             <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold mb-2">
               3
             </div>
-            <span className="text-sm font-medium">Review</span>
+            <span className="text-sm font-medium">Revisar</span>
           </div>
         </div>
       </div>
@@ -149,26 +149,26 @@ export default function ReviewPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Campaign Details</CardTitle>
-              <CardDescription>Configure final details before sending</CardDescription>
+              <CardTitle>Detalles de Campaña</CardTitle>
+              <CardDescription>Configura los detalles finales antes de enviar</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="subject">Subject Line</Label>
+                <Label htmlFor="subject">Línea de Asunto</Label>
                 <Input
                   id="subject"
                   value={subjectLine}
                   onChange={(e) => setSubjectLine(e.target.value)}
-                  placeholder="Enter subject line..."
+                  placeholder="Ingresa línea de asunto..."
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="preheader">Pre-header Text</Label>
+                <Label htmlFor="preheader">Texto de Pre-encabezado</Label>
                 <Input
                   id="preheader"
                   value={preheader}
                   onChange={(e) => setPreheader(e.target.value)}
-                  placeholder="Enter pre-header text..."
+                  placeholder="Ingresa texto de pre-encabezado..."
                 />
               </div>
             </CardContent>
@@ -176,8 +176,8 @@ export default function ReviewPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Recipient Summary</CardTitle>
-              <CardDescription>Who will receive this campaign</CardDescription>
+              <CardTitle>Resumen de Destinatarios</CardTitle>
+              <CardDescription>Quién recibirá esta campaña</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
@@ -185,8 +185,8 @@ export default function ReviewPage() {
                   <Users className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-lg">1,523 Subscribers</p>
-                  <p className="text-sm text-muted-foreground">All active subscribers will receive this email</p>
+                  <p className="font-semibold text-lg">1,523 Suscriptores</p>
+                  <p className="text-sm text-muted-foreground">Todos los suscriptores activos recibirán este email</p>
                 </div>
               </div>
             </CardContent>
@@ -194,23 +194,23 @@ export default function ReviewPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Send Test Email</CardTitle>
-              <CardDescription>Preview the email in your inbox</CardDescription>
+              <CardTitle>Enviar Email de Prueba</CardTitle>
+              <CardDescription>Vista previa del email en tu bandeja</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="testEmail">Test Email Address</Label>
+                <Label htmlFor="testEmail">Dirección de Email de Prueba</Label>
                 <Input
                   id="testEmail"
                   type="email"
                   value={testEmail}
                   onChange={(e) => setTestEmail(e.target.value)}
-                  placeholder="your@email.com"
+                  placeholder="tu@email.com"
                 />
               </div>
               <Button onClick={handleSendTest} variant="outline" className="w-full bg-transparent">
                 <Mail className="h-4 w-4 mr-2" />
-                Send Test
+                Enviar Prueba
               </Button>
             </CardContent>
           </Card>
@@ -222,8 +222,8 @@ export default function ReviewPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Email Preview</CardTitle>
-                  <CardDescription>Final preview of your campaign</CardDescription>
+                  <CardTitle>Vista Previa de Email</CardTitle>
+                  <CardDescription>Vista previa final de tu campaña</CardDescription>
                 </div>
                 <Eye className="h-5 w-5 text-muted-foreground" />
               </div>
@@ -240,11 +240,11 @@ export default function ReviewPage() {
       {/* Action Buttons */}
       <div className="flex items-center justify-between">
         <Button variant="outline" asChild>
-          <Link href="/admin/marketing/create/editor">Back to Editor</Link>
+          <Link href="/admin/marketing/create/editor">Volver al Editor</Link>
         </Button>
         <Button onClick={handleSendCampaign} size="lg" className="bg-green-600 hover:bg-green-700">
           <Send className="h-4 w-4 mr-2" />
-          Send Campaign
+          Enviar Campaña
         </Button>
       </div>
     </div>

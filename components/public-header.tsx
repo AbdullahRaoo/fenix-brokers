@@ -16,10 +16,10 @@ import { getSiteLogo } from "@/app/actions/settings"
 import type { Product } from "@/types/database"
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/catalog", label: "Product Catalog" },
-  { href: "/about", label: "About Us" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Inicio" },
+  { href: "/catalog", label: "Catálogo" },
+  { href: "/about", label: "Nosotros" },
+  { href: "/contact", label: "Contacto" },
 ]
 
 export function PublicHeader() {
@@ -155,7 +155,7 @@ export function PublicHeader() {
               <form onSubmit={handleSearch} className="relative">
                 <Input
                   type="search"
-                  placeholder="Search products..."
+                  placeholder="Buscar productos..."
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
@@ -206,7 +206,7 @@ export function PublicHeader() {
                     onClick={() => setShowResults(false)}
                     className="block p-3 text-center text-sm text-primary hover:bg-muted transition-colors font-medium"
                   >
-                    View all results →
+                    Ver todos los resultados →
                   </Link>
                 </div>
               )}
@@ -251,7 +251,7 @@ export function PublicHeader() {
                   ))}
                   <Button asChild className="mt-4">
                     <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                      Get a Quote
+                      Solicitar Cotización
                     </Link>
                   </Button>
                 </nav>

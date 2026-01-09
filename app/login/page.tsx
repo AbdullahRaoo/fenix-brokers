@@ -27,7 +27,7 @@ export default function LoginPage() {
     setError("")
 
     if (!email || !password) {
-      setError("Please enter your email and password.")
+      setError("Por favor ingresa tu correo y contraseña.")
       return
     }
 
@@ -36,13 +36,13 @@ export default function LoginPage() {
 
       if (result.success && result.user) {
         toast({
-          title: "Login successful",
-          description: `Welcome back, ${result.user.name}!`,
+          title: "Inicio de sesión exitoso",
+          description: `¡Bienvenido de nuevo, ${result.user.name}!`,
         })
         router.push("/admin")
         router.refresh()
       } else {
-        setError(result.error || "Invalid email or password.")
+        setError(result.error || "Correo o contraseña inválidos.")
       }
     })
   }
@@ -66,19 +66,19 @@ export default function LoginPage() {
             />
           </Link>
           <h1 className="text-3xl font-bold mb-4">
-            Welcome Back to <span className="text-primary">Fenix Brokers</span>
+            Bienvenido de Nuevo a <span className="text-primary">Fenix Brokers</span>
           </h1>
           <p className="text-muted-foreground text-lg mb-8">
-            Access your admin dashboard to manage products, orders, and grow your wholesale beauty business.
+            Accede a tu panel de administración para gestionar productos, pedidos y hacer crecer tu negocio mayorista de belleza.
           </p>
 
           {/* Features list */}
           <div className="space-y-4 text-left">
             {[
-              "Manage your product catalog",
-              "Track orders and shipments",
-              "Access analytics and reports",
-              "Communicate with customers",
+              "Gestiona tu catálogo de productos",
+              "Rastrea pedidos y envíos",
+              "Accede a análisis e informes",
+              "Comunica con tus clientes",
             ].map((feature, index) => (
               <div key={index} className="flex items-center gap-3 bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
@@ -108,16 +108,16 @@ export default function LoginPage() {
           <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95">
             <CardHeader className="space-y-4 pb-6">
               <div className="text-center">
-                <CardTitle className="text-2xl lg:text-3xl">Admin Login</CardTitle>
+                <CardTitle className="text-2xl lg:text-3xl">Acceso Admin</CardTitle>
                 <CardDescription className="text-base">
-                  Enter your credentials to access the dashboard
+                  Ingresa tus credenciales para acceder al panel
                 </CardDescription>
               </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">Correo Electrónico</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
@@ -135,9 +135,9 @@ export default function LoginPage() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                    <Label htmlFor="password" className="text-sm font-medium">Contraseña</Label>
                     <a href="#" className="text-xs text-primary hover:underline">
-                      Forgot password?
+                      ¿Olvidaste tu contraseña?
                     </a>
                   </div>
                   <div className="relative">
@@ -145,7 +145,7 @@ export default function LoginPage() {
                     <Input
                       id="password"
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder="Ingresa tu contraseña"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={isPending}
@@ -169,10 +169,10 @@ export default function LoginPage() {
                   {isPending ? (
                     <>
                       <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                      Signing in...
+                      Iniciando sesión...
                     </>
                   ) : (
-                    "Sign In to Dashboard"
+                    "Iniciar Sesión"
                   )}
                 </Button>
               </form>
@@ -183,7 +183,7 @@ export default function LoginPage() {
                   className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
                 >
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                  Back to website
+                  Volver al sitio web
                 </Link>
               </div>
             </CardContent>
@@ -193,7 +193,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
               <Lock className="h-3 w-3" />
-              Secured with industry-standard encryption
+              Protegido con encriptación de estándar industrial
             </p>
           </div>
         </div>

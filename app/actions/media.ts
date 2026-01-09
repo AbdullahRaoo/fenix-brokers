@@ -20,7 +20,7 @@ export async function uploadMedia(formData: FormData): Promise<{ data: MediaItem
     try {
         const file = formData.get("file") as File
         if (!file) {
-            return { data: null, error: "No file provided" }
+            return { data: null, error: "No se proporcionó archivo" }
         }
 
         // Generate unique filename
@@ -71,8 +71,8 @@ export async function uploadMedia(formData: FormData): Promise<{ data: MediaItem
         return { data: dbData as MediaItem, error: null }
     } catch (error) {
         console.error("Error in uploadMedia:", error)
-        const errorMessage = error instanceof Error ? error.message : "Failed to upload file"
-        return { data: null, error: `Upload failed: ${errorMessage}` }
+        const errorMessage = error instanceof Error ? error.message : "Error al subir archivo"
+        return { data: null, error: `Subida fallida: ${errorMessage}` }
     }
 }
 
@@ -106,7 +106,7 @@ export async function createMediaRecord(metadata: {
         return { data: dbData as MediaItem, error: null }
     } catch (error) {
         console.error("Error in createMediaRecord:", error)
-        return { data: null, error: "Failed to create media record" }
+        return { data: null, error: "Error al crear registro de medios" }
     }
 }
 
@@ -126,7 +126,7 @@ export async function getMediaFiles(): Promise<{ data: MediaItem[] | null; error
         return { data: data as MediaItem[], error: null }
     } catch (error) {
         console.error("Error in getMediaFiles:", error)
-        return { data: null, error: "Failed to list files" }
+        return { data: null, error: "Error al listar archivos" }
     }
 }
 
@@ -140,13 +140,13 @@ export async function getMediaById(id: string): Promise<{ data: MediaItem | null
             .single()
 
         if (error) {
-            return { data: null, error: "Media not found" }
+            return { data: null, error: "Medio no encontrado" }
         }
 
         return { data: data as MediaItem, error: null }
     } catch (error) {
         console.error("Error in getMediaById:", error)
-        return { data: null, error: "Failed to get media" }
+        return { data: null, error: "Error al obtener medio" }
     }
 }
 
@@ -171,7 +171,7 @@ export async function updateMedia(
         return { data: data as MediaItem, error: null }
     } catch (error) {
         console.error("Error in updateMedia:", error)
-        return { data: null, error: "Failed to update media" }
+        return { data: null, error: "Error al actualizar medio" }
     }
 }
 
@@ -189,7 +189,7 @@ export async function renameMedia(
             .single()
 
         if (getError || !media) {
-            return { data: null, error: "Media not found" }
+            return { data: null, error: "Medio no encontrado" }
         }
 
         const oldPath = media.storage_path
@@ -205,7 +205,7 @@ export async function renameMedia(
 
         if (downloadError || !fileData) {
             console.error("Download error:", downloadError)
-            return { data: null, error: "Failed to download file for rename" }
+            return { data: null, error: "Error al descargar archivo para renombrar" }
         }
 
         // Upload with new name
@@ -218,7 +218,7 @@ export async function renameMedia(
 
         if (uploadError) {
             console.error("Upload error:", uploadError)
-            return { data: null, error: "Failed to upload renamed file" }
+            return { data: null, error: "Error al subir archivo renombrado" }
         }
 
         // Get new public URL
@@ -245,7 +245,7 @@ export async function renameMedia(
         if (updateError) {
             // Clean up the new file
             await supabaseAdmin.storage.from("media").remove([newPath])
-            return { data: null, error: "Failed to update database" }
+            return { data: null, error: "Error al actualizar base de datos" }
         }
 
         // Update all references
@@ -261,7 +261,7 @@ export async function renameMedia(
         return { data: updatedMedia as MediaItem, error: null }
     } catch (error) {
         console.error("Error in renameMedia:", error)
-        return { data: null, error: "Failed to rename file" }
+        return { data: null, error: "Error al renombrar archivo" }
     }
 }
 
@@ -328,7 +328,7 @@ export async function deleteMedia(id: string): Promise<{ success: boolean; error
             .single()
 
         if (getError || !media) {
-            return { success: false, error: "Media not found" }
+            return { success: false, error: "Medio no encontrado" }
         }
 
         // Delete from storage
@@ -354,7 +354,7 @@ export async function deleteMedia(id: string): Promise<{ success: boolean; error
         return { success: true, error: null }
     } catch (error) {
         console.error("Error in deleteMedia:", error)
-        return { success: false, error: "Failed to delete file" }
+        return { success: false, error: "Error al eliminar archivo" }
     }
 }
 
@@ -372,7 +372,7 @@ export async function deleteMultipleMedia(ids: string[]): Promise<{ success: boo
         return { success: true, count: deletedCount, error: null }
     } catch (error) {
         console.error("Error in deleteMultipleMedia:", error)
-        return { success: false, count: 0, error: "Failed to delete files" }
+        return { success: false, count: 0, error: "Error al eliminar archivos" }
     }
 }
 

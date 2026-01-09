@@ -28,17 +28,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RichTextEditor } from "@/components/rich-text-editor"
 
 const blockTypes = [
-  { type: "section", label: "Section", icon: Box },
-  { type: "columns", label: "Columns", icon: Box },
+  { type: "section", label: "Sección", icon: Box },
+  { type: "columns", label: "Columnas", icon: Box },
   { type: "logo", label: "Logo", icon: Box },
-  { type: "heading", label: "Heading", icon: Type },
-  { type: "text", label: "Paragraph", icon: Type },
-  { type: "image", label: "Image", icon: ImageIcon },
-  { type: "button", label: "Button", icon: Square },
-  { type: "divider", label: "Divider", icon: Minus },
-  { type: "spacer", label: "Spacer", icon: Box },
-  { type: "product", label: "Product", icon: Box },
-  { type: "footer", label: "Footer", icon: Box },
+  { type: "heading", label: "Encabezado", icon: Type },
+  { type: "text", label: "Párrafo", icon: Type },
+  { type: "image", label: "Imagen", icon: ImageIcon },
+  { type: "button", label: "Botón", icon: Square },
+  { type: "divider", label: "Divisor", icon: Minus },
+  { type: "spacer", label: "Espaciador", icon: Box },
+  { type: "product", label: "Producto", icon: Box },
+  { type: "footer", label: "Pie", icon: Box },
 ]
 
 // Social media platforms
@@ -564,7 +564,7 @@ export default function TemplateEditorPage() {
 
     if (rejectedFiles.length > 0) {
       toast({
-        title: `${rejectedFiles.length} file(s) rejected (>4MB)`,
+        title: `${rejectedFiles.length} archivo(s) rechazado(s) (>4MB)`,
         description: rejectedFiles.join(", "),
         variant: "destructive",
         duration: 10000
@@ -595,8 +595,8 @@ export default function TemplateEditorPage() {
   const handleSave = () => {
     if (!name || !subject) {
       toast({
-        title: "Validation Error",
-        description: "Please enter a name and subject.",
+        title: "Error de Validación",
+        description: "Por favor ingresa un nombre y asunto.",
         variant: "destructive",
       })
       return
@@ -626,7 +626,7 @@ export default function TemplateEditorPage() {
         return
       }
 
-      toast({ title: templateId ? "Template updated!" : "Template saved!" })
+      toast({ title: templateId ? "¡Plantilla actualizada!" : "¡Plantilla guardada!" })
       router.push("/admin/marketing")
     })
   }
@@ -644,12 +644,12 @@ export default function TemplateEditorPage() {
           <Button variant="ghost" size="sm" asChild>
             <Link href="/admin/marketing/templates/new">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              Volver
             </Link>
           </Button>
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-pink-500" />
-            <span className="font-bold">Email Editor</span>
+            <span className="font-bold">Editor de Email</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -663,21 +663,21 @@ export default function TemplateEditorPage() {
             variant="outline"
             size="sm"
             onClick={async () => {
-              const result = await generatePreviewHtml(blocks, name || "Email Preview")
+              const result = await generatePreviewHtml(blocks, name || "Vista Previa de Email")
               if (result.html) {
                 setPreviewHtml(result.html)
                 setPreviewOpen(true)
               } else {
-                toast({ title: "Error", description: result.error || "Failed to generate preview", variant: "destructive" })
+                toast({ title: "Error", description: result.error || "Error al generar vista previa", variant: "destructive" })
               }
             }}
           >
             <Eye className="h-4 w-4 mr-2" />
-            Preview
+            Vista Previa
           </Button>
           <Button onClick={handleSave} disabled={isPending}>
             {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-            Save Template
+            Guardar Plantilla
           </Button>
         </div>
       </header>
@@ -688,7 +688,7 @@ export default function TemplateEditorPage() {
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Template name..."
+            placeholder="Nombre de la plantilla..."
             className="h-8"
           />
         </div>
@@ -696,7 +696,7 @@ export default function TemplateEditorPage() {
           <Input
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder="Email subject line..."
+            placeholder="Asunto del email..."
             className="h-8"
           />
         </div>
@@ -707,13 +707,13 @@ export default function TemplateEditorPage() {
         {/* Block Palette */}
         <aside className="w-48 border-r border-border bg-card p-3 overflow-y-auto">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-medium text-muted-foreground">BLOCKS</p>
+            <p className="text-xs font-medium text-muted-foreground">BLOQUES</p>
             <Button
               variant="ghost"
               size="icon"
               className="h-6 w-6"
               onClick={() => setShowStructure(!showStructure)}
-              title="Toggle Structure Panel"
+              title="Alternar Panel de Estructura"
             >
               <Layers className="h-3.5 w-3.5" />
             </Button>
@@ -755,8 +755,8 @@ export default function TemplateEditorPage() {
             <div className="p-4 space-y-2 min-h-[200px]">
               {blocks.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground border-2 border-dashed border-gray-200 rounded-lg">
-                  <p className="mb-2">Drop blocks here</p>
-                  <p className="text-sm">or drag from the left panel</p>
+                  <p className="mb-2">Suelta bloques aquí</p>
+                  <p className="text-sm">o arrastra desde el panel izquierdo</p>
                 </div>
               ) : (
                 blocks.map((block, index) => (
@@ -818,7 +818,7 @@ export default function TemplateEditorPage() {
                         ) : (
                           <div className="text-center text-muted-foreground py-8 w-full">
                             <ImageIcon className="h-8 w-8 mx-auto mb-1" />
-                            <p className="text-xs">Click to add image</p>
+                            <p className="text-xs">Clic para agregar imagen</p>
                           </div>
                         )}
                       </div>
@@ -855,8 +855,8 @@ export default function TemplateEditorPage() {
                           )}
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium">{block.content || "Product Name"}</p>
-                          <span style={{ color: block.buttonColor || '#00bed6' }} className="text-sm">View Product →</span>
+                          <p className="font-medium">{block.content || "Nombre del Producto"}</p>
+                          <span style={{ color: block.buttonColor || '#00bed6' }} className="text-sm">Ver Producto →</span>
                         </div>
                       </div>
                     )}
@@ -1029,7 +1029,7 @@ export default function TemplateEditorPage() {
                           <div className={`text-center py-6 border-2 border-dashed rounded-lg transition-colors ${draggedBlock ? 'border-cyan-500 bg-cyan-50' : 'border-gray-300'
                             }`}>
                             <p className="text-xs text-muted-foreground">
-                              {draggedBlock ? '⬇ Drop block here' : 'Drag blocks here'}
+                              {draggedBlock ? '⬇ Soltar bloque aquí' : 'Arrastra bloques aquí'}
                             </p>
                           </div>
                         )}
@@ -1185,7 +1185,7 @@ export default function TemplateEditorPage() {
                                 <div className={`text-center py-4 border-2 border-dashed rounded transition-colors ${draggedBlock ? 'border-purple-500' : 'border-gray-200'
                                   }`}>
                                   <p className="text-[10px] text-muted-foreground">
-                                    {draggedBlock ? 'Drop here' : 'Drop blocks'}
+                                    {draggedBlock ? 'Soltar aquí' : 'Soltar bloques'}
                                   </p>
                                 </div>
                               )}
@@ -1248,7 +1248,7 @@ export default function TemplateEditorPage() {
 
         {/* Settings Panel */}
         <aside className="w-72 border-l border-border bg-card p-4 overflow-y-auto">
-          <p className="text-xs font-medium text-muted-foreground mb-3">SETTINGS</p>
+          <p className="text-xs font-medium text-muted-foreground mb-3">AJUSTES</p>
 
           {/* Nested element editor */}
           {selectedNested && !selectedBlock && (() => {
@@ -1264,11 +1264,11 @@ export default function TemplateEditorPage() {
                     className="h-6 text-xs"
                     onClick={() => setSelectedNested(null)}
                   >
-                    Back
+                    Volver
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Inside {selectedNested.type === 'section' ? 'Section' : `Column ${(selectedNested.columnIndex || 0) + 1}`}
+                  Dentro de {selectedNested.type === 'section' ? 'Sección' : `Columna ${(selectedNested.columnIndex || 0) + 1}`}
                 </p>
 
                 {/* Heading editor */}
@@ -1507,7 +1507,7 @@ export default function TemplateEditorPage() {
               {selectedBlockData.type === "text" && (
                 <>
                   <div className="space-y-1">
-                    <Label className="text-xs">Font Family</Label>
+                    <Label className="text-xs">Familia de Fuente</Label>
                     <Select
                       value={selectedBlockData.fontFamily || "Arial, sans-serif"}
                       onValueChange={(v) => updateBlockWithHistory(selectedBlock!, { fontFamily: v })}
@@ -1526,8 +1526,8 @@ export default function TemplateEditorPage() {
                     value={selectedBlockData.content || ""}
                     onChange={(value) => updateBlock(selectedBlock!, { content: value })}
                     onBlur={() => saveToHistory(blocks)}
-                    label="Content"
-                    placeholder="Enter your text here..."
+                    label="Contenido"
+                    placeholder="Ingresa tu texto aquí..."
                     textColor={selectedBlockData.textColor || "#1a1a1a"}
                     onTextColorChange={(color) => updateBlockWithHistory(selectedBlock!, { textColor: color })}
                   />
@@ -1546,20 +1546,20 @@ export default function TemplateEditorPage() {
                     onClick={() => openMediaPicker(selectedBlock!)}
                   >
                     <ImageIcon className="h-4 w-4 mr-2" />
-                    {selectedBlockData.src ? "Change Image" : "Select Image"}
+                    {selectedBlockData.src ? "Cambiar Imagen" : "Seleccionar Imagen"}
                   </Button>
                   <div className="space-y-1">
-                    <Label className="text-xs">Alt Text</Label>
+                    <Label className="text-xs">Texto Alternativo</Label>
                     <Input
                       value={selectedBlockData.alt || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { alt: e.target.value })}
                       onBlur={() => saveToHistory(blocks)}
                       className="h-8"
-                      placeholder="Image description"
+                      placeholder="Descripción de la imagen"
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Width: {selectedBlockData.fontSize || 100}%</Label>
+                    <Label className="text-xs">Ancho: {selectedBlockData.fontSize || 100}%</Label>
                     <input
                       type="range"
                       min="25"
@@ -1576,7 +1576,7 @@ export default function TemplateEditorPage() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Alignment</Label>
+                    <Label className="text-xs">Alineación</Label>
                     <div className="flex gap-1">
                       {(['left', 'center', 'right'] as const).map(align => (
                         <Button
@@ -1586,13 +1586,13 @@ export default function TemplateEditorPage() {
                           className="flex-1 h-7 text-xs capitalize"
                           onClick={() => updateBlockWithHistory(selectedBlock!, { textAlign: align })}
                         >
-                          {align}
+                          {align === 'left' ? 'Izq' : align === 'center' ? 'Centro' : 'Der'}
                         </Button>
                       ))}
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Border Radius: {selectedBlockData.borderRadius || 0}px</Label>
+                    <Label className="text-xs">Radio del Borde: {selectedBlockData.borderRadius || 0}px</Label>
                     <input
                       type="range"
                       min="0"
@@ -1608,7 +1608,7 @@ export default function TemplateEditorPage() {
               {selectedBlockData.type === "button" && (
                 <>
                   <div className="space-y-1">
-                    <Label className="text-xs">Button Text</Label>
+                    <Label className="text-xs">Texto del Botón</Label>
                     <Input
                       value={selectedBlockData.buttonText || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { buttonText: e.target.value })}
@@ -1617,7 +1617,7 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Font Family</Label>
+                    <Label className="text-xs">Familia de Fuente</Label>
                     <Select
                       value={selectedBlockData.fontFamily || "Arial, sans-serif"}
                       onValueChange={(v) => updateBlockWithHistory(selectedBlock!, { fontFamily: v })}
@@ -1633,7 +1633,7 @@ export default function TemplateEditorPage() {
                     </Select>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Button URL</Label>
+                    <Label className="text-xs">URL del Botón</Label>
                     <Input
                       value={selectedBlockData.buttonUrl || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { buttonUrl: e.target.value })}
@@ -1644,7 +1644,7 @@ export default function TemplateEditorPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
-                      <Label className="text-xs">Button Color</Label>
+                      <Label className="text-xs">Color del Botón</Label>
                       <input
                         type="color"
                         value={selectedBlockData.buttonColor || "#00bed6"}
@@ -1653,7 +1653,7 @@ export default function TemplateEditorPage() {
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">Text Color</Label>
+                      <Label className="text-xs">Color del Texto</Label>
                       <input
                         type="color"
                         value={selectedBlockData.buttonTextColor || "#ffffff"}
@@ -1663,7 +1663,7 @@ export default function TemplateEditorPage() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Button Position</Label>
+                    <Label className="text-xs">Posición del Botón</Label>
                     <div className="flex gap-1">
                       {(['left', 'center', 'right'] as const).map(align => (
                         <Button
@@ -1673,7 +1673,7 @@ export default function TemplateEditorPage() {
                           className="flex-1 h-7 text-xs capitalize"
                           onClick={() => updateBlockWithHistory(selectedBlock!, { textAlign: align })}
                         >
-                          {align}
+                          {align === 'left' ? 'Izq' : align === 'center' ? 'Centro' : 'Der'}
                         </Button>
                       ))}
                     </div>
@@ -1690,20 +1690,20 @@ export default function TemplateEditorPage() {
                     onClick={() => openMediaPicker(selectedBlock!)}
                   >
                     <ImageIcon className="h-4 w-4 mr-2" />
-                    {selectedBlockData.src ? "Change Logo" : "Select Logo"}
+                    {selectedBlockData.src ? "Cambiar Logo" : "Seleccionar Logo"}
                   </Button>
                   {selectedBlockData.src && (
                     <div className="p-2 bg-muted rounded-lg">
                       <img
                         src={selectedBlockData.src}
-                        alt="Logo preview"
+                        alt="Vista previa del logo"
                         className="w-full h-auto max-h-16 object-contain"
                         style={{ borderRadius: selectedBlockData.borderRadius || 0 }}
                       />
                     </div>
                   )}
                   <div className="space-y-1">
-                    <Label className="text-xs">Logo Alignment</Label>
+                    <Label className="text-xs">Alineación del Logo</Label>
                     <div className="flex gap-1">
                       {(['left', 'center', 'right'] as const).map(align => (
                         <Button
@@ -1713,13 +1713,13 @@ export default function TemplateEditorPage() {
                           className="flex-1 h-7 text-xs capitalize"
                           onClick={() => updateBlockWithHistory(selectedBlock!, { textAlign: align })}
                         >
-                          {align}
+                          {align === 'left' ? 'Izq' : align === 'center' ? 'Centro' : 'Der'}
                         </Button>
                       ))}
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Logo Size: {selectedBlockData.fontSize || 50}px</Label>
+                    <Label className="text-xs">Tamaño del Logo: {selectedBlockData.fontSize || 50}px</Label>
                     <input
                       type="range"
                       min="40"
@@ -1736,7 +1736,7 @@ export default function TemplateEditorPage() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Border Radius: {selectedBlockData.borderRadius ?? 5}px</Label>
+                    <Label className="text-xs">Radio del Borde: {selectedBlockData.borderRadius ?? 5}px</Label>
                     <input
                       type="range"
                       min="0"
@@ -1747,10 +1747,10 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-semibold">Padding (per side)</Label>
+                    <Label className="text-xs font-semibold">Relleno (por lado)</Label>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label className="text-[10px] text-muted-foreground">Top: {selectedBlockData.paddingTop ?? 25}px</Label>
+                        <Label className="text-[10px] text-muted-foreground">Superior: {selectedBlockData.paddingTop ?? 25}px</Label>
                         <input
                           type="range"
                           min="0"
@@ -1761,7 +1761,7 @@ export default function TemplateEditorPage() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-[10px] text-muted-foreground">Bottom: {selectedBlockData.paddingBottom ?? 25}px</Label>
+                        <Label className="text-[10px] text-muted-foreground">Inferior: {selectedBlockData.paddingBottom ?? 25}px</Label>
                         <input
                           type="range"
                           min="0"
@@ -1772,7 +1772,7 @@ export default function TemplateEditorPage() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-[10px] text-muted-foreground">Left: {selectedBlockData.paddingLeft ?? 0}px</Label>
+                        <Label className="text-[10px] text-muted-foreground">Izquierda: {selectedBlockData.paddingLeft ?? 0}px</Label>
                         <input
                           type="range"
                           min="0"
@@ -1783,7 +1783,7 @@ export default function TemplateEditorPage() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-[10px] text-muted-foreground">Right: {selectedBlockData.paddingRight ?? 0}px</Label>
+                        <Label className="text-[10px] text-muted-foreground">Derecha: {selectedBlockData.paddingRight ?? 0}px</Label>
                         <input
                           type="range"
                           min="0"
@@ -1796,7 +1796,7 @@ export default function TemplateEditorPage() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Background Color</Label>
+                    <Label className="text-xs">Color de Fondo</Label>
                     <input
                       type="color"
                       value={selectedBlockData.backgroundColor || "#ffffff"}
@@ -1810,10 +1810,10 @@ export default function TemplateEditorPage() {
               {selectedBlockData.type === "section" && (
                 <>
                   <p className="text-xs text-muted-foreground mb-3">
-                    Drag blocks from the canvas into this section
+                    Arrastra bloques desde el lienzo a esta sección
                   </p>
                   <div className="space-y-1">
-                    <Label className="text-xs">Background Color</Label>
+                    <Label className="text-xs">Color de Fondo</Label>
                     <input
                       type="color"
                       value={selectedBlockData.backgroundColor || "#f8fafc"}
@@ -1822,7 +1822,7 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Padding: {selectedBlockData.padding || 25}px</Label>
+                    <Label className="text-xs">Relleno: {selectedBlockData.padding || 25}px</Label>
                     <input
                       type="range"
                       min="0"
@@ -1834,7 +1834,7 @@ export default function TemplateEditorPage() {
                   </div>
                   {selectedBlockData.children && selectedBlockData.children.length > 0 && (
                     <p className="text-xs text-muted-foreground mt-3">
-                      Contains {selectedBlockData.children.length} block(s)
+                      Contiene {selectedBlockData.children.length} bloque(s)
                     </p>
                   )}
                 </>
@@ -1843,10 +1843,10 @@ export default function TemplateEditorPage() {
               {selectedBlockData.type === "columns" && (
                 <>
                   <p className="text-xs text-muted-foreground mb-3">
-                    Drag blocks from the canvas into columns
+                    Arrastra bloques desde el lienzo a las columnas
                   </p>
                   <div className="space-y-2">
-                    <Label className="text-xs font-semibold">Layout</Label>
+                    <Label className="text-xs font-semibold">Diseño</Label>
                     <div className="grid grid-cols-3 gap-1">
                       {[2, 3, 4].map(num => (
                         <Button
@@ -1870,7 +1870,7 @@ export default function TemplateEditorPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <Label className="text-xs">Background Color</Label>
+                    <Label className="text-xs">Color de Fondo</Label>
                     <input
                       type="color"
                       value={selectedBlockData.backgroundColor || "#ffffff"}
@@ -1884,7 +1884,7 @@ export default function TemplateEditorPage() {
               {selectedBlockData.type === "product" && (
                 <>
                   <div className="space-y-1">
-                    <Label className="text-xs">Product Name</Label>
+                    <Label className="text-xs">Nombre del Producto</Label>
                     <Input
                       value={selectedBlockData.content || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { content: e.target.value })}
@@ -1899,10 +1899,10 @@ export default function TemplateEditorPage() {
                     onClick={() => openMediaPicker(selectedBlock!)}
                   >
                     <ImageIcon className="h-4 w-4 mr-2" />
-                    {selectedBlockData.src ? "Change Image" : "Select Image"}
+                    {selectedBlockData.src ? "Cambiar Imagen" : "Seleccionar Imagen"}
                   </Button>
                   <div className="space-y-1">
-                    <Label className="text-xs">Product URL</Label>
+                    <Label className="text-xs">URL del Producto</Label>
                     <Input
                       value={selectedBlockData.buttonUrl || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { buttonUrl: e.target.value })}
@@ -1912,7 +1912,7 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Accent Color</Label>
+                    <Label className="text-xs">Color de Acento</Label>
                     <div className="flex gap-1 flex-wrap">
                       {brandColors.slice(0, 4).map(c => (
                         <button
@@ -1997,13 +1997,13 @@ export default function TemplateEditorPage() {
                       updateBlockWithHistory(selectedBlock!, { socialLinks: newLinks })
                     }}
                   >
-                    + Add Social Link
+                    + Añadir Enlace Social
                   </Button>
 
                   <div className="border-t pt-3 mt-3" />
 
                   <div className="space-y-1">
-                    <Label className="text-xs">Company Name</Label>
+                    <Label className="text-xs">Nombre de la Empresa</Label>
                     <Input
                       value={selectedBlockData.companyName || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { companyName: e.target.value })}
@@ -2012,7 +2012,7 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Address</Label>
+                    <Label className="text-xs">Dirección</Label>
                     <Input
                       value={selectedBlockData.address || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { address: e.target.value })}
@@ -2021,7 +2021,7 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Unsubscribe Text</Label>
+                    <Label className="text-xs">Texto de Cancelar Suscripción</Label>
                     <Input
                       value={selectedBlockData.unsubscribeText || ""}
                       onChange={(e) => updateBlock(selectedBlock!, { unsubscribeText: e.target.value })}
@@ -2030,7 +2030,7 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Background Color</Label>
+                    <Label className="text-xs">Color de Fondo</Label>
                     <input
                       type="color"
                       value={selectedBlockData.backgroundColor || "#f8fafc"}
@@ -2039,7 +2039,7 @@ export default function TemplateEditorPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Text Color</Label>
+                    <Label className="text-xs">Color del Texto</Label>
                     <input
                       type="color"
                       value={selectedBlockData.textColor || "#6b7280"}
@@ -2052,7 +2052,7 @@ export default function TemplateEditorPage() {
 
               {selectedBlockData.type === "divider" && (
                 <div className="space-y-1">
-                  <Label className="text-xs">Line Color</Label>
+                  <Label className="text-xs">Color de Línea</Label>
                   <div className="flex gap-1 flex-wrap">
                     {brandColors.map(c => (
                       <button
@@ -2069,7 +2069,7 @@ export default function TemplateEditorPage() {
 
               {selectedBlockData.type === "spacer" && (
                 <div className="space-y-1">
-                  <Label className="text-xs">Height: {selectedBlockData.padding || 30}px</Label>
+                  <Label className="text-xs">Altura: {selectedBlockData.padding || 30}px</Label>
                   <input
                     type="range"
                     min="10"
@@ -2088,12 +2088,12 @@ export default function TemplateEditorPage() {
                 onClick={() => deleteBlock(selectedBlock!)}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete Block
+                Eliminar Bloque
               </Button>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Click a block to edit
+              Haz clic en un bloque para editar
             </p>
           )}
         </aside>
@@ -2103,21 +2103,21 @@ export default function TemplateEditorPage() {
       <Dialog open={mediaPickerOpen} onOpenChange={setMediaPickerOpen}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>Select Image</DialogTitle>
-            <DialogDescription>Choose from your library or upload new</DialogDescription>
+            <DialogTitle>Seleccionar Imagen</DialogTitle>
+            <DialogDescription>Elige de tu biblioteca o sube una nueva</DialogDescription>
           </DialogHeader>
 
           <Tabs defaultValue="library" className="flex-1 flex flex-col min-h-0">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="library">Library</TabsTrigger>
-              <TabsTrigger value="upload">Upload</TabsTrigger>
+              <TabsTrigger value="library">Biblioteca</TabsTrigger>
+              <TabsTrigger value="upload">Subir</TabsTrigger>
             </TabsList>
 
             <TabsContent value="library" className="flex-1 flex flex-col min-h-0 mt-4">
               <div className="relative mb-3">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search..."
+                  placeholder="Buscar..."
                   value={mediaSearch}
                   onChange={(e) => setMediaSearch(e.target.value)}
                   className="pl-9 h-9"
@@ -2131,7 +2131,7 @@ export default function TemplateEditorPage() {
                 ) : filteredMediaFiles.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
                     <ImageIcon className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                    <p>No images</p>
+                    <p>Sin imágenes</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-4 gap-2">
@@ -2174,9 +2174,9 @@ export default function TemplateEditorPage() {
                   )}
                 </div>
                 <Button onClick={() => fileInputRef.current?.click()} disabled={mediaUploading}>
-                  {mediaUploading ? "Uploading..." : "Choose Files"}
+                  {mediaUploading ? "Subiendo..." : "Seleccionar Archivos"}
                 </Button>
-                <p className="text-xs text-muted-foreground mt-2">Max file size: 4MB per image</p>
+                <p className="text-xs text-muted-foreground mt-2">Tamaño máximo: 4MB por imagen</p>
               </div>
             </TabsContent>
           </Tabs>
@@ -2194,7 +2194,7 @@ export default function TemplateEditorPage() {
                       const file = mediaFiles.find(f => f.url === mediaSelected)
                       if (!file) return
 
-                      if (!confirm("Are you sure you want to delete this image?")) return
+                      if (!confirm("¿Estás seguro de que deseas eliminar esta imagen?")) return
 
                       setDeletingMediaId(file.id)
                       const result = await deleteMedia(file.id)
@@ -2203,21 +2203,21 @@ export default function TemplateEditorPage() {
                       if (result.success) {
                         setMediaFiles(prev => prev.filter(f => f.id !== file.id))
                         setMediaSelected(null)
-                        toast({ title: "Image deleted" })
+                        toast({ title: "Imagen eliminada" })
                       } else {
-                        toast({ title: "Delete failed", description: result.error, variant: "destructive" })
+                        toast({ title: "Error al eliminar", description: result.error, variant: "destructive" })
                       }
                     }}
                   >
                     {deletingMediaId === mediaFiles.find(f => f.url === mediaSelected)?.id ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Deleting...
+                        Eliminando...
                       </>
                     ) : (
                       <>
                         <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
+                        Eliminar
                       </>
                     )}
                   </Button>
@@ -2226,10 +2226,10 @@ export default function TemplateEditorPage() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setMediaPickerOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
               <Button onClick={confirmMediaSelection} disabled={!mediaSelected}>
-                Select
+                Seleccionar
               </Button>
             </div>
           </div>
@@ -2240,9 +2240,9 @@ export default function TemplateEditorPage() {
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="max-w-7xl max-h-[90vh] p-0 overflow-hidden">
           <DialogHeader className="p-4 border-b">
-            <DialogTitle>Email Preview</DialogTitle>
+            <DialogTitle>Vista Previa del Email</DialogTitle>
             <DialogDescription>
-              This is how your email will appear in recipients&apos; inboxes
+              Así se verá tu email en las bandejas de entrada de los destinatarios
             </DialogDescription>
           </DialogHeader>
           <div className="h-[80vh] overflow-auto bg-gray-100 p-6">
@@ -2283,7 +2283,7 @@ export default function TemplateEditorPage() {
           >
             <div className="flex items-center gap-2">
               <Layers className="h-4 w-4" />
-              <span className="text-sm font-medium">Structure</span>
+              <span className="text-sm font-medium">Estructura</span>
             </div>
             <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-white" onClick={() => setShowStructure(false)}>
               <X className="h-4 w-4" />
@@ -2291,7 +2291,7 @@ export default function TemplateEditorPage() {
           </div>
           <div className="max-h-[400px] overflow-y-auto p-2 text-xs">
             {blocks.length === 0 ? (
-              <p className="text-zinc-500 text-center py-4">No blocks</p>
+              <p className="text-zinc-500 text-center py-4">Sin bloques</p>
             ) : (
               <div className="space-y-0.5">
                 {blocks.map((block, i) => (

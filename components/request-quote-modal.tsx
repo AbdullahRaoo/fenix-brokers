@@ -71,8 +71,8 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
       }
 
       toast({
-        title: "Quote request submitted!",
-        description: "We'll get back to you within 24 hours.",
+        title: "¡Solicitud de cotización enviada!",
+        description: "Te responderemos en un plazo de 24 horas.",
       })
 
       // Reset form
@@ -94,7 +94,7 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
         <div className="flex flex-col lg:flex-row h-full">
           {/* Left Side - Product Context */}
           <div className="lg:w-1/3 bg-muted/30 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-border flex flex-col justify-center">
-            <h3 className="text-2xl font-semibold mb-8">Requesting Quote For:</h3>
+            <h3 className="text-2xl font-semibold mb-8">Solicitando Cotización Para:</h3>
 
             <div className="aspect-square rounded-2xl overflow-hidden bg-background mb-8 shadow-lg max-w-sm mx-auto w-full">
               <img
@@ -109,15 +109,15 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
               <div>
                 <h4 className="font-bold text-2xl mb-2">{product.name}</h4>
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                  <span className="bg-background px-3 py-1 rounded-full border border-border">SKU: {product.id}</span>
-                  <span className="bg-background px-3 py-1 rounded-full border border-border">Brand: {product.brand}</span>
+                  <span className="bg-background px-3 py-1 rounded-full border border-border">Código: {product.id}</span>
+                  <span className="bg-background px-3 py-1 rounded-full border border-border">Marca: {product.brand}</span>
                 </div>
               </div>
 
               {/* Key Specifications */}
               {product.specifications && product.specifications.length > 0 && (
                 <div className="pt-6 border-t border-border">
-                  <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-muted-foreground">Key Specifications:</h5>
+                  <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-muted-foreground">Especificaciones:</h5>
                   <ul className="space-y-3">
                     {product.specifications.slice(0, 5).map((spec, index) => (
                       <li key={index} className="flex items-start gap-3 text-base">
@@ -136,9 +136,9 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
           {/* Right Side - Form */}
           <div className="lg:w-2/3 p-8 lg:p-12 bg-card">
             <div className="mb-10 max-w-2xl">
-              <h2 className="text-3xl font-bold mb-4">Request a Quote</h2>
+              <h2 className="text-3xl font-bold mb-4">Solicitar Cotización</h2>
               <p className="text-lg text-muted-foreground">
-                Please fill in the details below. Our team will review your request and provide a custom quote tailored to your needs within 24 hours.
+                Por favor completa los detalles a continuación. Nuestro equipo revisará tu solicitud y te proporcionará una cotización personalizada en 24 horas.
               </p>
             </div>
 
@@ -146,11 +146,11 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
                   <Label htmlFor="companyName" className="text-base">
-                    Company Name <span className="text-destructive">*</span>
+                    Nombre de la Empresa <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="companyName"
-                    placeholder="Your company name"
+                    placeholder="Nombre de tu empresa"
                     value={formData.companyName}
                     onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                     required
@@ -160,11 +160,11 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
 
                 <div className="space-y-3">
                   <Label htmlFor="contactPerson" className="text-base">
-                    Contact Person <span className="text-destructive">*</span>
+                    Persona de Contacto <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="contactPerson"
-                    placeholder="Your full name"
+                    placeholder="Tu nombre completo"
                     value={formData.contactPerson}
                     onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
                     required
@@ -176,12 +176,12 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
                   <Label htmlFor="email" className="text-base">
-                    Email Address <span className="text-destructive">*</span>
+                    Correo Electrónico <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="email@company.com"
+                    placeholder="correo@empresa.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
@@ -191,12 +191,12 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
 
                 <div className="space-y-3">
                   <Label htmlFor="quantity" className="text-base">
-                    Quantity <span className="text-destructive">*</span>
+                    Cantidad <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="quantity"
                     type="number"
-                    placeholder="Number of units"
+                    placeholder="Número de unidades"
                     min="1"
                     value={formData.quantity}
                     onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
@@ -207,10 +207,10 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
               </div>
 
               <div className="space-y-3">
-                <Label htmlFor="requirements" className="text-base">Special Requirements</Label>
+                <Label htmlFor="requirements" className="text-base">Requisitos Especiales</Label>
                 <Textarea
                   id="requirements"
-                  placeholder="Please share any specific requirements, customizations, or questions regarding this product..."
+                  placeholder="Por favor comparte cualquier requisito específico, personalizaciones o preguntas sobre este producto..."
                   value={formData.requirements}
                   onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
                   rows={5}
@@ -220,7 +220,7 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
 
               {/* File Upload */}
               <div className="space-y-3">
-                <Label className="text-base">Attach RFP/Document (Optional)</Label>
+                <Label className="text-base">Adjuntar RFP/Documento (Opcional)</Label>
                 <div className="border-2 border-dashed border-border rounded-xl p-8 hover:border-primary/50 transition-all bg-muted/10 group cursor-pointer">
                   {!file ? (
                     <label htmlFor="file-upload" className="cursor-pointer block w-full h-full">
@@ -228,8 +228,8 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
                         <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                           <Upload className="h-8 w-8 text-primary" />
                         </div>
-                        <p className="text-lg font-medium mb-2">Click to upload or drag and drop</p>
-                        <p className="text-sm text-muted-foreground">PDF, DOC, DOCX up to 10MB</p>
+                        <p className="text-lg font-medium mb-2">Haz clic para subir o arrastra y suelta</p>
+                        <p className="text-sm text-muted-foreground">PDF, DOC, DOCX hasta 10MB</p>
                       </div>
                       <input
                         id="file-upload"
@@ -268,10 +268,10 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
                   onClick={() => onOpenChange(false)}
                   disabled={isPending}
                 >
-                  Cancel
+                  Cancelar
                 </Button>
                 <Button type="submit" size="lg" className="flex-[2] h-14 text-base shadow-lg hover:shadow-xl transition-all" disabled={isPending}>
-                  {isPending ? "Submitting Request..." : "Submit Quote Request"}
+                  {isPending ? "Enviando Solicitud..." : "Enviar Solicitud de Cotización"}
                 </Button>
               </div>
             </form>

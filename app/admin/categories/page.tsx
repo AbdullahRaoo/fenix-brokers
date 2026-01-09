@@ -109,7 +109,7 @@ export default function CategoriesPage() {
                 if (result.error) {
                     toast({ title: "Error", description: result.error, variant: "destructive" })
                 } else {
-                    toast({ title: "Success", description: "Category updated successfully" })
+                    toast({ title: "Éxito", description: "Categoría actualizada exitosamente" })
                     setIsDialogOpen(false)
                     loadCategories()
                 }
@@ -118,7 +118,7 @@ export default function CategoriesPage() {
                 if (result.error) {
                     toast({ title: "Error", description: result.error, variant: "destructive" })
                 } else {
-                    toast({ title: "Success", description: "Category created successfully" })
+                    toast({ title: "Éxito", description: "Categoría creada exitosamente" })
                     setIsDialogOpen(false)
                     loadCategories()
                 }
@@ -131,7 +131,7 @@ export default function CategoriesPage() {
     }
 
     async function handleDelete(category: Category) {
-        if (!confirm(`Are you sure you want to delete "${category.name}"? This will not delete products in this category.`)) {
+        if (!confirm(`¿Estás seguro de eliminar "${category.name}"? Esto no eliminará los productos de esta categoría.`)) {
             return
         }
 
@@ -139,7 +139,7 @@ export default function CategoriesPage() {
         if (result.error) {
             toast({ title: "Error", description: result.error, variant: "destructive" })
         } else {
-            toast({ title: "Success", description: "Category deleted successfully" })
+            toast({ title: "Éxito", description: "Categoría eliminada exitosamente" })
             loadCategories()
         }
     }
@@ -155,15 +155,15 @@ export default function CategoriesPage() {
                 <div>
                     <h1 className="text-2xl font-bold flex items-center gap-2">
                         <FolderTree className="h-6 w-6 text-primary" />
-                        Product Categories
+                        Categorías de Productos
                     </h1>
                     <p className="text-muted-foreground mt-1">
-                        Manage product categories for your catalog
+                        Administra las categorías de productos de tu catálogo
                     </p>
                 </div>
                 <Button onClick={openCreateDialog}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Category
+                    Agregar Categoría
                 </Button>
             </div>
 
@@ -176,22 +176,22 @@ export default function CategoriesPage() {
                 ) : categories.length === 0 ? (
                     <div className="text-center py-16">
                         <FolderTree className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                        <h3 className="font-semibold mb-2">No categories yet</h3>
-                        <p className="text-muted-foreground mb-4">Create your first category to organize products</p>
+                        <h3 className="font-semibold mb-2">Aún no hay categorías</h3>
+                        <p className="text-muted-foreground mb-4">Crea tu primera categoría para organizar productos</p>
                         <Button onClick={openCreateDialog}>
                             <Plus className="h-4 w-4 mr-2" />
-                            Add Category
+                            Agregar Categoría
                         </Button>
                     </div>
                 ) : (
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-16">Image</TableHead>
-                                <TableHead>Name</TableHead>
-                                <TableHead className="hidden md:table-cell">Description</TableHead>
-                                <TableHead className="text-center">Products</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead className="w-16">Imagen</TableHead>
+                                <TableHead>Nombre</TableHead>
+                                <TableHead className="hidden md:table-cell">Descripción</TableHead>
+                                <TableHead className="text-center">Productos</TableHead>
+                                <TableHead className="text-right">Acciones</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -258,16 +258,16 @@ export default function CategoriesPage() {
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
                         <DialogTitle>
-                            {editingCategory ? "Edit Category" : "Create Category"}
+                            {editingCategory ? "Editar Categoría" : "Crear Categoría"}
                         </DialogTitle>
                     </DialogHeader>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="name">Category Name *</Label>
+                            <Label htmlFor="name">Nombre de Categoría *</Label>
                             <Input
                                 id="name"
-                                placeholder="e.g., Skincare, Makeup, Perfumes"
+                                placeholder="ej., Cuidado de Piel, Maquillaje, Perfumes"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 required
@@ -275,10 +275,10 @@ export default function CategoriesPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
+                            <Label htmlFor="description">Descripción</Label>
                             <Textarea
                                 id="description"
-                                placeholder="Brief description of this category..."
+                                placeholder="Breve descripción de esta categoría..."
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 rows={3}
@@ -286,10 +286,10 @@ export default function CategoriesPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Category Image</Label>
+                            <Label>Imagen de Categoría</Label>
                             <div className="flex gap-2">
                                 <Input
-                                    placeholder="Image URL"
+                                    placeholder="URL de imagen"
                                     value={formData.image_url}
                                     onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                                     className="flex-1"
@@ -308,7 +308,7 @@ export default function CategoriesPage() {
                                 <div className="mt-2 relative w-24 h-24 rounded-lg overflow-hidden border border-border">
                                     <img
                                         src={formData.image_url}
-                                        alt="Preview"
+                                        alt="Vista previa"
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
@@ -321,16 +321,16 @@ export default function CategoriesPage() {
                                 variant="outline"
                                 onClick={() => setIsDialogOpen(false)}
                             >
-                                Cancel
+                                Cancelar
                             </Button>
                             <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                        Saving...
+                                        Guardando...
                                     </>
                                 ) : (
-                                    editingCategory ? "Update Category" : "Create Category"
+                                    editingCategory ? "Actualizar Categoría" : "Crear Categoría"
                                 )}
                             </Button>
                         </div>

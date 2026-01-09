@@ -48,8 +48,8 @@ export default function InquiryModal({ open, onOpenChange, product }: InquiryMod
     localStorage.setItem("inquiries", JSON.stringify(inquiries))
 
     toast({
-      title: "Quote request submitted!",
-      description: "We'll get back to you within 24 hours.",
+      title: "¡Solicitud de cotización enviada!",
+      description: "Te responderemos en un plazo de 24 horas.",
     })
 
     setQuantity("")
@@ -66,24 +66,24 @@ export default function InquiryModal({ open, onOpenChange, product }: InquiryMod
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4 mx-auto">
             <FileText className="h-6 w-6 text-primary" />
           </div>
-          <DialogTitle className="text-center text-2xl">Request Quote</DialogTitle>
+          <DialogTitle className="text-center text-2xl">Solicitar Cotización</DialogTitle>
           <DialogDescription className="text-center">
-            Fill out the form below and we'll send you a custom quote within 24 hours
+            Completa el formulario a continuación y te enviaremos una cotización personalizada en 24 horas
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="product-name">Product</Label>
+            <Label htmlFor="product-name">Producto</Label>
             <Input id="product-name" value={`${product.name} (${product.id})`} readOnly className="bg-muted" />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="quantity">Quantity</Label>
+            <Label htmlFor="quantity">Cantidad</Label>
             <Input
               id="quantity"
               type="number"
-              placeholder="Enter quantity"
+              placeholder="Ingresa la cantidad"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               required
@@ -92,10 +92,10 @@ export default function InquiryModal({ open, onOpenChange, product }: InquiryMod
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="company">Company Name</Label>
+            <Label htmlFor="company">Nombre de la Empresa</Label>
             <Input
               id="company"
-              placeholder="Your company name"
+              placeholder="Nombre de tu empresa"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
               required
@@ -103,10 +103,10 @@ export default function InquiryModal({ open, onOpenChange, product }: InquiryMod
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Additional Notes</Label>
+            <Label htmlFor="notes">Notas Adicionales</Label>
             <Textarea
               id="notes"
-              placeholder="Any specific requirements or questions..."
+              placeholder="Cualquier requisito específico o preguntas..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
@@ -114,7 +114,7 @@ export default function InquiryModal({ open, onOpenChange, product }: InquiryMod
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit Request"}
+            {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
           </Button>
         </form>
       </DialogContent>

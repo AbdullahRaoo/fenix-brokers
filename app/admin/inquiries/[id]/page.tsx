@@ -46,7 +46,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
     if (!replyMessage.trim()) {
       toast({
         title: "Error",
-        description: "Please enter a message before sending.",
+        description: "Por favor ingresa un mensaje antes de enviar.",
         variant: "destructive",
       })
       return
@@ -65,8 +65,8 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
       }
 
       toast({
-        title: "Reply sent",
-        description: "Your message has been sent to the customer via email.",
+        title: "Respuesta enviada",
+        description: "Tu mensaje ha sido enviado al cliente por correo.",
       })
 
       // Reload inquiry to get updated message threads
@@ -96,8 +96,8 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
       }
 
       toast({
-        title: "Status updated",
-        description: `Inquiry status changed to ${newStatus}.`,
+        title: "Estado actualizado",
+        description: `El estado de la consulta cambió a ${newStatus}.`,
       })
     })
   }
@@ -107,7 +107,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading inquiry...</p>
+          <p className="text-sm text-muted-foreground">Cargando consulta...</p>
         </div>
       </div>
     )
@@ -118,9 +118,9 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-4">
           <Package2 className="h-16 w-16 text-muted-foreground opacity-50" />
-          <h2 className="text-xl font-bold">Inquiry Not Found</h2>
+          <h2 className="text-xl font-bold">Consulta No Encontrada</h2>
           <Button asChild>
-            <Link href="/admin/inquiries">Back to Inquiries</Link>
+            <Link href="/admin/inquiries">Volver a Consultas</Link>
           </Button>
         </div>
       </div>
@@ -149,12 +149,12 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/admin/inquiries">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Inquiries
+            Volver a Consultas
           </Link>
         </Button>
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Inquiry Details</h1>
+            <h1 className="text-3xl font-bold mb-2">Detalles de Consulta</h1>
             <p className="text-muted-foreground">ID: {inquiry.id.slice(0, 8)}...</p>
           </div>
           <Badge variant="secondary" className={getStatusColor(status)}>
@@ -169,25 +169,25 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
           {/* Customer Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Customer Information</CardTitle>
-              <CardDescription>Details about the customer and their inquiry</CardDescription>
+              <CardTitle>Información del Cliente</CardTitle>
+              <CardDescription>Detalles sobre el cliente y su consulta</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Company Name</p>
+                  <p className="text-sm text-muted-foreground mb-1">Nombre de Empresa</p>
                   <p className="font-medium">{inquiry.company_name}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Contact Person</p>
+                  <p className="text-sm text-muted-foreground mb-1">Persona de Contacto</p>
                   <p className="font-medium">{inquiry.contact_person}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Email</p>
+                  <p className="text-sm text-muted-foreground mb-1">Correo</p>
                   <p className="font-medium">{inquiry.email}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Inquiry Date</p>
+                  <p className="text-sm text-muted-foreground mb-1">Fecha de Consulta</p>
                   <p className="font-medium">{new Date(inquiry.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
@@ -197,24 +197,24 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
           {/* Product Details */}
           <Card>
             <CardHeader>
-              <CardTitle>Product Details</CardTitle>
-              <CardDescription>Information about the requested product</CardDescription>
+              <CardTitle>Detalles del Producto</CardTitle>
+              <CardDescription>Información sobre el producto solicitado</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Product</p>
+                  <p className="text-sm text-muted-foreground mb-1">Producto</p>
                   <p className="font-medium">{inquiry.product_name}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Quantity Requested</p>
+                  <p className="text-sm text-muted-foreground mb-1">Cantidad Solicitada</p>
                   <p className="font-medium">{inquiry.quantity}</p>
                 </div>
               </div>
 
               {inquiry.requirements && (
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Customer Requirements</p>
+                  <p className="text-sm text-muted-foreground mb-1">Requisitos del Cliente</p>
                   <div className="p-4 bg-muted rounded-lg">
                     <p className="text-sm">{inquiry.requirements}</p>
                   </div>
@@ -223,14 +223,14 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
 
               {inquiry.attachment_url && (
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Attachment</p>
+                  <p className="text-sm text-muted-foreground mb-1">Adjunto</p>
                   <a
                     href={inquiry.attachment_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary hover:underline text-sm"
                   >
-                    View Attachment
+                    Ver Adjunto
                   </a>
                 </div>
               )}
@@ -240,12 +240,12 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
           {/* Conversation History */}
           <Card>
             <CardHeader>
-              <CardTitle>Conversation History</CardTitle>
-              <CardDescription>Email conversation with the customer</CardDescription>
+              <CardTitle>Historial de Conversación</CardTitle>
+              <CardDescription>Conversación por correo con el cliente</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {!inquiry.message_threads || inquiry.message_threads.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">No conversation yet</p>
+                <p className="text-sm text-muted-foreground text-center py-4">Aún no hay conversación</p>
               ) : (
                 <div className="space-y-3">
                   {inquiry.message_threads.map((msg, idx) => (
@@ -255,7 +255,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
                     >
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="secondary" className="text-xs">
-                          {msg.sender === "admin" ? "You" : "Customer"}
+                          {msg.sender === "admin" ? "Tú" : "Cliente"}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
                           {new Date(msg.timestamp).toLocaleString()}
@@ -272,15 +272,15 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
           {/* Reply Interface */}
           <Card>
             <CardHeader>
-              <CardTitle>Reply via Email</CardTitle>
-              <CardDescription>Send a response to the customer's inquiry</CardDescription>
+              <CardTitle>Responder por Correo</CardTitle>
+              <CardDescription>Envía una respuesta a la consulta del cliente</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="reply">Your Message</Label>
+                <Label htmlFor="reply">Tu Mensaje</Label>
                 <Textarea
                   id="reply"
-                  placeholder="Type your reply here..."
+                  placeholder="Escribe tu respuesta aquí..."
                   rows={6}
                   value={replyMessage}
                   onChange={(e) => setReplyMessage(e.target.value)}
@@ -290,12 +290,12 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Sending...
+                    Enviando...
                   </>
                 ) : (
                   <>
                     <Send className="h-4 w-4 mr-2" />
-                    Send Reply
+                    Enviar Respuesta
                   </>
                 )}
               </Button>
@@ -307,21 +307,21 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Status Management</CardTitle>
-              <CardDescription>Update inquiry status</CardDescription>
+              <CardTitle>Gestión de Estado</CardTitle>
+              <CardDescription>Actualizar estado de la consulta</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="status">Inquiry Status</Label>
+                <Label htmlFor="status">Estado de Consulta</Label>
                 <Select value={status} onValueChange={(value: Inquiry["status"]) => handleUpdateStatus(value)}>
                   <SelectTrigger id="status">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="New">New</SelectItem>
-                    <SelectItem value="Viewed">Viewed</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Closed">Closed</SelectItem>
+                    <SelectItem value="New">Nuevo</SelectItem>
+                    <SelectItem value="Viewed">Visto</SelectItem>
+                    <SelectItem value="In Progress">En Progreso</SelectItem>
+                    <SelectItem value="Closed">Cerrado</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -331,7 +331,7 @@ export default function InquiryDetailPage({ params }: { params: Promise<{ id: st
           {inquiry.admin_notes && (
             <Card>
               <CardHeader>
-                <CardTitle>Admin Notes</CardTitle>
+                <CardTitle>Notas de Administrador</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">{inquiry.admin_notes}</p>

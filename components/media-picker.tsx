@@ -58,11 +58,11 @@ export function MediaPicker({ value, onSelect, trigger }: MediaPickerProps) {
 
         const result = await uploadMedia(formData)
         if (result.data) {
-            toast({ title: "File uploaded" })
+            toast({ title: "Archivo subido" })
             setSelectedUrl(result.data.url)
             await loadFiles()
         } else {
-            toast({ title: "Upload failed", description: result.error, variant: "destructive" })
+            toast({ title: "Error al subir", description: result.error, variant: "destructive" })
         }
 
         setIsUploading(false)
@@ -89,27 +89,27 @@ export function MediaPicker({ value, onSelect, trigger }: MediaPickerProps) {
                 {trigger || (
                     <Button variant="outline" type="button">
                         <ImageIcon className="h-4 w-4 mr-2" />
-                        Select Image
+                        Seleccionar Imagen
                     </Button>
                 )}
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
                 <DialogHeader>
-                    <DialogTitle>Select Image</DialogTitle>
-                    <DialogDescription>Choose from your media library or upload a new image</DialogDescription>
+                    <DialogTitle>Seleccionar Imagen</DialogTitle>
+                    <DialogDescription>Elige de tu biblioteca de medios o sube una nueva imagen</DialogDescription>
                 </DialogHeader>
 
                 <Tabs defaultValue="library" className="flex-1 flex flex-col min-h-0">
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="library">Media Library</TabsTrigger>
-                        <TabsTrigger value="upload">Upload New</TabsTrigger>
+                        <TabsTrigger value="library">Biblioteca</TabsTrigger>
+                        <TabsTrigger value="upload">Subir Nueva</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="library" className="flex-1 flex flex-col min-h-0 mt-4">
                         <div className="relative mb-4">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
-                                placeholder="Search images..."
+                                placeholder="Buscar imágenes..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-9"
@@ -124,7 +124,7 @@ export function MediaPicker({ value, onSelect, trigger }: MediaPickerProps) {
                             ) : filteredFiles.length === 0 ? (
                                 <div className="text-center py-12 text-muted-foreground">
                                     <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                    <p>No images found</p>
+                                    <p>Sin imágenes encontradas</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-4 gap-3">
@@ -176,10 +176,10 @@ export function MediaPicker({ value, onSelect, trigger }: MediaPickerProps) {
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={isUploading}
                             >
-                                {isUploading ? "Uploading..." : "Choose File"}
+                                {isUploading ? "Subiendo..." : "Elegir Archivo"}
                             </Button>
                             <p className="text-xs text-muted-foreground mt-2">
-                                PNG, JPG, GIF up to 10MB
+                                PNG, JPG, GIF hasta 10MB
                             </p>
                         </div>
                     </TabsContent>
@@ -198,10 +198,10 @@ export function MediaPicker({ value, onSelect, trigger }: MediaPickerProps) {
                     </div>
                     <div className="flex gap-2">
                         <Button variant="outline" onClick={() => setOpen(false)}>
-                            Cancel
+                            Cancelar
                         </Button>
                         <Button onClick={handleSelect} disabled={!selectedUrl}>
-                            Select Image
+                            Seleccionar Imagen
                         </Button>
                     </div>
                 </div>

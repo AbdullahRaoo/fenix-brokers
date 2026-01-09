@@ -81,7 +81,7 @@ export async function getProducts(options?: {
         return { data: data as Product[], error: null }
     } catch (error) {
         console.error('Error in getProducts:', error)
-        return { data: null, error: 'Failed to fetch products' }
+        return { data: null, error: 'Error al obtener productos' }
     }
 }
 
@@ -97,7 +97,7 @@ export async function getProductBySlug(slug: string): Promise<{ data: Product | 
 
         if (error) {
             if (error.code === 'PGRST116') {
-                return { data: null, error: 'Product not found' }
+                return { data: null, error: 'Producto no encontrado' }
             }
             console.error('Error fetching product:', error)
             return { data: null, error: error.message }
@@ -106,7 +106,7 @@ export async function getProductBySlug(slug: string): Promise<{ data: Product | 
         return { data: data as Product, error: null }
     } catch (error) {
         console.error('Error in getProductBySlug:', error)
-        return { data: null, error: 'Failed to fetch product' }
+        return { data: null, error: 'Error al obtener producto' }
     }
 }
 
@@ -127,7 +127,7 @@ export async function getProductById(id: string): Promise<{ data: Product | null
         return { data: data as Product, error: null }
     } catch (error) {
         console.error('Error in getProductById:', error)
-        return { data: null, error: 'Failed to fetch product' }
+        return { data: null, error: 'Error al obtener producto' }
     }
 }
 
@@ -187,7 +187,7 @@ export async function createProduct(productData: {
         return { data: data as Product, error: null }
     } catch (error) {
         console.error('Error in createProduct:', error)
-        return { data: null, error: 'Failed to create product' }
+        return { data: null, error: 'Error al crear producto' }
     }
 }
 
@@ -248,7 +248,7 @@ export async function updateProduct(
         return { data: data as Product, error: null }
     } catch (error) {
         console.error('Error in updateProduct:', error)
-        return { data: null, error: 'Failed to update product' }
+        return { data: null, error: 'Error al actualizar producto' }
     }
 }
 
@@ -271,7 +271,7 @@ export async function trashProduct(id: string): Promise<{ success: boolean; erro
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in trashProduct:', error)
-        return { success: false, error: 'Failed to trash product' }
+        return { success: false, error: 'Error al mover producto a papelera' }
     }
 }
 
@@ -293,7 +293,7 @@ export async function restoreProduct(id: string): Promise<{ success: boolean; er
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in restoreProduct:', error)
-        return { success: false, error: 'Failed to restore product' }
+        return { success: false, error: 'Error al restaurar producto' }
     }
 }
 
@@ -316,7 +316,7 @@ export async function deleteProductPermanently(id: string): Promise<{ success: b
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in deleteProductPermanently:', error)
-        return { success: false, error: 'Failed to delete product' }
+        return { success: false, error: 'Error al eliminar producto' }
     }
 }
 
@@ -339,7 +339,7 @@ export async function emptyTrash(): Promise<{ success: boolean; count: number; e
         return { success: true, count: data?.length || 0, error: null }
     } catch (error) {
         console.error('Error in emptyTrash:', error)
-        return { success: false, count: 0, error: 'Failed to empty trash' }
+        return { success: false, count: 0, error: 'Error al vaciar papelera' }
     }
 }
 
@@ -362,7 +362,7 @@ export async function publishProduct(id: string): Promise<{ success: boolean; er
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in publishProduct:', error)
-        return { success: false, error: 'Failed to publish product' }
+        return { success: false, error: 'Error al publicar producto' }
     }
 }
 
@@ -385,7 +385,7 @@ export async function unpublishProduct(id: string): Promise<{ success: boolean; 
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in unpublishProduct:', error)
-        return { success: false, error: 'Failed to unpublish product' }
+        return { success: false, error: 'Error al despublicar producto' }
     }
 }
 
@@ -407,7 +407,7 @@ export async function getCategories(): Promise<{ data: string[]; error: string |
         return { data: categories, error: null }
     } catch (error) {
         console.error('Error in getCategories:', error)
-        return { data: [], error: 'Failed to fetch categories' }
+        return { data: [], error: 'Error al obtener categorías' }
     }
 }
 
@@ -429,7 +429,7 @@ export async function getBrands(): Promise<{ data: string[]; error: string | nul
         return { data: brands, error: null }
     } catch (error) {
         console.error('Error in getBrands:', error)
-        return { data: [], error: 'Failed to fetch brands' }
+        return { data: [], error: 'Error al obtener marcas' }
     }
 }
 
@@ -458,7 +458,7 @@ export async function getProductCounts(): Promise<{
         }
     } catch (error) {
         console.error('Error in getProductCounts:', error)
-        return { all: 0, draft: 0, published: 0, trash: 0, error: 'Failed to get counts' }
+        return { all: 0, draft: 0, published: 0, trash: 0, error: 'Error al obtener conteos' }
     }
 }
 
@@ -522,7 +522,7 @@ export async function getCategoriesWithCount(): Promise<{
         return { data: categories, error: null }
     } catch (error) {
         console.error('Error in getCategoriesWithCount:', error)
-        return { data: [], error: 'Failed to fetch categories' }
+        return { data: [], error: 'Error al obtener categorías' }
     }
 }
 

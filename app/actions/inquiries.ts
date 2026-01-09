@@ -61,7 +61,7 @@ export async function submitQuoteRequest(formData: {
         return { data: data as Inquiry, error: null }
     } catch (error) {
         console.error('Error in submitQuoteRequest:', error)
-        return { data: null, error: 'Failed to submit quote request' }
+        return { data: null, error: 'Error al enviar solicitud de cotización' }
     }
 }
 
@@ -93,7 +93,7 @@ export async function getInquiries(options?: {
         return { data: data as Inquiry[], error: null }
     } catch (error) {
         console.error('Error in getInquiries:', error)
-        return { data: null, error: 'Failed to fetch inquiries' }
+        return { data: null, error: 'Error al obtener consultas' }
     }
 }
 
@@ -114,7 +114,7 @@ export async function getInquiryById(id: string): Promise<{ data: Inquiry | null
         return { data: data as Inquiry, error: null }
     } catch (error) {
         console.error('Error in getInquiryById:', error)
-        return { data: null, error: 'Failed to fetch inquiry' }
+        return { data: null, error: 'Error al obtener consulta' }
     }
 }
 
@@ -145,7 +145,7 @@ export async function updateInquiry(
         return { data: inquiry as Inquiry, error: null }
     } catch (error) {
         console.error('Error in updateInquiry:', error)
-        return { data: null, error: 'Failed to update inquiry' }
+        return { data: null, error: 'Error al actualizar consulta' }
     }
 }
 
@@ -163,7 +163,7 @@ export async function replyToInquiry(
             .single()
 
         if (fetchError || !inquiry) {
-            return { success: false, error: 'Inquiry not found' }
+            return { success: false, error: 'Consulta no encontrada' }
         }
 
         // Send email to customer
@@ -184,7 +184,7 @@ export async function replyToInquiry(
         })
 
         if (!emailResult.success) {
-            return { success: false, error: 'Failed to send email' }
+            return { success: false, error: 'Error al enviar email' }
         }
 
         // Update message threads and status
@@ -209,7 +209,7 @@ export async function replyToInquiry(
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in replyToInquiry:', error)
-        return { success: false, error: 'Failed to reply to inquiry' }
+        return { success: false, error: 'Error al responder consulta' }
     }
 }
 
@@ -234,6 +234,6 @@ export async function uploadAttachment(file: File): Promise<{ url: string | null
         return { url: urlData.publicUrl, error: null }
     } catch (error) {
         console.error('Error in uploadAttachment:', error)
-        return { url: null, error: 'Failed to upload file' }
+        return { url: null, error: 'Error al subir archivo' }
     }
 }

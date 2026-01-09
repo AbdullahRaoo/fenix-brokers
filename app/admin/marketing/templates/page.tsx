@@ -34,13 +34,13 @@ export default function TemplatesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Newsletter Templates</h1>
-          <p className="text-muted-foreground">Manage and create reusable email templates</p>
+          <h1 className="text-3xl font-bold mb-2">Plantillas de Boletín</h1>
+          <p className="text-muted-foreground">Administra y crea plantillas de email reutilizables</p>
         </div>
         <Button asChild size="lg">
           <Link href="/admin/marketing/templates/new">
             <Plus className="h-4 w-4 mr-2" />
-            New Template
+            Nueva Plantilla
           </Link>
         </Button>
       </div>
@@ -60,18 +60,18 @@ export default function TemplatesPage() {
               <CardDescription>{template.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">Last modified: {template.lastModified}</p>
+              <p className="text-xs text-muted-foreground">Última modificación: {template.lastModified}</p>
             </CardContent>
             <CardFooter className="flex gap-2">
               <Button asChild variant="outline" size="sm" className="flex-1 bg-transparent">
                 <Link href={`/admin/marketing/templates/${template.id}/edit`}>
                   <Edit className="h-3 w-3 mr-2" />
-                  Edit
+                  Editar
                 </Link>
               </Button>
               <Button variant="outline" size="sm">
                 <Copy className="h-3 w-3 mr-2" />
-                Duplicate
+                Duplicar
               </Button>
               <Button variant="outline" size="sm">
                 <Trash2 className="h-3 w-3" />

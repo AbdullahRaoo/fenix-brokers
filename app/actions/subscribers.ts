@@ -86,7 +86,7 @@ export async function subscribeEmail(data: {
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in subscribeEmail:', error)
-        return { success: false, error: 'Failed to subscribe' }
+        return { success: false, error: 'Error al suscribirse' }
     }
 }
 
@@ -118,7 +118,7 @@ export async function getSubscribers(options?: {
         return { data: data as Subscriber[], error: null }
     } catch (error) {
         console.error('Error in getSubscribers:', error)
-        return { data: null, error: 'Failed to fetch subscribers' }
+        return { data: null, error: 'Error al obtener suscriptores' }
     }
 }
 
@@ -140,7 +140,7 @@ export async function unsubscribeEmail(id: string): Promise<{ success: boolean; 
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in unsubscribeEmail:', error)
-        return { success: false, error: 'Failed to unsubscribe' }
+        return { success: false, error: 'Error al cancelar suscripción' }
     }
 }
 
@@ -162,7 +162,7 @@ export async function deleteSubscriber(id: string): Promise<{ success: boolean; 
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in deleteSubscriber:', error)
-        return { success: false, error: 'Failed to delete subscriber' }
+        return { success: false, error: 'Error al eliminar suscriptor' }
     }
 }
 
@@ -182,6 +182,6 @@ export async function getSubscriberCount(): Promise<{ count: number; error: stri
         return { count: count || 0, error: null }
     } catch (error) {
         console.error('Error in getSubscriberCount:', error)
-        return { count: 0, error: 'Failed to count subscribers' }
+        return { count: 0, error: 'Error al contar suscriptores' }
     }
 }

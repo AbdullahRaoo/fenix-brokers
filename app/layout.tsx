@@ -11,11 +11,11 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: {
-    default: "Fenix Brokers - Global Cosmetics Broker | B2B Beauty Products",
+    default: "Fenix Brokers - Broker Global de Cosméticos | Productos de Belleza B2B",
     template: "%s | Fenix Brokers"
   },
-  description: "Fenix Brokers is your trusted global cosmetics broker. Source premium beauty products, perfumes, and skincare from authentic brands at competitive B2B prices. Based in Spain, serving retailers worldwide.",
-  keywords: ["cosmetics broker", "B2B beauty products", "wholesale perfumes", "skincare wholesale", "beauty distributor", "cosmetics supplier Spain", "Fenix Brokers"],
+  description: "Fenix Brokers es tu broker global de cosméticos de confianza. Obtén productos de belleza premium, perfumes y cuidado de la piel de marcas auténticas a precios B2B competitivos. Con sede en España, sirviendo a minoristas en todo el mundo.",
+  keywords: ["broker de cosméticos", "productos de belleza B2B", "perfumes al por mayor", "cuidado de piel mayorista", "distribuidor de belleza", "proveedor de cosméticos España", "Fenix Brokers"],
   authors: [{ name: "Fenix Brokers" }],
   creator: "Fenix Brokers",
   publisher: "Fenix Brokers",
@@ -25,24 +25,24 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "es_ES",
     url: "https://fenixbrokers.com",
     siteName: "Fenix Brokers",
-    title: "Fenix Brokers - Global Cosmetics Broker",
-    description: "Your trusted global cosmetics broker. Premium B2B beauty products from authentic brands.",
+    title: "Fenix Brokers - Broker Global de Cosméticos",
+    description: "Tu broker global de cosméticos de confianza. Productos de belleza B2B premium de marcas auténticas.",
     images: [
       {
         url: "/logos/PNG/logo-fenix-brokers-1.png",
         width: 800,
         height: 600,
-        alt: "Fenix Brokers Logo",
+        alt: "Logo de Fenix Brokers",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fenix Brokers - Global Cosmetics Broker",
-    description: "Your trusted global cosmetics broker. Premium B2B beauty products from authentic brands.",
+    title: "Fenix Brokers - Broker Global de Cosméticos",
+    description: "Tu broker global de cosméticos de confianza. Productos de belleza B2B premium de marcas auténticas.",
     images: ["/logos/PNG/logo-fenix-brokers-1.png"],
   },
   icons: {
@@ -58,12 +58,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {/* Accessibility: Skip to main content link */}
           <a href="#main-content" className="skip-to-main">
-            Skip to main content
+            Ir al contenido principal
           </a>
           <div id="main-content">
             {children}

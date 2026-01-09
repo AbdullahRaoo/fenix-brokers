@@ -23,15 +23,15 @@ import { AuthProvider } from "@/components/auth-context"
 import { hasPermission, type Permission, type Role } from "@/lib/permissions"
 
 const navItems: { href: string; label: string; icon: React.ElementType; permission?: Permission }[] = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/products", label: "Products", icon: Package, permission: "products.view" },
-  { href: "/admin/categories", label: "Categories", icon: FolderTree, permission: "products.view" },
-  { href: "/admin/media", label: "Media", icon: Image, permission: "media.view" },
-  { href: "/admin/inquiries", label: "Inquiries", icon: FileText, permission: "inquiries.view" },
-  { href: "/admin/subscribers", label: "Subscribers", icon: Users, permission: "subscribers.view" },
+  { href: "/admin", label: "Panel", icon: LayoutDashboard },
+  { href: "/admin/products", label: "Productos", icon: Package, permission: "products.view" },
+  { href: "/admin/categories", label: "Categorías", icon: FolderTree, permission: "products.view" },
+  { href: "/admin/media", label: "Medios", icon: Image, permission: "media.view" },
+  { href: "/admin/inquiries", label: "Consultas", icon: FileText, permission: "inquiries.view" },
+  { href: "/admin/subscribers", label: "Suscriptores", icon: Users, permission: "subscribers.view" },
   { href: "/admin/marketing", label: "Marketing", icon: Megaphone, permission: "campaigns.view" },
-  { href: "/admin/users", label: "Users", icon: UserCog, permission: "users.view" },
-  { href: "/admin/settings", label: "Settings", icon: Settings, permission: "settings.view" },
+  { href: "/admin/users", label: "Usuarios", icon: UserCog, permission: "users.view" },
+  { href: "/admin/settings", label: "Configuración", icon: Settings, permission: "settings.view" },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -146,7 +146,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Sidebar Footer */}
             <div className="p-4 border-t border-border">
               <div className="px-3 py-2 text-xs text-muted-foreground">
-                Signed in as <span className="font-medium text-foreground capitalize">{user.role}</span>
+                Sesión iniciada como <span className="font-medium text-foreground capitalize">{user.role}</span>
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="flex-1" />
               <ThemeToggle />
               <Button asChild variant="outline" size="sm">
-                <Link href="/">View Site</Link>
+                <Link href="/">Ver Sitio</Link>
               </Button>
 
               <DropdownMenu>
@@ -187,13 +187,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <DropdownMenuItem asChild>
                     <Link href="/admin/settings" className="cursor-pointer">
                       <User className="h-4 w-4 mr-2" />
-                      My Profile
+                      Mi Perfil
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
-                    Logout
+                    Cerrar Sesión
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

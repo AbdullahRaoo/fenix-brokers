@@ -43,7 +43,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         <PublicHeader />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <Loader2 className="h-16 w-16 text-primary mx-auto mb-4 animate-spin" />
-          <p className="text-muted-foreground">Loading product...</p>
+          <p className="text-muted-foreground">Cargando producto...</p>
         </div>
         <Footer />
       </div>
@@ -56,10 +56,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         <PublicHeader />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <Package2 className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-          <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
-          <p className="text-muted-foreground mb-6">The product you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold mb-2">Producto No Encontrado</h1>
+          <p className="text-muted-foreground mb-6">El producto que buscas no existe.</p>
           <Button asChild>
-            <Link href="/catalog">Browse Catalog</Link>
+            <Link href="/catalog">Ver Catálogo</Link>
           </Button>
         </div>
         <Footer />
@@ -77,11 +77,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link href="/" className="hover:text-foreground transition-colors">
-            Home
+            Inicio
           </Link>
           <span>/</span>
           <Link href="/catalog" className="hover:text-foreground transition-colors">
-            Catalog
+            Catálogo
           </Link>
           <span>/</span>
           <span className="text-foreground">{product.title}</span>
@@ -132,9 +132,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               </div>
               <h1 className="text-3xl lg:text-4xl font-bold mb-3 text-balance">{product.title}</h1>
               <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                <span>SKU: {product.id.slice(0, 8)}</span>
+                <span>Código: {product.id.slice(0, 8)}</span>
                 <span>•</span>
-                <span>Brand: {product.brand}</span>
+                <span>Marca: {product.brand}</span>
               </div>
               <p className="text-lg text-muted-foreground leading-relaxed">{product.short_description}</p>
             </div>
@@ -143,25 +143,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             <div className="bg-muted/50 border border-border rounded-lg p-6 space-y-4">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">
-                  {product.show_price && product.price ? "Price" : "Pricing"}
+                  {product.show_price && product.price ? "Precio" : "Cotización"}
                 </p>
                 <p className="text-2xl font-bold text-primary">
-                  {product.show_price && product.price ? `$${product.price}` : "Request Quote"}
+                  {product.show_price && product.price ? `$${product.price}` : "Solicitar Cotización"}
                 </p>
               </div>
               <Button size="lg" className="w-full text-base" onClick={() => setShowQuoteModal(true)}>
                 <Package2 className="mr-2 h-5 w-5" />
-                Request a Quote
+                Solicitar Cotización
               </Button>
               <p className="text-xs text-muted-foreground text-center">
-                Get a custom quote within 24 hours for bulk orders
+                Obtén una cotización personalizada en 24 horas para pedidos al mayoreo
               </p>
             </div>
 
             {/* Key Features */}
             {product.specs && product.specs.length > 0 && (
               <div className="border border-border rounded-lg p-6">
-                <h3 className="font-semibold mb-4">Key Features</h3>
+                <h3 className="font-semibold mb-4">Características Principales</h3>
                 <ul className="space-y-3">
                   {product.specs.slice(0, 5).map((spec, index) => (
                     <li key={index} className="flex items-start gap-3">
@@ -180,20 +180,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         {/* Below the Fold - Tabbed Section */}
         <Tabs defaultValue="description" className="mb-16">
           <TabsList className="grid w-full grid-cols-2 max-w-md">
-            <TabsTrigger value="description">Full Description</TabsTrigger>
-            <TabsTrigger value="specifications">Technical Specifications</TabsTrigger>
+            <TabsTrigger value="description">Descripción Completa</TabsTrigger>
+            <TabsTrigger value="specifications">Especificaciones Técnicas</TabsTrigger>
           </TabsList>
 
           <TabsContent value="description" className="mt-8">
             <div className="bg-card border border-border rounded-lg p-6 lg:p-8">
-              <h2 className="text-2xl font-bold mb-4">Product Description</h2>
+              <h2 className="text-2xl font-bold mb-4">Descripción del Producto</h2>
               <p className="text-muted-foreground leading-relaxed">{product.full_description}</p>
             </div>
           </TabsContent>
 
           <TabsContent value="specifications" className="mt-8">
             <div className="bg-card border border-border rounded-lg p-6 lg:p-8">
-              <h2 className="text-2xl font-bold mb-6">Technical Specifications</h2>
+              <h2 className="text-2xl font-bold mb-6">Especificaciones Técnicas</h2>
               {product.specs && product.specs.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {product.specs.map((spec, index) => (
@@ -207,7 +207,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   ))}
                 </div>
               ) : (
-                <p className="text-muted-foreground">No specifications available.</p>
+                <p className="text-muted-foreground">No hay especificaciones disponibles.</p>
               )}
             </div>
           </TabsContent>
@@ -218,7 +218,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <Button asChild variant="outline" size="lg">
             <Link href="/catalog">
               <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to Catalog
+              Volver al Catálogo
             </Link>
           </Button>
         </div>

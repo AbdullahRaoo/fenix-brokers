@@ -33,8 +33,8 @@ export function RichTextEditor({
     value,
     onChange,
     onBlur,
-    label = "Content",
-    placeholder = "Enter your text...",
+    label = "Contenido",
+    placeholder = "Ingresa tu texto...",
     textColor = "#1a1a1a",
     onTextColorChange,
     minHeight = "120px"
@@ -157,7 +157,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('bold')}
-                            title="Bold (Ctrl+B)"
+                            title="Negrita (Ctrl+B)"
                         >
                             <Bold className="h-3.5 w-3.5" />
                         </Button>
@@ -167,7 +167,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('italic')}
-                            title="Italic (Ctrl+I)"
+                            title="Cursiva (Ctrl+I)"
                         >
                             <Italic className="h-3.5 w-3.5" />
                         </Button>
@@ -177,7 +177,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('underline')}
-                            title="Underline (Ctrl+U)"
+                            title="Subrayado (Ctrl+U)"
                         >
                             <Underline className="h-3.5 w-3.5" />
                         </Button>
@@ -190,7 +190,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('justifyLeft')}
-                            title="Align Left"
+                            title="Alinear Izquierda"
                         >
                             <AlignLeft className="h-3.5 w-3.5" />
                         </Button>
@@ -200,7 +200,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('justifyCenter')}
-                            title="Align Center"
+                            title="Alinear Centro"
                         >
                             <AlignCenter className="h-3.5 w-3.5" />
                         </Button>
@@ -210,7 +210,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('justifyRight')}
-                            title="Align Right"
+                            title="Alinear Derecha"
                         >
                             <AlignRight className="h-3.5 w-3.5" />
                         </Button>
@@ -223,7 +223,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('insertUnorderedList')}
-                            title="Bullet List"
+                            title="Lista con Viñetas"
                         >
                             <List className="h-3.5 w-3.5" />
                         </Button>
@@ -233,7 +233,7 @@ export function RichTextEditor({
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => execCommand('insertOrderedList')}
-                            title="Numbered List"
+                            title="Lista Numerada"
                         >
                             <ListOrdered className="h-3.5 w-3.5" />
                         </Button>
@@ -248,7 +248,7 @@ export function RichTextEditor({
                                 value={textColor}
                                 onChange={(e) => applyColor(e.target.value)}
                                 className="w-6 h-6 rounded border cursor-pointer"
-                                title="Text Color (select text first for partial coloring)"
+                                title="Color de Texto (selecciona texto primero para colorear parte)"
                             />
                         </div>
 
@@ -259,7 +259,7 @@ export function RichTextEditor({
                             className="h-7 px-1 text-xs border rounded bg-background"
                             onChange={(e) => execCommand('fontSize', e.target.value)}
                             defaultValue="3"
-                            title="Font Size"
+                            title="Tamaño de Fuente"
                         >
                             <option value="1">12px</option>
                             <option value="2">14px</option>
@@ -293,7 +293,7 @@ export function RichTextEditor({
                     onBlur={onBlur}
                     rows={8}
                     className="font-mono text-xs"
-                    placeholder="<p>Enter HTML...</p>"
+                    placeholder="<p>Ingresa HTML...</p>"
                 />
             )}
 

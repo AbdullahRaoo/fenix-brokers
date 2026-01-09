@@ -18,7 +18,7 @@ export async function getCampaigns() {
         return { data: data as Campaign[], error: null }
     } catch (error) {
         console.error("Error fetching campaigns:", error)
-        return { data: null, error: "Failed to fetch campaigns" }
+        return { data: null, error: "Error al obtener campañas" }
     }
 }
 
@@ -35,7 +35,7 @@ export async function getCampaignById(id: string) {
         return { data: data as Campaign, error: null }
     } catch (error) {
         console.error("Error fetching campaign:", error)
-        return { data: null, error: "Campaign not found" }
+        return { data: null, error: "Campaña no encontrada" }
     }
 }
 
@@ -64,14 +64,14 @@ export async function createCampaign(input: {
 
         if (error) {
             console.error("Supabase error creating campaign:", error)
-            return { data: null, error: error.message || "Failed to create campaign" }
+            return { data: null, error: error.message || "Error al crear campaña" }
         }
 
         revalidatePath("/admin/marketing")
         return { data: data as Campaign, error: null }
     } catch (error) {
         console.error("Error creating campaign:", error)
-        const errorMessage = error instanceof Error ? error.message : "Failed to create campaign"
+        const errorMessage = error instanceof Error ? error.message : "Error al crear campaña"
         return { data: null, error: errorMessage }
     }
 }
@@ -107,7 +107,7 @@ export async function updateCampaign(id: string, input: {
         return { data: data as Campaign, error: null }
     } catch (error) {
         console.error("Error updating campaign:", error)
-        return { data: null, error: "Failed to update campaign" }
+        return { data: null, error: "Error al actualizar campaña" }
     }
 }
 
@@ -125,7 +125,7 @@ export async function deleteCampaign(id: string) {
         return { success: true, error: null }
     } catch (error) {
         console.error("Error deleting campaign:", error)
-        return { success: false, error: "Failed to delete campaign" }
+        return { success: false, error: "Error al eliminar campaña" }
     }
 }
 
@@ -135,14 +135,14 @@ export async function sendCampaign(campaignId: string) {
         // Get campaign
         const campaignResult = await getCampaignById(campaignId)
         if (!campaignResult.data) {
-            return { success: false, error: "Campaign not found" }
+            return { success: false, error: "Campaña no encontrada" }
         }
         const campaign = campaignResult.data
 
         // Get template
         const templateResult = await getTemplateById(campaign.template_id)
         if (!templateResult.data) {
-            return { success: false, error: "Template not found" }
+            return { success: false, error: "Plantilla no encontrada" }
         }
         const template = templateResult.data
 
@@ -154,7 +154,7 @@ export async function sendCampaign(campaignId: string) {
 
         if (subError) throw subError
         if (!subscribers || subscribers.length === 0) {
-            return { success: false, error: "No active subscribers found" }
+            return { success: false, error: "No se encontraron suscriptores activos" }
         }
 
         // Update campaign status to sending
@@ -237,7 +237,7 @@ export async function sendCampaign(campaignId: string) {
             .update({ status: "Draft" })
             .eq("id", campaignId)
 
-        return { success: false, error: "Failed to send campaign" }
+        return { success: false, error: "Error al enviar campaña" }
     }
 }
 
@@ -246,12 +246,12 @@ export async function previewCampaign(campaignId: string) {
     try {
         const campaignResult = await getCampaignById(campaignId)
         if (!campaignResult.data) {
-            return { html: null, error: "Campaign not found" }
+            return { html: null, error: "Campaña no encontrada" }
         }
 
         const templateResult = await getTemplateById(campaignResult.data.template_id)
         if (!templateResult.data) {
-            return { html: null, error: "Template not found" }
+            return { html: null, error: "Plantilla no encontrada" }
         }
 
         // Replace placeholders with sample data
@@ -263,6 +263,6 @@ export async function previewCampaign(campaignId: string) {
         return { html: previewHtml, error: null }
     } catch (error) {
         console.error("Error previewing campaign:", error)
-        return { html: null, error: "Failed to preview campaign" }
+        return { html: null, error: "Error al previsualizar campaña" }
     }
 }

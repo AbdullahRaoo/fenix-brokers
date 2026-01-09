@@ -41,68 +41,68 @@ export default function AboutPage() {
   }, [])
 
   const stats = [
-    { icon: Award, value: "15+", label: "Years Experience", color: "from-amber-500/20 to-orange-500/20" },
-    { icon: Globe, value: "50+", label: "Countries Served", color: "from-blue-500/20 to-cyan-500/20" },
-    { icon: Users, value: "2,000+", label: "Business Partners", color: "from-violet-500/20 to-purple-500/20" },
-    { icon: TrendingUp, value: "98%", label: "Satisfaction Rate", color: "from-emerald-500/20 to-teal-500/20" },
+    { icon: Award, value: "15+", label: "Años de Experiencia", color: "from-amber-500/20 to-orange-500/20" },
+    { icon: Globe, value: "50+", label: "Países Atendidos", color: "from-blue-500/20 to-cyan-500/20" },
+    { icon: Users, value: "2,000+", label: "Socios Comerciales", color: "from-violet-500/20 to-purple-500/20" },
+    { icon: TrendingUp, value: "98%", label: "Tasa de Satisfacción", color: "from-emerald-500/20 to-teal-500/20" },
   ]
 
   const values = [
     {
       icon: Shield,
-      title: "Authenticity First",
-      description: "Every product we sell is 100% authentic, sourced directly from authorized distributors and manufacturers."
+      title: "Autenticidad Primero",
+      description: "Cada producto que vendemos es 100% auténtico, obtenido directamente de distribuidores y fabricantes autorizados."
     },
     {
       icon: Handshake,
-      title: "Partnership Mindset",
-      description: "We see ourselves as an extension of your team, invested in your success and growth."
+      title: "Mentalidad de Alianza",
+      description: "Nos vemos como una extensión de tu equipo, comprometidos con tu éxito y crecimiento."
     },
     {
       icon: Lightbulb,
-      title: "Innovation Driven",
-      description: "We constantly improve our processes and technology to serve you better."
+      title: "Impulsados por la Innovación",
+      description: "Mejoramos constantemente nuestros procesos y tecnología para servirte mejor."
     },
     {
       icon: Heart,
-      title: "Customer Obsessed",
-      description: "Your satisfaction is our top priority. We go above and beyond to exceed expectations."
+      title: "Obsesión por el Cliente",
+      description: "Tu satisfacción es nuestra principal prioridad. Hacemos todo lo posible para superar las expectativas."
     },
   ]
 
   const timeline = [
-    { year: "2010", title: "Founded", description: "Started as a small beauty wholesale operation in New York" },
-    { year: "2013", title: "Expansion", description: "Expanded to serve clients across North America" },
-    { year: "2016", title: "Global Reach", description: "Began international operations, reaching 20+ countries" },
-    { year: "2019", title: "Digital Transformation", description: "Launched online platform for seamless ordering" },
-    { year: "2022", title: "Industry Leader", description: "Became one of the top beauty wholesale partners globally" },
-    { year: "2024", title: "Today", description: "Serving 2,000+ retailers with 500+ premium brands" },
+    { year: "2010", title: "Fundación", description: "Comenzamos como una pequeña operación mayorista de belleza en Nueva York" },
+    { year: "2013", title: "Expansión", description: "Nos expandimos para atender clientes en toda Norteamérica" },
+    { year: "2016", title: "Alcance Global", description: "Iniciamos operaciones internacionales, alcanzando más de 20 países" },
+    { year: "2019", title: "Transformación Digital", description: "Lanzamos plataforma online para pedidos fluidos" },
+    { year: "2022", title: "Líder de la Industria", description: "Nos convertimos en uno de los principales socios mayoristas de belleza globalmente" },
+    { year: "2024", title: "Hoy", description: "Atendiendo a 2,000+ minoristas con 500+ marcas premium" },
   ]
 
   const team = [
     {
       name: "Alexandra Chen",
-      role: "CEO & Founder",
+      role: "CEO y Fundadora",
       image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80",
-      bio: "15+ years in beauty industry leadership"
+      bio: "Más de 15 años de liderazgo en la industria de la belleza"
     },
     {
       name: "Michael Torres",
-      role: "Head of Operations",
+      role: "Director de Operaciones",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
-      bio: "Supply chain optimization expert"
+      bio: "Experto en optimización de cadena de suministro"
     },
     {
       name: "Sarah Williams",
-      role: "Director of Partnerships",
+      role: "Directora de Alianzas",
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80",
-      bio: "Building lasting brand relationships"
+      bio: "Construyendo relaciones duraderas con marcas"
     },
     {
       name: "David Kim",
-      role: "Head of Quality",
+      role: "Director de Calidad",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80",
-      bio: "Ensuring product authenticity standards"
+      bio: "Asegurando estándares de autenticidad del producto"
     },
   ]
 
@@ -118,13 +118,13 @@ export default function AboutPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl mx-auto text-center fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">About Us</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Nosotros</span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mt-3 mb-6 text-balance">
-              Your Trusted <span className="text-primary">Beauty Partner</span>
+              Tu <span className="text-primary">Socio de Belleza</span> de Confianza
             </h1>
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              Fenix Brokers has been connecting beauty retailers with premium brands since 2010.
-              We're more than a supplier – we're your partner in building a successful beauty business.
+              Fenix Brokers ha estado conectando minoristas de belleza con marcas premium desde 2010.
+              Somos más que un proveedor – somos tu socio en la construcción de un negocio de belleza exitoso.
             </p>
           </div>
         </div>
@@ -175,8 +175,8 @@ export default function AboutPage() {
                       <Sparkles className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <p className="font-bold text-xl">Since 2010</p>
-                      <p className="text-sm text-muted-foreground">Trusted Partnership</p>
+                      <p className="font-bold text-xl">Desde 2010</p>
+                      <p className="text-sm text-muted-foreground">Alianza de Confianza</p>
                     </div>
                   </div>
                 </div>
@@ -184,37 +184,37 @@ export default function AboutPage() {
             </div>
 
             <div className="fade-in-right">
-              <span className="text-primary text-sm font-semibold uppercase tracking-wider">Our Story</span>
+              <span className="text-primary text-sm font-semibold uppercase tracking-wider">Nuestra Historia</span>
               <h2 className="text-3xl sm:text-4xl font-bold mt-3 mb-6 text-balance">
-                Built on <span className="text-primary">Trust & Quality</span>
+                Construido sobre <span className="text-primary">Confianza y Calidad</span>
               </h2>
 
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Founded in 2010, Fenix Brokers emerged from a simple vision: to make premium beauty products
-                  accessible to retailers of all sizes. What started as a small distribution operation has
-                  grown into a leading B2B wholesale platform serving beauty businesses worldwide.
+                  Fundada en 2010, Fenix Brokers surgió de una visión simple: hacer que los productos de belleza premium
+                  sean accesibles para minoristas de todos los tamaños. Lo que comenzó como una pequeña operación de
+                  distribución se ha convertido en una plataforma mayorista B2B líder que atiende negocios de belleza en todo el mundo.
                 </p>
                 <p>
-                  We understand the challenges retailers face in sourcing authentic products at competitive prices.
-                  That's why we've built strong relationships with brand-authorized distributors globally,
-                  ensuring our partners get the best value without compromising on quality.
+                  Entendemos los desafíos que enfrentan los minoristas al obtener productos auténticos a precios competitivos.
+                  Es por eso que hemos construido relaciones sólidas con distribuidores autorizados de marcas globalmente,
+                  asegurando que nuestros socios obtengan el mejor valor sin comprometer la calidad.
                 </p>
                 <p>
-                  Today, we offer 500+ premium brands across skincare, cosmetics, fragrances, and body care.
-                  Our commitment to authenticity, competitive pricing, and exceptional service has made us
-                  the preferred wholesale partner for beauty businesses across 50+ countries.
+                  Hoy, ofrecemos más de 500 marcas premium en cuidado de la piel, cosméticos, fragancias y cuidado corporal.
+                  Nuestro compromiso con la autenticidad, precios competitivos y servicio excepcional nos ha convertido
+                  en el socio mayorista preferido para negocios de belleza en más de 50 países.
                 </p>
               </div>
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <div className="flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">100% Authentic Products</span>
+                  <span className="text-sm font-medium">Productos 100% Auténticos</span>
                 </div>
                 <div className="flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">Global Shipping</span>
+                  <span className="text-sm font-medium">Envío Global</span>
                 </div>
               </div>
             </div>
@@ -226,12 +226,12 @@ export default function AboutPage() {
       <section className="py-24 bg-muted/20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Our Journey</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Nuestro Camino</span>
             <h2 className="text-3xl sm:text-4xl font-bold mt-3 mb-4">
-              Growing <span className="text-primary">Together</span>
+              Creciendo <span className="text-primary">Juntos</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              From a small operation to a global beauty wholesale leader
+              De una pequeña operación a un líder mayorista de belleza global
             </p>
           </div>
 
@@ -269,12 +269,12 @@ export default function AboutPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Our Values</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Nuestros Valores</span>
             <h2 className="text-3xl sm:text-4xl font-bold mt-3 mb-4">
-              What Drives <span className="text-primary">Us</span>
+              Lo Que Nos <span className="text-primary">Impulsa</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              The principles that guide everything we do
+              Los principios que guían todo lo que hacemos
             </p>
           </div>
 
@@ -302,12 +302,12 @@ export default function AboutPage() {
       <section className="py-24 bg-muted/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Our Team</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Nuestro Equipo</span>
             <h2 className="text-3xl sm:text-4xl font-bold mt-3 mb-4">
-              Meet the <span className="text-primary">Experts</span>
+              Conoce a los <span className="text-primary">Expertos</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Passionate professionals dedicated to your success
+              Profesionales apasionados dedicados a tu éxito
             </p>
           </div>
 
@@ -349,19 +349,19 @@ export default function AboutPage() {
             <div className="relative p-12 lg:p-20 text-center">
               <Sparkles className="h-14 w-14 text-white/80 mx-auto mb-6" />
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-white text-balance">
-                Ready to Partner With Us?
+                ¿Listo para Asociarte con Nosotros?
               </h2>
               <p className="text-white/80 text-lg lg:text-xl mb-10 max-w-2xl mx-auto">
-                Join thousands of successful beauty retailers. Let's grow your business together.
+                Únete a miles de minoristas de belleza exitosos. Hagamos crecer tu negocio juntos.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" variant="secondary" className="text-base shadow-xl">
                   <Link href="/contact">
-                    Get in Touch <ArrowRight className="ml-2 h-5 w-5" />
+                    Contáctanos <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-base bg-transparent border-white/30 text-white hover:bg-white/10">
-                  <Link href="/catalog">Browse Products</Link>
+                  <Link href="/catalog">Ver Productos</Link>
                 </Button>
               </div>
             </div>

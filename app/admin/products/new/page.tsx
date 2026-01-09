@@ -73,8 +73,8 @@ export default function NewProductPage() {
     // Validation
     if (!title || !category || !brand) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in Title, Category, and Brand.",
+        title: "Error de Validación",
+        description: "Por favor completa Título, Categoría y Marca.",
         variant: "destructive",
       })
       return
@@ -108,8 +108,8 @@ export default function NewProductPage() {
       }
 
       toast({
-        title: "Product created",
-        description: "The product has been successfully added to your catalog.",
+        title: "Producto creado",
+        description: "El producto ha sido agregado exitosamente a tu catálogo.",
       })
 
       router.push("/admin/products")
@@ -123,11 +123,11 @@ export default function NewProductPage() {
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/admin/products">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Products
+            Volver a Productos
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mb-2">Add New Product</h1>
-        <p className="text-muted-foreground">Create a new product in your catalog</p>
+        <h1 className="text-3xl font-bold mb-2">Agregar Nuevo Producto</h1>
+        <p className="text-muted-foreground">Crea un nuevo producto en tu catálogo</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -136,27 +136,27 @@ export default function NewProductPage() {
           {/* General Information */}
           <Card>
             <CardHeader>
-              <CardTitle>General Information</CardTitle>
-              <CardDescription>Basic product details</CardDescription>
+              <CardTitle>Información General</CardTitle>
+              <CardDescription>Detalles básicos del producto</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="title">
-                  Product Title <span className="text-destructive">*</span>
+                  Título del Producto <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="title"
-                  placeholder="e.g., Luxury Oud Collection 100ml"
+                  placeholder="ej., Colección Oud de Lujo 100ml"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="short-description">Short Description</Label>
+                <Label htmlFor="short-description">Descripción Corta</Label>
                 <Textarea
                   id="short-description"
-                  placeholder="Brief product summary shown in listings..."
+                  placeholder="Breve resumen del producto mostrado en listados..."
                   rows={3}
                   value={shortDescription}
                   onChange={(e) => setShortDescription(e.target.value)}
@@ -165,10 +165,10 @@ export default function NewProductPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="full-description">Full Description</Label>
+                <Label htmlFor="full-description">Descripción Completa</Label>
                 <Textarea
                   id="full-description"
-                  placeholder="Detailed product description for the product page..."
+                  placeholder="Descripción detallada del producto para la página..."
                   rows={6}
                   value={fullDescription}
                   onChange={(e) => setFullDescription(e.target.value)}
@@ -181,8 +181,8 @@ export default function NewProductPage() {
           {/* Media Gallery */}
           <Card>
             <CardHeader>
-              <CardTitle>Product Images</CardTitle>
-              <CardDescription>Add image URLs for this product</CardDescription>
+              <CardTitle>Imágenes del Producto</CardTitle>
+              <CardDescription>Agrega URLs de imágenes para este producto</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <MediaPicker
@@ -190,7 +190,7 @@ export default function NewProductPage() {
                 trigger={
                   <Button type="button" variant="outline" className="w-full">
                     <ImageIcon className="h-4 w-4 mr-2" />
-                    Add Image from Library
+                    Agregar Imagen de Biblioteca
                   </Button>
                 }
               />
@@ -225,20 +225,20 @@ export default function NewProductPage() {
           {/* Specifications */}
           <Card>
             <CardHeader>
-              <CardTitle>Product Specifications</CardTitle>
-              <CardDescription>Key-value pairs for product specs</CardDescription>
+              <CardTitle>Especificaciones del Producto</CardTitle>
+              <CardDescription>Pares clave-valor para especificaciones</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {specifications.map((spec, index) => (
                 <div key={index} className="flex gap-2">
                   <Input
-                    placeholder="Key (e.g., Volume)"
+                    placeholder="Clave (ej., Volumen)"
                     value={spec.key}
                     onChange={(e) => updateSpecification(index, "key", e.target.value)}
                     className="flex-1"
                   />
                   <Input
-                    placeholder="Value (e.g., 100ml)"
+                    placeholder="Valor (ej., 100ml)"
                     value={spec.value}
                     onChange={(e) => updateSpecification(index, "value", e.target.value)}
                     className="flex-1"
@@ -255,7 +255,7 @@ export default function NewProductPage() {
               ))}
               <Button variant="outline" size="sm" onClick={addSpecification} className="w-full bg-transparent">
                 <Plus className="h-4 w-4 mr-2" />
-                Add Specification
+                Agregar Especificación
               </Button>
             </CardContent>
           </Card>
@@ -263,33 +263,33 @@ export default function NewProductPage() {
           {/* SEO Section */}
           <Card>
             <CardHeader>
-              <CardTitle>Search Engine Optimization</CardTitle>
-              <CardDescription>Improve your product's discoverability</CardDescription>
+              <CardTitle>Optimización para Buscadores</CardTitle>
+              <CardDescription>Mejora la visibilidad de tu producto</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="meta-title">Meta Title</Label>
+                <Label htmlFor="meta-title">Título Meta</Label>
                 <Input
                   id="meta-title"
-                  placeholder="SEO-optimized title (50-60 characters)"
+                  placeholder="Título optimizado para SEO (50-60 caracteres)"
                   value={metaTitle}
                   onChange={(e) => setMetaTitle(e.target.value)}
                   maxLength={60}
                 />
-                <p className="text-xs text-muted-foreground">{metaTitle.length}/60 characters</p>
+                <p className="text-xs text-muted-foreground">{metaTitle.length}/60 caracteres</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="meta-description">Meta Description</Label>
+                <Label htmlFor="meta-description">Descripción Meta</Label>
                 <Textarea
                   id="meta-description"
-                  placeholder="Brief description for search engines (150-160 characters)"
+                  placeholder="Breve descripción para buscadores (150-160 caracteres)"
                   rows={3}
                   value={metaDescription}
                   onChange={(e) => setMetaDescription(e.target.value)}
                   maxLength={160}
                 />
-                <p className="text-xs text-muted-foreground">{metaDescription.length}/160 characters</p>
+                <p className="text-xs text-muted-foreground">{metaDescription.length}/160 caracteres</p>
               </div>
             </CardContent>
           </Card>
@@ -299,21 +299,21 @@ export default function NewProductPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Organization</CardTitle>
-              <CardDescription>Product categorization and pricing</CardDescription>
+              <CardTitle>Organización</CardTitle>
+              <CardDescription>Categorización y precios del producto</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="category">
-                  Category <span className="text-destructive">*</span>
+                  Categoría <span className="text-destructive">*</span>
                 </Label>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger id="category">
-                    <SelectValue placeholder="Select a category" />
+                    <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.length === 0 ? (
-                      <SelectItem value="__no_categories__" disabled>No categories - create one first</SelectItem>
+                      <SelectItem value="__no_categories__" disabled>Sin categorías - crea una primero</SelectItem>
                     ) : (
                       categories.map((cat) => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -325,18 +325,18 @@ export default function NewProductPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="brand">
-                  Brand <span className="text-destructive">*</span>
+                  Marca <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="brand"
-                  placeholder="e.g., Arabian Essence"
+                  placeholder="ej., Arabian Essence"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="price">Price (USD)</Label>
+                <Label htmlFor="price">Precio (USD)</Label>
                 <Input
                   id="price"
                   type="number"
@@ -349,28 +349,28 @@ export default function NewProductPage() {
 
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
                 <div>
-                  <Label htmlFor="show-price" className="font-medium">Show Price</Label>
-                  <p className="text-xs text-muted-foreground">Display price publicly or show "Request Quote"</p>
+                  <Label htmlFor="show-price" className="font-medium">Mostrar Precio</Label>
+                  <p className="text-xs text-muted-foreground">Mostrar precio públicamente o mostrar "Solicitar Cotización"</p>
                 </div>
                 <Switch
                   id="show-price"
                   checked={showPrice}
                   onCheckedChange={setShowPrice}
-                  aria-label="Toggle price visibility"
+                  aria-label="Alternar visibilidad del precio"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="stock-status">Stock Status</Label>
+                <Label htmlFor="stock-status">Estado de Stock</Label>
                 <Select value={stockStatus} onValueChange={setStockStatus}>
                   <SelectTrigger id="stock-status">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="In Stock">In Stock</SelectItem>
-                    <SelectItem value="Low Stock">Low Stock</SelectItem>
-                    <SelectItem value="Out of Stock">Out of Stock</SelectItem>
-                    <SelectItem value="Pre-Order">Pre-Order</SelectItem>
+                    <SelectItem value="In Stock">En Stock</SelectItem>
+                    <SelectItem value="Low Stock">Stock Bajo</SelectItem>
+                    <SelectItem value="Out of Stock">Agotado</SelectItem>
+                    <SelectItem value="Pre-Order">Pre-Orden</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -384,14 +384,14 @@ export default function NewProductPage() {
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Creating...
+                    Creando...
                   </>
                 ) : (
-                  "Save Product"
+                  "Guardar Producto"
                 )}
               </Button>
               <Button variant="outline" className="w-full bg-transparent" asChild>
-                <Link href="/admin/products">Cancel</Link>
+                <Link href="/admin/products">Cancelar</Link>
               </Button>
             </CardContent>
           </Card>

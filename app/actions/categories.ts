@@ -37,7 +37,7 @@ export async function getCategories(): Promise<{ data: Category[] | null; error:
         return { data: data as Category[], error: null }
     } catch (error) {
         console.error('Error in getCategories:', error)
-        return { data: null, error: 'Failed to fetch categories' }
+        return { data: null, error: 'Error al obtener categorías' }
     }
 }
 
@@ -58,7 +58,7 @@ export async function getCategoryById(id: string): Promise<{ data: Category | nu
         return { data: data as Category, error: null }
     } catch (error) {
         console.error('Error in getCategoryById:', error)
-        return { data: null, error: 'Failed to fetch category' }
+        return { data: null, error: 'Error al obtener categoría' }
     }
 }
 
@@ -79,7 +79,7 @@ export async function createCategory(data: {
             .single()
 
         if (existing) {
-            return { data: null, error: 'A category with this name already exists' }
+            return { data: null, error: 'Ya existe una categoría con este nombre' }
         }
 
         const { data: newCategory, error } = await supabaseAdmin
@@ -105,7 +105,7 @@ export async function createCategory(data: {
         return { data: newCategory as Category, error: null }
     } catch (error) {
         console.error('Error in createCategory:', error)
-        return { data: null, error: 'Failed to create category' }
+        return { data: null, error: 'Error al crear categoría' }
     }
 }
 
@@ -153,7 +153,7 @@ export async function updateCategory(
         return { data: updatedCategory as Category, error: null }
     } catch (error) {
         console.error('Error in updateCategory:', error)
-        return { data: null, error: 'Failed to update category' }
+        return { data: null, error: 'Error al actualizar categoría' }
     }
 }
 
@@ -177,7 +177,7 @@ export async function deleteCategory(id: string): Promise<{ success: boolean; er
         return { success: true, error: null }
     } catch (error) {
         console.error('Error in deleteCategory:', error)
-        return { success: false, error: 'Failed to delete category' }
+        return { success: false, error: 'Error al eliminar categoría' }
     }
 }
 
@@ -198,7 +198,7 @@ export async function getCategoryProductCount(categoryName: string): Promise<{ c
         return { count: count || 0, error: null }
     } catch (error) {
         console.error('Error in getCategoryProductCount:', error)
-        return { count: 0, error: 'Failed to get product count' }
+        return { count: 0, error: 'Error al obtener conteo de productos' }
     }
 }
 
@@ -219,6 +219,6 @@ export async function getCategoryNames(): Promise<{ data: string[]; error: strin
         return { data: names, error: null }
     } catch (error) {
         console.error('Error in getCategoryNames:', error)
-        return { data: [], error: 'Failed to fetch category names' }
+        return { data: [], error: 'Error al obtener nombres de categorías' }
     }
 }

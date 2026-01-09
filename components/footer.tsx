@@ -31,10 +31,10 @@ export function Footer() {
         }
 
         toast({
-          title: result.alreadySubscribed ? "Already subscribed!" : "Thank you!",
+          title: result.alreadySubscribed ? "¡Ya estás suscrito!" : "¡Gracias!",
           description: result.alreadySubscribed
-            ? "This email is already on our list."
-            : "You've been subscribed to our newsletter.",
+            ? "Este correo ya está en nuestra lista."
+            : "Te has suscrito a nuestro boletín.",
         })
 
         localStorage.setItem("has_subscribed", "true")
@@ -58,54 +58,54 @@ export function Footer() {
               />
             </div>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              Your trusted global cosmetics broker for premium beauty products. Authentic brands, competitive B2B pricing.
+              Tu broker global de cosméticos de confianza para productos de belleza premium. Marcas auténticas, precios B2B competitivos.
             </p>
             <div className="space-y-1 text-sm text-muted-foreground">
               <p>
-                <strong>Email:</strong>{" "}
+                <strong>Correo:</strong>{" "}
                 <a href="mailto:ebono@fenixbrokers.com" className="hover:text-primary transition-colors">
                   ebono@fenixbrokers.com
                 </a>
               </p>
               <p>
-                <strong>Phone:</strong>{" "}
+                <strong>Teléfono:</strong>{" "}
                 <a href="tel:+34615582177" className="hover:text-primary transition-colors">
                   +34 615 582 177
                 </a>
               </p>
               <p>
-                <strong>Location:</strong> Las Palmas de GC, Spain
+                <strong>Ubicación:</strong> Las Palmas de GC, España
               </p>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4 text-base">Quick Links</h3>
+            <h3 className="font-semibold mb-4 text-base">Enlaces Rápidos</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <Link href="/" className="hover:text-foreground transition-colors">
-                  Home
+                  Inicio
                 </Link>
               </li>
               <li>
                 <Link href="/catalog" className="hover:text-foreground transition-colors">
-                  Product Catalog
+                  Catálogo
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-foreground transition-colors">
-                  About Us
+                  Nosotros
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-foreground transition-colors">
-                  Contact
+                  Contacto
                 </Link>
               </li>
               <li>
                 <Link href="/admin" className="hover:text-foreground transition-colors">
-                  Admin Login
+                  Acceso Admin
                 </Link>
               </li>
             </ul>
@@ -113,7 +113,7 @@ export function Footer() {
 
           {/* Categories */}
           <div>
-            <h3 className="font-semibold mb-4 text-base">Categories</h3>
+            <h3 className="font-semibold mb-4 text-base">Categorías</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <Link href="/catalog?category=Perfumes" className="hover:text-foreground transition-colors">
@@ -122,22 +122,22 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/catalog?category=Skincare" className="hover:text-foreground transition-colors">
-                  Skincare
+                  Cuidado de la Piel
                 </Link>
               </li>
               <li>
                 <Link href="/catalog?category=Makeup" className="hover:text-foreground transition-colors">
-                  Makeup
+                  Maquillaje
                 </Link>
               </li>
               <li>
                 <Link href="/catalog?category=Hair Care" className="hover:text-foreground transition-colors">
-                  Hair Care
+                  Cuidado del Cabello
                 </Link>
               </li>
               <li>
                 <Link href="/catalog" className="hover:text-foreground transition-colors">
-                  View All
+                  Ver Todo
                 </Link>
               </li>
             </ul>
@@ -145,14 +145,14 @@ export function Footer() {
 
           {/* Newsletter Signup */}
           <div>
-            <h3 className="font-semibold mb-4 text-base">Newsletter</h3>
+            <h3 className="font-semibold mb-4 text-base">Boletín</h3>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              Get the latest updates on new arrivals and exclusive offers.
+              Recibe las últimas novedades y ofertas exclusivas.
             </p>
             <form onSubmit={handleNewsletterSubmit} className="space-y-3">
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Ingresa tu correo"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -160,7 +160,7 @@ export function Footer() {
               />
               <Button type="submit" className="w-full" disabled={isPending}>
                 <Mail className="mr-2 h-4 w-4" />
-                {isPending ? "Subscribing..." : "Subscribe"}
+                {isPending ? "Suscribiendo..." : "Suscribirse"}
               </Button>
             </form>
           </div>
@@ -169,14 +169,14 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-border/40 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground text-center md:text-left">
-            &copy; 2025 Fenix Brokers. All rights reserved.
+            &copy; 2025 Fenix Brokers. Todos los derechos reservados.
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link href="#" className="hover:text-foreground transition-colors">
-              Privacy Policy
+              Política de Privacidad
             </Link>
             <Link href="#" className="hover:text-foreground transition-colors">
-              Terms of Service
+              Términos de Servicio
             </Link>
           </div>
         </div>

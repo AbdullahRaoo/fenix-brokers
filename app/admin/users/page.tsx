@@ -47,7 +47,7 @@ export default function UsersPage() {
 
     const handleCreate = () => {
         if (!newEmail || !newPassword || !newName) {
-            toast({ title: "Error", description: "Please fill all fields", variant: "destructive" })
+            toast({ title: "Error", description: "Por favor completa todos los campos", variant: "destructive" })
             return
         }
 
@@ -60,7 +60,7 @@ export default function UsersPage() {
             })
 
             if (result.success) {
-                toast({ title: "User created" })
+                toast({ title: "Usuario creado" })
                 setIsCreateOpen(false)
                 setNewEmail("")
                 setNewPassword("")
@@ -94,7 +94,7 @@ export default function UsersPage() {
             }
 
             if (result.success) {
-                toast({ title: "User updated" })
+                toast({ title: "Usuario actualizado" })
                 setEditingUser(null)
                 loadUsers()
             } else {
@@ -104,13 +104,13 @@ export default function UsersPage() {
     }
 
     const handleDelete = (user: AdminUser) => {
-        if (!confirm(`Delete user "${user.name}"? This cannot be undone.`)) return
+        if (!confirm(`¿Eliminar usuario "${user.name}"? Esta acción no se puede deshacer.`)) return
 
         startTransition(async () => {
             const result = await deleteAdminUser(user.id)
 
             if (result.success) {
-                toast({ title: "User deleted" })
+                toast({ title: "Usuario eliminado" })
                 setUsers(users.filter(u => u.id !== user.id))
             } else {
                 toast({ title: "Error", description: result.error, variant: "destructive" })
@@ -140,70 +140,70 @@ export default function UsersPage() {
         <div>
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">User Management</h1>
-                    <p className="text-muted-foreground">Manage admin accounts and permissions</p>
+                    <h1 className="text-3xl font-bold mb-2">Gestión de Usuarios</h1>
+                    <p className="text-muted-foreground">Administrar cuentas de administrador y permisos</p>
                 </div>
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
                         <Button>
                             <Plus className="h-4 w-4 mr-2" />
-                            Add User
+                            Agregar Usuario
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Create Admin User</DialogTitle>
-                            <DialogDescription>Add a new user to the admin panel.</DialogDescription>
+                            <DialogTitle>Crear Usuario Administrador</DialogTitle>
+                            <DialogDescription>Agregar un nuevo usuario al panel de administración.</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <Label htmlFor="name">Full Name</Label>
+                                <Label htmlFor="name">Nombre Completo</Label>
                                 <Input
                                     id="name"
                                     value={newName}
                                     onChange={(e) => setNewName(e.target.value)}
-                                    placeholder="John Doe"
+                                    placeholder="Juan Pérez"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
+                                <Label htmlFor="email">Correo Electrónico</Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     value={newEmail}
                                     onChange={(e) => setNewEmail(e.target.value)}
-                                    placeholder="john@fenixbrokers.com"
+                                    placeholder="juan@fenixbrokers.com"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">Contraseña</Label>
                                 <Input
                                     id="password"
                                     type="password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
-                                    placeholder="Min. 6 characters"
+                                    placeholder="Mín. 6 caracteres"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="role">Role</Label>
+                                <Label htmlFor="role">Rol</Label>
                                 <Select value={newRole} onValueChange={(v) => setNewRole(v as typeof newRole)}>
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="admin">Admin - Full access</SelectItem>
-                                        <SelectItem value="editor">Editor - Can edit content</SelectItem>
-                                        <SelectItem value="viewer">Viewer - Read only</SelectItem>
+                                        <SelectItem value="admin">Admin - Acceso completo</SelectItem>
+                                        <SelectItem value="editor">Editor - Puede editar contenido</SelectItem>
+                                        <SelectItem value="viewer">Visor - Solo lectura</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+                            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancelar</Button>
                             <Button onClick={handleCreate} disabled={isPending}>
                                 {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                                Create User
+                                Crear Usuario
                             </Button>
                         </DialogFooter>
                     </DialogContent>
@@ -213,21 +213,21 @@ export default function UsersPage() {
             {/* Role Legend */}
             <Card className="mb-6">
                 <CardHeader>
-                    <CardTitle className="text-base">Role Permissions</CardTitle>
+                    <CardTitle className="text-base">Permisos de Rol</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div className="flex items-start gap-3">
                             <Badge className={getRoleColor("admin")}><Shield className="h-3 w-3 mr-1" /> Admin</Badge>
-                            <span className="text-muted-foreground">Full access to all features</span>
+                            <span className="text-muted-foreground">Acceso completo a todas las funciones</span>
                         </div>
                         <div className="flex items-start gap-3">
                             <Badge className={getRoleColor("editor")}><Pencil className="h-3 w-3 mr-1" /> Editor</Badge>
-                            <span className="text-muted-foreground">Can edit products, inquiries, marketing</span>
+                            <span className="text-muted-foreground">Puede editar productos, consultas, marketing</span>
                         </div>
                         <div className="flex items-start gap-3">
-                            <Badge className={getRoleColor("viewer")}><Eye className="h-3 w-3 mr-1" /> Viewer</Badge>
-                            <span className="text-muted-foreground">Read-only access to dashboard</span>
+                            <Badge className={getRoleColor("viewer")}><Eye className="h-3 w-3 mr-1" /> Visor</Badge>
+                            <span className="text-muted-foreground">Acceso solo lectura al panel</span>
                         </div>
                     </div>
                 </CardContent>
@@ -236,8 +236,8 @@ export default function UsersPage() {
             {/* Users Table */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Admin Users</CardTitle>
-                    <CardDescription>All users with access to the admin panel</CardDescription>
+                    <CardTitle>Usuarios Administradores</CardTitle>
+                    <CardDescription>Todos los usuarios con acceso al panel de administración</CardDescription>
                 </CardHeader>
                 <CardContent>
                     {isLoading ? (
@@ -247,17 +247,17 @@ export default function UsersPage() {
                     ) : users.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
                             <UserCog className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                            <p>No users found. Create your first admin user.</p>
+                            <p>No se encontraron usuarios. Crea tu primer usuario administrador.</p>
                         </div>
                     ) : (
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Name</TableHead>
+                                    <TableHead>Nombre</TableHead>
                                     <TableHead>Email</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    <TableHead>Last Login</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
+                                    <TableHead>Rol</TableHead>
+                                    <TableHead>Último Acceso</TableHead>
+                                    <TableHead className="text-right">Acciones</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -272,13 +272,13 @@ export default function UsersPage() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-muted-foreground">
-                                            {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : "Never"}
+                                            {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : "Nunca"}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex gap-2 justify-end">
                                                 <Button variant="ghost" size="sm" onClick={() => handleEdit(user)}>
                                                     <Pencil className="h-4 w-4 mr-1" />
-                                                    Edit
+                                                    Editar
                                                 </Button>
                                                 <Button
                                                     variant="ghost"
@@ -303,12 +303,12 @@ export default function UsersPage() {
             <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Edit User</DialogTitle>
-                        <DialogDescription>Update user information and role.</DialogDescription>
+                        <DialogTitle>Editar Usuario</DialogTitle>
+                        <DialogDescription>Actualizar información del usuario y rol.</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <Label htmlFor="edit-name">Full Name</Label>
+                            <Label htmlFor="edit-name">Nombre Completo</Label>
                             <Input
                                 id="edit-name"
                                 value={editName}
@@ -316,7 +316,7 @@ export default function UsersPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-role">Role</Label>
+                            <Label htmlFor="edit-role">Rol</Label>
                             <Select value={editRole} onValueChange={(v) => setEditRole(v as typeof editRole)}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -324,26 +324,26 @@ export default function UsersPage() {
                                 <SelectContent>
                                     <SelectItem value="admin">Admin</SelectItem>
                                     <SelectItem value="editor">Editor</SelectItem>
-                                    <SelectItem value="viewer">Viewer</SelectItem>
+                                    <SelectItem value="viewer">Visor</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-password">New Password (optional)</Label>
+                            <Label htmlFor="edit-password">Nueva Contraseña (opcional)</Label>
                             <Input
                                 id="edit-password"
                                 type="password"
                                 value={editPassword}
                                 onChange={(e) => setEditPassword(e.target.value)}
-                                placeholder="Leave blank to keep current"
+                                placeholder="Dejar vacío para mantener la actual"
                             />
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setEditingUser(null)}>Cancel</Button>
+                        <Button variant="outline" onClick={() => setEditingUser(null)}>Cancelar</Button>
                         <Button onClick={handleSaveEdit} disabled={isPending}>
                             {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                            Save Changes
+                            Guardar Cambios
                         </Button>
                     </DialogFooter>
                 </DialogContent>

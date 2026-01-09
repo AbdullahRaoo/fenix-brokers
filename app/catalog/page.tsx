@@ -77,12 +77,12 @@ export default function CatalogPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Catalog</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Catálogo</span>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-2 mb-4 text-balance">
-              Premium <span className="text-primary">Beauty Products</span>
+              Productos de <span className="text-primary">Belleza Premium</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Discover our curated selection of authentic wholesale cosmetics and fragrances
+              Descubre nuestra selección curada de cosméticos y fragancias mayoristas auténticos
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function CatalogPage() {
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
-                placeholder="Search products, brands..."
+                placeholder="Buscar productos, marcas..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 text-base"
@@ -109,10 +109,10 @@ export default function CatalogPage() {
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="w-full sm:w-[180px] h-12">
                   <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
-                  <SelectValue placeholder="Category" />
+                  <SelectValue placeholder="Categoría" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="all">Todas las Categorías</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
@@ -124,13 +124,13 @@ export default function CatalogPage() {
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-full sm:w-[160px] h-12">
                   <ArrowUpDown className="h-4 w-4 mr-2 text-muted-foreground" />
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue placeholder="Ordenar por" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="price-low">Price: Low to High</SelectItem>
-                  <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  <SelectItem value="alphabetical">A to Z</SelectItem>
+                  <SelectItem value="newest">Más Recientes</SelectItem>
+                  <SelectItem value="price-low">Precio: Menor a Mayor</SelectItem>
+                  <SelectItem value="price-high">Precio: Mayor a Menor</SelectItem>
+                  <SelectItem value="alphabetical">A a Z</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -157,7 +157,7 @@ export default function CatalogPage() {
           {/* Results count and active filters */}
           <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap gap-2 items-center">
             <span className="text-sm text-muted-foreground">
-              {isLoading ? "Loading..." : `${products.length} products found`}
+              {isLoading ? "Cargando..." : `${products.length} productos encontrados`}
             </span>
             {categoryFilter !== "all" && (
               <span className="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-medium px-3 py-1 rounded-full">
@@ -190,17 +190,17 @@ export default function CatalogPage() {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-2xl mb-6">
               <Loader2 className="h-10 w-10 text-primary animate-spin" />
             </div>
-            <p className="text-muted-foreground text-lg">Loading products...</p>
+            <p className="text-muted-foreground text-lg">Cargando productos...</p>
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-24">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-muted rounded-2xl mb-6">
               <Package className="h-10 w-10 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">No products found</h3>
-            <p className="text-muted-foreground mb-6">Try adjusting your search or filters</p>
+            <h3 className="text-xl font-semibold mb-2">No se encontraron productos</h3>
+            <p className="text-muted-foreground mb-6">Intenta ajustar tu búsqueda o filtros</p>
             <Button onClick={() => { setSearchQuery(""); setCategoryFilter("all"); }}>
-              Clear Filters
+              Limpiar Filtros
             </Button>
           </div>
         ) : (
@@ -229,7 +229,7 @@ export default function CatalogPage() {
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <span className="bg-white/90 backdrop-blur-sm text-foreground px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
                       <Eye className="h-4 w-4" />
-                      Quick View
+                      Vista Rápida
                     </span>
                   </div>
 
@@ -243,9 +243,9 @@ export default function CatalogPage() {
                           ? 'bg-blue-500/90 text-white'
                           : 'bg-red-500/90 text-white'
                       }`}>
-                      {(product.stock_status || '').toLowerCase() === 'in stock' || product.stock_status === 'in_stock' ? 'In Stock' :
-                        (product.stock_status || '').toLowerCase() === 'low stock' || product.stock_status === 'low_stock' ? 'Low Stock' :
-                          (product.stock_status || '').toLowerCase() === 'pre-order' ? 'Pre-Order' : 'Out of Stock'}
+                      {(product.stock_status || '').toLowerCase() === 'in stock' || product.stock_status === 'in_stock' ? 'En Stock' :
+                        (product.stock_status || '').toLowerCase() === 'low stock' || product.stock_status === 'low_stock' ? 'Stock Bajo' :
+                          (product.stock_status || '').toLowerCase() === 'pre-order' ? 'Pre-Orden' : 'Agotado'}
                     </span>
                   </div>
 
@@ -254,7 +254,7 @@ export default function CatalogPage() {
                     <div className="absolute top-3 left-3">
                       <span className="bg-primary text-white px-2.5 py-1 text-xs font-medium rounded-full flex items-center gap-1">
                         <Sparkles className="h-3 w-3" />
-                        New
+                        Nuevo
                       </span>
                     </div>
                   )}
@@ -268,11 +268,11 @@ export default function CatalogPage() {
                   </h3>
                   <div className="flex items-center justify-between">
                     <p className={`font-bold text-primary ${viewMode === "grid" ? "text-lg" : "text-base"}`}>
-                      {product.show_price && product.price ? `$${product.price}` : "Request Quote"}
+                      {product.show_price && product.price ? `$${product.price}` : "Solicitar Cotización"}
                     </p>
                     {viewMode === "grid" && (
                       <Button size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        View
+                        Ver
                       </Button>
                     )}
                   </div>
@@ -285,7 +285,7 @@ export default function CatalogPage() {
         {/* Load more / pagination placeholder */}
         {products.length > 0 && (
           <div className="text-center mt-12">
-            <p className="text-sm text-muted-foreground mb-4">Showing {products.length} products</p>
+            <p className="text-sm text-muted-foreground mb-4">Mostrando {products.length} productos</p>
           </div>
         )}
       </div>

@@ -39,13 +39,13 @@ export default function SubscriberModal({ open, onOpenChange }: SubscriberModalP
 
       if (result.alreadySubscribed) {
         toast({
-          title: "Already subscribed!",
-          description: "This email is already on our newsletter list.",
+          title: "¡Ya estás suscrito!",
+          description: "Este correo ya está en nuestra lista de boletín.",
         })
       } else {
         toast({
-          title: "Successfully subscribed!",
-          description: "Thank you for subscribing to our newsletter.",
+          title: "¡Suscripción exitosa!",
+          description: "Gracias por suscribirte a nuestro boletín.",
         })
       }
 
@@ -65,37 +65,37 @@ export default function SubscriberModal({ open, onOpenChange }: SubscriberModalP
           <div className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 mb-4 mx-auto">
             <Mail className="h-7 w-7 text-primary" />
           </div>
-          <DialogTitle className="text-center text-2xl">Stay in the Loop</DialogTitle>
+          <DialogTitle className="text-center text-2xl">Manténte Informado</DialogTitle>
           <DialogDescription className="text-center">
-            Get exclusive B2B deals, new product alerts, and industry insights delivered to your inbox.
+            Recibe ofertas exclusivas B2B, alertas de nuevos productos e información de la industria directamente en tu correo.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="modal-email" className="sr-only">Business Email</Label>
+            <Label htmlFor="modal-email" className="sr-only">Correo Empresarial</Label>
             <Input
               id="modal-email"
               type="email"
-              placeholder="your.name@company.com"
+              placeholder="tu.nombre@empresa.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               className="h-12 text-base"
-              aria-label="Your business email address"
+              aria-label="Tu correo electrónico empresarial"
             />
           </div>
           <Button type="submit" className="w-full h-12 text-base" disabled={isPending}>
             {isPending ? (
-              "Subscribing..."
+              "Suscribiendo..."
             ) : (
               <>
                 <Sparkles className="mr-2 h-4 w-4" />
-                Subscribe Now
+                Suscribirse Ahora
               </>
             )}
           </Button>
           <p className="text-xs text-center text-muted-foreground">
-            No spam, ever. Unsubscribe anytime.
+            Sin spam, nunca. Cancela cuando quieras.
           </p>
         </form>
       </DialogContent>

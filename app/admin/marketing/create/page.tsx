@@ -11,22 +11,22 @@ import { cn } from "@/lib/utils"
 const templates = [
   {
     id: "blank",
-    name: "Blank Template",
-    description: "Start from scratch with a blank canvas",
+    name: "Plantilla en Blanco",
+    description: "Comienza desde cero con un lienzo en blanco",
     icon: FileText,
     preview: "/blank-email-template.png",
   },
   {
     id: "newsletter",
-    name: "Newsletter Layout",
-    description: "Classic newsletter format with sections",
+    name: "Diseño de Boletín",
+    description: "Formato clásico de boletín con secciones",
     icon: Sparkles,
     preview: "/newsletter-email-layout.jpg",
   },
   {
     id: "promotional",
-    name: "Promotional Layout",
-    description: "Product-focused promotional template",
+    name: "Diseño Promocional",
+    description: "Plantilla promocional enfocada en productos",
     icon: ShoppingBag,
     preview: "/promotional-email-template.png",
   },
@@ -48,11 +48,11 @@ export default function CreateCampaignPage() {
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/admin/marketing">
             <ChevronLeft className="h-4 w-4 mr-2" />
-            Back to Marketing
+            Volver a Marketing
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mb-2">Create New Campaign</h1>
-        <p className="text-muted-foreground">Step 1 of 3: Choose a template</p>
+        <h1 className="text-3xl font-bold mb-2">Crear Nueva Campaña</h1>
+        <p className="text-muted-foreground">Paso 1 de 3: Elige una plantilla</p>
       </div>
 
       {/* Progress Indicator */}
@@ -62,21 +62,21 @@ export default function CreateCampaignPage() {
             <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold mb-2">
               1
             </div>
-            <span className="text-sm font-medium">Template</span>
+            <span className="text-sm font-medium">Plantilla</span>
           </div>
           <div className="h-px w-20 bg-border" />
           <div className="flex flex-col items-center">
             <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground flex items-center justify-center font-semibold mb-2">
               2
             </div>
-            <span className="text-sm text-muted-foreground">Design</span>
+            <span className="text-sm text-muted-foreground">Diseño</span>
           </div>
           <div className="h-px w-20 bg-border" />
           <div className="flex flex-col items-center">
             <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground flex items-center justify-center font-semibold mb-2">
               3
             </div>
-            <span className="text-sm text-muted-foreground">Review</span>
+            <span className="text-sm text-muted-foreground">Revisar</span>
           </div>
         </div>
       </div>
@@ -126,10 +126,10 @@ export default function CreateCampaignPage() {
       {/* Action Buttons */}
       <div className="flex items-center justify-between">
         <Button variant="outline" asChild>
-          <Link href="/admin/marketing">Cancel</Link>
+          <Link href="/admin/marketing">Cancelar</Link>
         </Button>
         <Button onClick={handleContinue} disabled={!selectedTemplate} size="lg">
-          Continue to Editor
+          Continuar al Editor
         </Button>
       </div>
     </div>

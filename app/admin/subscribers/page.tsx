@@ -52,8 +52,8 @@ export default function SubscribersPage() {
       ))
 
       toast({
-        title: "Unsubscribed",
-        description: "Subscriber has been unsubscribed.",
+        title: "Dado de baja",
+        description: "El suscriptor ha sido dado de baja.",
       })
     })
   }
@@ -75,8 +75,8 @@ export default function SubscribersPage() {
       setSubscribers(subscribers.filter(sub => sub.id !== id))
 
       toast({
-        title: "Deleted",
-        description: "Subscriber has been removed.",
+        title: "Eliminado",
+        description: "El suscriptor ha sido eliminado.",
       })
     })
   }
@@ -84,8 +84,8 @@ export default function SubscribersPage() {
   const handleExportCSV = () => {
     if (subscribers.length === 0) {
       toast({
-        title: "No data to export",
-        description: "There are no subscribers to export.",
+        title: "Sin datos para exportar",
+        description: "No hay suscriptores para exportar.",
         variant: "destructive",
       })
       return
@@ -115,8 +115,8 @@ export default function SubscribersPage() {
     window.URL.revokeObjectURL(url)
 
     toast({
-      title: "Export successful",
-      description: `Exported ${subscribers.length} subscribers to CSV.`,
+      title: "Exportación exitosa",
+      description: `Se exportaron ${subscribers.length} suscriptores a CSV.`,
     })
   }
 
@@ -126,12 +126,12 @@ export default function SubscribersPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Subscriber Management</h1>
-          <p className="text-muted-foreground">Manage your newsletter subscribers</p>
+          <h1 className="text-3xl font-bold mb-2">Gestión de Suscriptores</h1>
+          <p className="text-muted-foreground">Administra tus suscriptores del boletín</p>
         </div>
         <Button onClick={handleExportCSV} disabled={subscribers.length === 0}>
           <Download className="h-4 w-4 mr-2" />
-          Export to CSV
+          Exportar a CSV
         </Button>
       </div>
 
@@ -140,7 +140,7 @@ export default function SubscribersPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name, email, or company..."
+            placeholder="Buscar por nombre, email o empresa..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -153,12 +153,12 @@ export default function SubscribersPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead>Nombre</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Subscribed Date</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Empresa</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Fecha de Suscripción</TableHead>
+              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -166,13 +166,13 @@ export default function SubscribersPage() {
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
-                  <p className="text-muted-foreground">Loading subscribers...</p>
+                  <p className="text-muted-foreground">Cargando suscriptores...</p>
                 </TableCell>
               </TableRow>
             ) : subscribers.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No subscribers found
+                  No se encontraron suscriptores
                 </TableCell>
               </TableRow>
             ) : (
@@ -204,7 +204,7 @@ export default function SubscribersPage() {
                           onClick={() => handleUnsubscribe(subscriber.id)}
                           disabled={isPending}
                         >
-                          Unsubscribe
+                          Dar de Baja
                         </Button>
                       )}
                       <Button
@@ -232,10 +232,10 @@ export default function SubscribersPage() {
             Total: <span className="font-semibold text-foreground">{subscribers.length}</span>
           </p>
           <p className="text-sm text-muted-foreground">
-            Active: <span className="font-semibold text-green-600">{activeCount}</span>
+            Activos: <span className="font-semibold text-green-600">{activeCount}</span>
           </p>
           <p className="text-sm text-muted-foreground">
-            Unsubscribed: <span className="font-semibold text-foreground">{subscribers.length - activeCount}</span>
+            Dados de baja: <span className="font-semibold text-foreground">{subscribers.length - activeCount}</span>
           </p>
         </div>
       )}
