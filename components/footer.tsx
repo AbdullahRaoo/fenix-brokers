@@ -172,10 +172,10 @@ export function Footer() {
             &copy; 2025 Fenix Brokers. Todos los derechos reservados.
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
-            <Link href="#" className="hover:text-foreground transition-colors">
+            <Link href="/privacidad" className="hover:text-foreground transition-colors">
               Política de Privacidad
             </Link>
-            <Link href="#" className="hover:text-foreground transition-colors">
+            <Link href="/terminos" className="hover:text-foreground transition-colors">
               Términos de Servicio
             </Link>
           </div>

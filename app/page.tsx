@@ -603,40 +603,40 @@ export default function HomePage() {
       <section className="py-24 bg-muted/20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in-up">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">FAQ</span>
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Preguntas Frecuentes</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4 text-balance">
-              Frequently Asked <span className="text-primary">Questions</span>
+              Preguntas <span className="text-primary">Frecuentes</span>
             </h2>
             <p className="text-muted-foreground text-lg">
-              Everything you need to know about partnering with us
+              Todo lo que necesitas saber para asociarte con nosotros
             </p>
           </div>
 
           <div className="space-y-4 fade-in-up">
             {[
               {
-                question: "What are your minimum order quantities?",
-                answer: "Our MOQs vary by product category. For most items, we offer low MOQs starting from just 10 units to help new retailers get started. Larger orders qualify for volume discounts of up to 40%.",
+                question: "¿Cuáles son sus cantidades mínimas de pedido?",
+                answer: "Nuestros mínimos varían según la categoría del producto. Para la mayoría de artículos, ofrecemos mínimos bajos desde solo 10 unidades para ayudar a nuevos minoristas a comenzar. Los pedidos grandes califican para descuentos por volumen de hasta el 40%.",
               },
               {
-                question: "How do you guarantee product authenticity?",
-                answer: "All our products are sourced directly from authorized distributors and manufacturers. Each shipment includes certificates of authenticity, batch codes, and full supply chain traceability.",
+                question: "¿Cómo garantizan la autenticidad del producto?",
+                answer: "Todos nuestros productos provienen directamente de distribuidores y fabricantes autorizados. Cada envío incluye certificados de autenticidad, códigos de lote y trazabilidad completa de la cadena de suministro.",
               },
               {
-                question: "What payment terms do you offer?",
-                answer: "We offer flexible payment options including Net 30, Net 60, and credit facilities for qualified buyers. New customers typically start with prepayment and can transition to credit terms after establishing a track record.",
+                question: "¿Qué condiciones de pago ofrecen?",
+                answer: "Ofrecemos opciones de pago flexibles incluyendo Net 30, Net 60 y facilidades de crédito para compradores calificados. Los nuevos clientes generalmente comienzan con prepago y pueden pasar a términos de crédito después de establecer un historial.",
               },
               {
-                question: "Do you ship internationally?",
-                answer: "Yes! We ship to over 50 countries worldwide. Our logistics partners ensure temperature-controlled shipping to preserve product quality. All customs documentation is handled by our experienced team.",
+                question: "¿Envían internacionalmente?",
+                answer: "¡Sí! Enviamos a más de 50 países en todo el mundo. Nuestros socios logísticos aseguran envíos con temperatura controlada para preservar la calidad del producto. Toda la documentación aduanera es manejada por nuestro equipo experimentado.",
               },
               {
-                question: "Can I request samples before ordering?",
-                answer: "Absolutely! We offer a comprehensive sample program for qualified retailers. Contact our sales team with your business details and product interests to request samples.",
+                question: "¿Puedo solicitar muestras antes de hacer un pedido?",
+                answer: "¡Por supuesto! Ofrecemos un programa completo de muestras para minoristas calificados. Contacta a nuestro equipo de ventas con los detalles de tu negocio e intereses de productos para solicitar muestras.",
               },
               {
-                question: "How quickly can I expect my order?",
-                answer: "Orders are processed within 24 hours of payment confirmation. Domestic shipments typically arrive in 3-5 business days, while international orders take 7-14 business days depending on destination.",
+                question: "¿Qué tan rápido puedo esperar mi pedido?",
+                answer: "Los pedidos se procesan dentro de las 24 horas posteriores a la confirmación del pago. Los envíos nacionales generalmente llegan en 3-5 días hábiles, mientras que los pedidos internacionales tardan 7-14 días hábiles según el destino.",
               },
             ].map((faq, index) => (
               <details
@@ -657,10 +657,10 @@ export default function HomePage() {
           </div>
 
           <div className="mt-12 text-center fade-in-up">
-            <p className="text-muted-foreground mb-4">Still have questions?</p>
+            <p className="text-muted-foreground mb-4">¿Aún tienes preguntas?</p>
             <Button asChild size="lg" className="shadow-lg shadow-primary/20">
               <Link href="/contact">
-                Contact Our Team <ArrowRight className="ml-2 h-5 w-5" />
+                Contactar a Nuestro Equipo <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
@@ -682,19 +682,19 @@ export default function HomePage() {
             <div className="relative p-12 lg:p-20 text-center">
               <Sparkles className="h-16 w-16 text-white/80 mx-auto mb-6 animate-pulse" />
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-white text-balance">
-                Ready to Stock Premium Beauty?
+                ¿Listo para Abastecerte de Belleza Premium?
               </h2>
               <p className="text-white/80 text-lg lg:text-xl mb-10 max-w-2xl mx-auto">
-                Join thousands of successful retailers. Get access to exclusive wholesale pricing on 500+ premium beauty brands.
+                Únete a miles de minoristas exitosos. Obtén acceso a precios mayoristas exclusivos en más de 500 marcas de belleza premium.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" variant="secondary" className="text-base shadow-xl hover:shadow-2xl transition-shadow">
                   <Link href="/catalog">
-                    Browse Products <ArrowRight className="ml-2 h-5 w-5" />
+                    Ver Productos <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-base bg-transparent border-white/30 text-white hover:bg-white/10">
-                  <Link href="/contact">Request a Callback</Link>
+                  <Link href="/contact">Solicitar Llamada</Link>
                 </Button>
               </div>
             </div>
