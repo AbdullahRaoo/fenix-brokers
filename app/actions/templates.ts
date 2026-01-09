@@ -235,7 +235,7 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
           <tr>
             <td style="padding: ${pad}px 30px;${bgColor ? ` background-color: ${bgColor};` : ''}">
               <${headingTag} style="margin: 0; font-family: ${fntFamily}; font-size: ${finalSize}px; font-weight: ${fntWeight === 'bold' ? '700' : '600'}; color: ${txtColor}; line-height: 1.3; text-align: ${txtAlign};">
-                ${escapeHtml(block.content || "")}
+                ${sanitizeHtml(block.content || "")}
               </${headingTag}>
             </td>
           </tr>`
@@ -246,9 +246,9 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
           <tr>
             <td style="padding: ${pad}px 30px;">
               <div style="${bgStyle}">
-                <p style="margin: 0; font-family: ${fntFamily}; font-size: ${fntSize}px; color: ${txtColor}; line-height: 1.6; text-align: ${txtAlign}; font-weight: ${fntWeight === 'bold' ? '600' : '400'};">
-                  ${escapeHtml(block.content || "").replace(/\n/g, '<br />')}
-                </p>
+                <div style="margin: 0; font-family: ${fntFamily}; font-size: ${fntSize}px; color: ${txtColor}; line-height: 1.6; text-align: ${txtAlign}; font-weight: ${fntWeight === 'bold' ? '600' : '400'};">
+                  ${sanitizeHtml(block.content || "")}
+                </div>
               </div>
             </td>
           </tr>`
@@ -325,9 +325,9 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
             case 'heading':
               const hLevel = child.level || 2
               const hSize = hLevel === 1 ? 24 : hLevel === 3 ? 16 : 20
-              return `<tr><td style="padding: 8px 0; text-align: ${childAlign};"><h${hLevel} style="margin: 0; font-family: ${childFont}; font-size: ${hSize}px; color: ${childColor}; font-weight: 600;">${escapeHtml(child.content || '')}</h${hLevel}></td></tr>`
+              return `<tr><td style="padding: 8px 0; text-align: ${childAlign};"><h${hLevel} style="margin: 0; font-family: ${childFont}; font-size: ${hSize}px; color: ${childColor}; font-weight: 600;">${sanitizeHtml(child.content || '')}</h${hLevel}></td></tr>`
             case 'text':
-              return `<tr><td style="padding: 8px 0; text-align: ${childAlign};"><p style="margin: 0; font-family: ${childFont}; font-size: 15px; color: ${childColor}; line-height: 1.5;">${escapeHtml(child.content || '').replace(/\n/g, '<br />')}</p></td></tr>`
+              return `<tr><td style="padding: 8px 0; text-align: ${childAlign};"><div style="margin: 0; font-family: ${childFont}; font-size: 15px; color: ${childColor}; line-height: 1.5;">${sanitizeHtml(child.content || '')}</div></td></tr>`
             case 'image':
               if (!child.src) return ''
               const imgW = child.fontSize || 100
@@ -363,9 +363,9 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
               case 'heading':
                 const hLevel = item.level || 2
                 const hSize = hLevel === 1 ? 20 : hLevel === 3 ? 14 : 16
-                return `<div style="margin: 0 0 10px 0; text-align: ${itemAlign};"><h${hLevel} style="margin: 0; font-family: ${itemFont}; font-size: ${hSize}px; font-weight: 600; color: ${itemColor};">${escapeHtml(item.content || '')}</h${hLevel}></div>`
+                return `<div style="margin: 0 0 10px 0; text-align: ${itemAlign};"><h${hLevel} style="margin: 0; font-family: ${itemFont}; font-size: ${hSize}px; font-weight: 600; color: ${itemColor};">${sanitizeHtml(item.content || '')}</h${hLevel}></div>`
               case 'text':
-                return `<p style="margin: 0 0 10px 0; font-family: ${itemFont}; font-size: 14px; color: ${itemColor}; line-height: 1.5; text-align: ${itemAlign};">${escapeHtml(item.content || '').replace(/\n/g, '<br />')}</p>`
+                return `<div style="margin: 0 0 10px 0; font-family: ${itemFont}; font-size: 14px; color: ${itemColor}; line-height: 1.5; text-align: ${itemAlign};">${sanitizeHtml(item.content || '')}</div>`
               case 'image':
                 if (!item.src) return ''
                 const imgWidth = item.fontSize || 100
@@ -632,4 +632,27 @@ function escapeHtml(text: string): string {
     "'": '&#039;'
   }
   return text.replace(/[&<>"']/g, m => map[m])
+}
+
+// Helper to sanitize HTML content - allows safe formatting tags while removing dangerous scripts
+function sanitizeHtml(html: string): string {
+  if (!html) return ''
+
+  // Remove script tags and their content
+  let sanitized = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+
+  // Remove event handlers (onclick, onload, onerror, etc.)
+  sanitized = sanitized.replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '')
+  sanitized = sanitized.replace(/\s+on\w+\s*=\s*[^\s>]*/gi, '')
+
+  // Remove javascript: URLs
+  sanitized = sanitized.replace(/href\s*=\s*["']javascript:[^"']*["']/gi, 'href="#"')
+
+  // Remove style expressions (for IE)
+  sanitized = sanitized.replace(/expression\s*\([^)]*\)/gi, '')
+
+  // Allow safe tags: formatting, lists, alignment divs, etc.
+  // The content from rich text editor includes: strong, em, u, span (with style), div (with style), ul, ol, li, br, font
+
+  return sanitized
 }
