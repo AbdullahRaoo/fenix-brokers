@@ -209,24 +209,47 @@ export async function sendCampaign(campaignId: string) {
         }
 
         // Update campaign with final stats
-        await supabaseAdmin
-            .from("campaigns")
-            .update({
-                status: "Sent",
-                sent_at: new Date().toISOString(),
-                sent_count: sentCount,
-                updated_at: new Date().toISOString(),
-            })
-            .eq("id", campaignId)
+        if (sentCount > 0) {
+            await supabaseAdmin
+                .from("campaigns")
+                .update({
+                    status: "Sent",
+                    sent_at: new Date().toISOString(),
+                    sent_count: sentCount,
+                    updated_at: new Date().toISOString(),
+                })
+                .eq("id", campaignId)
+        } else {
+            // If no emails were sent, revert to Draft and log warning
+            console.warn("Campaign processing completed but 0 emails were sent.")
+            await supabaseAdmin
+                .from("campaigns")
+                .update({
+                    status: "Draft",
+                    // metrics remain 0
+                })
+                .eq("id", campaignId)
+
+            // If we have errors, return the first one as the main error
+            if (errors.length > 0) {
+                return {
+                    success: false,
+                    error: `No se enviaron emails. Errores: ${errors.slice(0, 3).join(", ")}`,
+                    sentCount: 0,
+                    totalSubscribers: subscribers.length,
+                    errors
+                }
+            }
+        }
 
         revalidatePath("/admin/marketing")
 
         return {
-            success: true,
+            success: sentCount > 0,
             sentCount,
             totalSubscribers: subscribers.length,
             errors: errors.length > 0 ? errors : null,
-            error: null
+            error: sentCount === 0 ? "No se enviaron emails (verifique configuración de Resend)" : null
         }
     } catch (error) {
         console.error("Error sending campaign:", error)
@@ -237,7 +260,7 @@ export async function sendCampaign(campaignId: string) {
             .update({ status: "Draft" })
             .eq("id", campaignId)
 
-        return { success: false, error: "Error al enviar campaña" }
+        return { success: false, error: "Error al enviar campaña: " + (error instanceof Error ? error.message : "Error desconocido") }
     }
 }
 
