@@ -224,6 +224,9 @@ export async function updateProduct(
     }>
 ): Promise<{ data: Product | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has edit permission
+        await requirePermission('products.edit')
+
         // If title is being updated, regenerate slug
         let updateData: Record<string, unknown> = { ...productData }
         if (productData.title) {
@@ -269,6 +272,9 @@ export async function updateProduct(
 // Move product to trash (soft delete)
 export async function trashProduct(id: string): Promise<{ success: boolean; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has delete permission
+        await requirePermission('products.delete')
+
         const { error } = await supabaseAdmin
             .from('products')
             .update({ status: 'trash' })
@@ -314,6 +320,9 @@ export async function restoreProduct(id: string): Promise<{ success: boolean; er
 // Permanently delete product (hard delete)
 export async function deleteProductPermanently(id: string): Promise<{ success: boolean; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has delete permission
+        await requirePermission('products.delete')
+
         const { error } = await supabaseAdmin
             .from('products')
             .delete()

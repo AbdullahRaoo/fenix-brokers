@@ -2,6 +2,7 @@
 
 import { supabaseAdmin } from "@/lib/supabase"
 import { revalidatePath } from "next/cache"
+import { requirePermission } from "./auth"
 
 export interface SiteSetting {
     id: string
@@ -59,6 +60,9 @@ export async function getSetting(key: string) {
 // Update a setting value (upsert - creates if doesn't exist)
 export async function updateSetting(key: string, value: string | null) {
     try {
+        // ✅ SECURITY: Verify user has settings edit permission
+        await requirePermission('settings.edit')
+
         const { data, error } = await supabaseAdmin
             .from("site_settings")
             .upsert(
@@ -92,6 +96,9 @@ export async function updateSetting(key: string, value: string | null) {
 // Update multiple settings at once
 export async function updateSettings(settings: { key: string; value: string | null }[]) {
     try {
+        // ✅ SECURITY: Verify user has settings edit permission
+        await requirePermission('settings.edit')
+
         const updates = settings.map(s => ({
             key: s.key,
             value: s.value,

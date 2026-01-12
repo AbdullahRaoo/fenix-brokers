@@ -4,6 +4,29 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { sendEmail } from '@/lib/resend'
 import type { Inquiry } from '@/types/database'
 import { revalidatePath } from 'next/cache'
+import { requirePermission } from './auth'
+
+// Security constants
+const ALLOWED_ATTACHMENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024 // 10MB
+
+// Escape search input to prevent SQL injection
+function escapeSearchTerm(term: string): string {
+    return term
+        .replace(/[%_\\]/g, '\\$&')
+        .replace(/'/g, "''")
+        .slice(0, 100)
+}
+
+// Escape HTML to prevent XSS in emails
+function escapeHtml(text: string): string {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
 
 // Submit a new quote request
 export async function submitQuoteRequest(formData: {
@@ -71,6 +94,9 @@ export async function getInquiries(options?: {
     search?: string
 }): Promise<{ data: Inquiry[] | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has view permission
+        await requirePermission('inquiries.view')
+
         let query = supabaseAdmin
             .from('inquiries')
             .select('*')
@@ -80,7 +106,9 @@ export async function getInquiries(options?: {
             query = query.eq('status', options.status)
         }
         if (options?.search) {
-            query = query.or(`company_name.ilike.%${options.search}%,product_name.ilike.%${options.search}%,email.ilike.%${options.search}%`)
+            // ✅ SECURITY: Escape search term
+            const safeSearch = escapeSearchTerm(options.search)
+            query = query.or(`company_name.ilike.%${safeSearch}%,product_name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%`)
         }
 
         const { data, error } = await query
@@ -100,6 +128,9 @@ export async function getInquiries(options?: {
 // Get single inquiry by ID
 export async function getInquiryById(id: string): Promise<{ data: Inquiry | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has view permission
+        await requirePermission('inquiries.view')
+
         const { data, error } = await supabaseAdmin
             .from('inquiries')
             .select('*')
@@ -127,6 +158,9 @@ export async function updateInquiry(
     }
 ): Promise<{ data: Inquiry | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has reply permission
+        await requirePermission('inquiries.reply')
+
         const { data: inquiry, error } = await supabaseAdmin
             .from('inquiries')
             .update(data)
@@ -155,6 +189,9 @@ export async function replyToInquiry(
     message: string
 ): Promise<{ success: boolean; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has reply permission
+        await requirePermission('inquiries.reply')
+
         // Get the inquiry first
         const { data: inquiry, error: fetchError } = await supabaseAdmin
             .from('inquiries')
@@ -166,17 +203,20 @@ export async function replyToInquiry(
             return { success: false, error: 'Consulta no encontrada' }
         }
 
+        // ✅ SECURITY: Escape message content to prevent XSS
+        const safeMessage = escapeHtml(message)
+
         // Send email to customer
         const emailResult = await sendEmail({
             to: inquiry.email,
-            subject: `Re: Quote Request - ${inquiry.product_name}`,
+            subject: `Re: Quote Request - ${escapeHtml(inquiry.product_name)}`,
             html: `
         <h2>Response to Your Quote Request</h2>
-        <p>Dear ${inquiry.contact_person},</p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>Dear ${escapeHtml(inquiry.contact_person)},</p>
+        <p>${safeMessage.replace(/\n/g, '<br>')}</p>
         <hr>
         <p><em>Original Request:</em></p>
-        <p><strong>Product:</strong> ${inquiry.product_name}</p>
+        <p><strong>Product:</strong> ${escapeHtml(inquiry.product_name)}</p>
         <p><strong>Quantity:</strong> ${inquiry.quantity}</p>
         <hr>
         <p>Best regards,<br>ProSupply Wholesale Team</p>
@@ -216,7 +256,22 @@ export async function replyToInquiry(
 // Upload file to Supabase Storage
 export async function uploadAttachment(file: File): Promise<{ url: string | null; error: string | null }> {
     try {
-        const fileName = `${Date.now()}-${file.name}`
+        // ✅ SECURITY: Verify user is authenticated (public users can also submit)
+        // Note: This is called from public quote form, so no permission check
+
+        // ✅ SECURITY: Validate file type
+        if (!ALLOWED_ATTACHMENT_TYPES.includes(file.type)) {
+            return { url: null, error: `Tipo de archivo no permitido. Permitidos: PDF, Word, imágenes` }
+        }
+
+        // ✅ SECURITY: Validate file size
+        if (file.size > MAX_ATTACHMENT_SIZE) {
+            return { url: null, error: `Archivo demasiado grande. Máximo: ${MAX_ATTACHMENT_SIZE / 1024 / 1024}MB` }
+        }
+
+        // ✅ SECURITY: Sanitize filename
+        const safeFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '-').toLowerCase()
+        const fileName = `${Date.now()}-${safeFilename}`
 
         const { data, error } = await supabaseAdmin.storage
             .from('attachments')

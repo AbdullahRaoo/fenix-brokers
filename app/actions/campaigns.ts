@@ -5,6 +5,7 @@ import { sendEmail } from "@/lib/resend"
 import { revalidatePath } from "next/cache"
 import type { Campaign, Subscriber } from "@/types/database"
 import { getTemplateById } from "./templates"
+import { requirePermission } from "./auth"
 
 // Get all campaigns
 export async function getCampaigns() {
@@ -47,6 +48,9 @@ export async function createCampaign(input: {
     scheduled_at?: string
 }) {
     try {
+        // ✅ SECURITY: Verify user has create permission
+        await requirePermission('campaigns.create')
+
         const { data, error } = await supabaseAdmin
             .from("campaigns")
             .insert({
@@ -85,6 +89,9 @@ export async function updateCampaign(id: string, input: {
     scheduled_at?: string | null
 }) {
     try {
+        // ✅ SECURITY: Verify user has create permission
+        await requirePermission('campaigns.create')
+
         const updateData: Record<string, unknown> = {}
 
         if (input.name) updateData.name = input.name
@@ -114,6 +121,9 @@ export async function updateCampaign(id: string, input: {
 // Delete campaign
 export async function deleteCampaign(id: string) {
     try {
+        // ✅ SECURITY: Verify user has delete permission
+        await requirePermission('campaigns.delete')
+
         const { error } = await supabaseAdmin
             .from("campaigns")
             .delete()
@@ -132,6 +142,9 @@ export async function deleteCampaign(id: string) {
 // Send campaign to all active subscribers
 export async function sendCampaign(campaignId: string) {
     try {
+        // ✅ SECURITY: Verify user has send permission
+        await requirePermission('campaigns.send')
+
         // Get campaign
         const campaignResult = await getCampaignById(campaignId)
         if (!campaignResult.data) {

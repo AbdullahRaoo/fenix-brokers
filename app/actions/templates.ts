@@ -3,6 +3,7 @@
 import { supabaseAdmin } from "@/lib/supabase"
 import { revalidatePath } from "next/cache"
 import type { EmailTemplate } from "@/types/database"
+import { requirePermission } from "./auth"
 
 // Get all templates
 export async function getEmailTemplates() {
@@ -45,6 +46,9 @@ export async function createTemplate(input: {
   html_content?: string
 }) {
   try {
+    // ✅ SECURITY: Verify user has create permission
+    await requirePermission('templates.create')
+
     // Generate HTML from content blocks
     const htmlContent = generateHtmlFromBlocks(input.content, input.name)
 
@@ -80,6 +84,9 @@ export async function updateTemplate(id: string, input: {
   content?: object[]
 }) {
   try {
+    // ✅ SECURITY: Verify user has create permission
+    await requirePermission('templates.create')
+
     const updateData: Record<string, unknown> = {}
 
     if (input.name) updateData.name = input.name
@@ -110,6 +117,9 @@ export async function updateTemplate(id: string, input: {
 // Delete template
 export async function deleteTemplate(id: string) {
   try {
+    // ✅ SECURITY: Verify user has delete permission
+    await requirePermission('templates.delete')
+
     // First, update any campaigns that reference this template to remove the reference
     const { error: updateError } = await supabaseAdmin
       .from("campaigns")
