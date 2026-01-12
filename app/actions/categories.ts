@@ -2,6 +2,7 @@
 
 import { supabaseAdmin } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
+import { requirePermission } from './auth'
 
 export interface Category {
     id: string
@@ -69,6 +70,9 @@ export async function createCategory(data: {
     image_url?: string
 }): Promise<{ data: Category | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has create permission
+        await requirePermission('products.create')
+
         const slug = generateSlug(data.name)
 
         // Check if slug already exists

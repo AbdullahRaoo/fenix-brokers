@@ -3,6 +3,7 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import type { Product } from '@/types/database'
 import { revalidatePath } from 'next/cache'
+import { requirePermission } from './auth'
 
 // Generate URL-friendly slug from title
 function generateSlug(title: string): string {
@@ -10,6 +11,14 @@ function generateSlug(title: string): string {
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '')
+}
+
+// ✅ SECURITY: Escape search input to prevent SQL injection
+function escapeSearchTerm(term: string): string {
+    return term
+        .replace(/[%_\\]/g, '\\$&')  // Escape LIKE wildcards
+        .replace(/'/g, "''")          // Escape single quotes
+        .slice(0, 100)                // Limit length
 }
 
 export type ProductStatus = 'draft' | 'published' | 'trash'
@@ -45,7 +54,9 @@ export async function getProducts(options?: {
             query = query.eq('brand', options.brand)
         }
         if (options?.search) {
-            query = query.or(`title.ilike.%${options.search}%,slug.ilike.%${options.search}%,brand.ilike.%${options.search}%`)
+            // ✅ SECURITY: Escape search term
+            const safeSearch = escapeSearchTerm(options.search)
+            query = query.or(`title.ilike.%${safeSearch}%,slug.ilike.%${safeSearch}%,brand.ilike.%${safeSearch}%`)
         }
 
         // Apply sorting
@@ -147,6 +158,9 @@ export async function createProduct(productData: {
     status?: ProductStatus
 }): Promise<{ data: Product | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has create permission
+        await requirePermission('products.create')
+
         // Generate slug from title
         let slug = generateSlug(productData.title)
 

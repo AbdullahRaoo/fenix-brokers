@@ -262,3 +262,50 @@ export async function changePassword(userId: string, newPassword: string) {
         return { success: false, error: "Error al cambiar contraseña" }
     }
 }
+
+// ============================================================================
+// SECURITY HELPERS - For use in other server actions
+// ============================================================================
+
+import { hasPermission, type Permission, type Role } from "@/lib/permissions"
+
+/**
+ * Verify current user is authenticated and return their data.
+ * Throws an error if not authenticated - use in server actions.
+ */
+export async function requireAuth(): Promise<AdminUser> {
+    const session = await getSession()
+
+    if (!session.isAuthenticated || !session.user) {
+        throw new Error("No autorizado - debe iniciar sesión")
+    }
+
+    return session.user
+}
+
+/**
+ * Verify current user has specific permission.
+ * Returns the user if authorized, throws error if not.
+ */
+export async function requirePermission(permission: Permission): Promise<AdminUser> {
+    const user = await requireAuth()
+
+    if (!hasPermission(user.role as Role, permission)) {
+        throw new Error(`Sin permiso: ${permission}`)
+    }
+
+    return user
+}
+
+/**
+ * Check if current request is authenticated (non-throwing version).
+ * Returns null if not authenticated.
+ */
+export async function getCurrentUser(): Promise<AdminUser | null> {
+    try {
+        const session = await getSession()
+        return session.isAuthenticated ? session.user : null
+    } catch {
+        return null
+    }
+}

@@ -2,6 +2,11 @@
 
 import { supabaseAdmin } from "@/lib/supabase"
 import { revalidatePath } from "next/cache"
+import { requirePermission } from "./auth"
+
+// Security constants
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
 export interface MediaItem {
     id: string
@@ -15,19 +20,42 @@ export interface MediaItem {
     updated_at: string
 }
 
+// Sanitize filename to prevent path traversal
+function sanitizeFilename(filename: string): string {
+    return filename
+        .replace(/[^a-zA-Z0-9.-]/g, '-')
+        .replace(/\.{2,}/g, '.')
+        .replace(/^-+|-+$/g, '')
+        .toLowerCase()
+}
+
 // Upload file to Supabase Storage and create database record
 export async function uploadMedia(formData: FormData): Promise<{ data: MediaItem | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has upload permission
+        await requirePermission('media.upload')
+
         const file = formData.get("file") as File
         if (!file) {
             return { data: null, error: "No se proporcionó archivo" }
         }
 
-        // Generate unique filename
-        const ext = file.name.split(".").pop()
+        // ✅ SECURITY: Validate file type
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            return { data: null, error: `Tipo de archivo no permitido. Permitidos: ${ALLOWED_FILE_TYPES.join(', ')}` }
+        }
+
+        // ✅ SECURITY: Validate file size
+        if (file.size > MAX_FILE_SIZE) {
+            return { data: null, error: `Archivo demasiado grande. Máximo: ${MAX_FILE_SIZE / 1024 / 1024}MB` }
+        }
+
+        // Generate unique filename with sanitization
+        const originalExt = file.name.split(".").pop()?.toLowerCase() || 'jpg'
+        const safeExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(originalExt) ? originalExt : 'jpg'
         const timestamp = Date.now()
         const randomStr = Math.random().toString(36).substring(2, 8)
-        const fileName = `${timestamp}-${randomStr}.${ext}`
+        const fileName = `${timestamp}-${randomStr}.${safeExt}`
 
         // Upload to 'media' bucket
         const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
@@ -47,12 +75,13 @@ export async function uploadMedia(formData: FormData): Promise<{ data: MediaItem
             .from("media")
             .getPublicUrl(uploadData.path)
 
-        // Create database record
+        // Create database record with sanitized display name
+        const safeDisplayName = sanitizeFilename(file.name.replace(/\.[^/.]+$/, ""))
         const { data: dbData, error: dbError } = await supabaseAdmin
             .from("media")
             .insert({
                 storage_path: fileName,
-                display_name: file.name.replace(/\.[^/.]+$/, ""), // Remove extension for display
+                display_name: safeDisplayName || 'uploaded-file',
                 url: urlData.publicUrl,
                 mime_type: file.type,
                 size_bytes: file.size,
@@ -85,6 +114,9 @@ export async function createMediaRecord(metadata: {
     size_bytes: number
 }): Promise<{ data: MediaItem | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has upload permission
+        await requirePermission('media.upload')
+
         const { data: dbData, error: dbError } = await supabaseAdmin
             .from("media")
             .insert({
@@ -113,6 +145,9 @@ export async function createMediaRecord(metadata: {
 // List all media files from database
 export async function getMediaFiles(): Promise<{ data: MediaItem[] | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has view permission
+        await requirePermission('media.view')
+
         const { data, error } = await supabaseAdmin
             .from("media")
             .select("*")
@@ -156,6 +191,9 @@ export async function updateMedia(
     updates: { display_name?: string; alt_text?: string }
 ): Promise<{ data: MediaItem | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has upload (edit) permission
+        await requirePermission('media.upload')
+
         const { data, error } = await supabaseAdmin
             .from("media")
             .update({ ...updates, updated_at: new Date().toISOString() })
@@ -320,6 +358,9 @@ function escapeRegex(string: string): string {
 // Delete media file
 export async function deleteMedia(id: string): Promise<{ success: boolean; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has delete permission
+        await requirePermission('media.delete')
+
         // Get media record
         const { data: media, error: getError } = await supabaseAdmin
             .from("media")

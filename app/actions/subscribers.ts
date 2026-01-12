@@ -3,6 +3,7 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import type { Subscriber } from '@/types/database'
 import { revalidatePath } from 'next/cache'
+import { requirePermission } from './auth'
 
 /**
  * Extract a readable name from an email address
@@ -96,6 +97,9 @@ export async function getSubscribers(options?: {
     search?: string
 }): Promise<{ data: Subscriber[] | null; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has view permission
+        await requirePermission('subscribers.view')
+
         let query = supabaseAdmin
             .from('subscribers')
             .select('*')
@@ -125,6 +129,9 @@ export async function getSubscribers(options?: {
 // Unsubscribe an email
 export async function unsubscribeEmail(id: string): Promise<{ success: boolean; error: string | null }> {
     try {
+        // ✅ SECURITY: Verify user has export (manage) permission
+        await requirePermission('subscribers.export')
+
         const { error } = await supabaseAdmin
             .from('subscribers')
             .update({ status: 'unsubscribed' })
