@@ -187,10 +187,11 @@ export async function sendCampaign(campaignId: string) {
             const sendPromises = batch.map(async (subscriber: Subscriber) => {
                 try {
                     // Personalize HTML content
+                    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fenixbrokers.com'
                     const personalizedHtml = template.html_content
                         ?.replace(/\{\{name\}\}/g, subscriber.name || "Suscriptor")
                         .replace(/\{\{email\}\}/g, subscriber.email)
-                        .replace(/\{\{unsubscribe_url\}\}/g, `https://fenixbrokers.com/unsubscribe?email=${encodeURIComponent(subscriber.email)}`)
+                        .replace(/\{\{unsubscribe_url\}\}/g, `${baseUrl}/unsubscribe?email=${encodeURIComponent(subscriber.email)}`)
 
                     console.log(`Sending email to ${subscriber.email}...`)
 

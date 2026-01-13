@@ -230,10 +230,16 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
         const logoPadRight = block.paddingRight ?? 0
         const logoPadBottom = block.paddingBottom ?? 25
         const logoPadLeft = block.paddingLeft ?? 0
+        // Convert relative URLs to absolute for email compatibility
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fenixbrokers.com'
+        let logoSrc = block.src || ''
+        if (logoSrc.startsWith('/')) {
+          logoSrc = `${baseUrl}${logoSrc}`
+        }
         return `
           <tr>
             <td style="padding: ${logoPadTop}px ${logoPadRight}px ${logoPadBottom}px ${logoPadLeft}px; background-color: ${bgColor || '#ffffff'};" align="${txtAlign}">
-              <img src="${block.src || ''}" alt="${escapeHtml(block.alt || 'Logo')}" height="${logoHeight}" style="display: inline-block; height: ${logoHeight}px; width: auto; border: 0;${logoBorderRadius ? ` border-radius: ${logoBorderRadius}px;` : ''}" />
+              <img src="${logoSrc}" alt="${escapeHtml(block.alt || 'Logo')}" height="${logoHeight}" style="display: inline-block; height: ${logoHeight}px; width: auto; border: 0;${logoBorderRadius ? ` border-radius: ${logoBorderRadius}px;` : ''}" />
             </td>
           </tr>`
 
@@ -518,18 +524,19 @@ function generateHtmlFromBlocks(blocks: object[], templateName: string): string 
     }
   }).join("")
 
-  // Helper for social icon URLs - using Wikimedia Commons for reliability
+  // Helper for social icon URLs - using self-hosted base64 data URIs for maximum compatibility
   function getSocialIconUrl(platform: string): string {
-    // Wikimedia Commons SVG icons (reliable, public domain)
+    // Using simple white icons that work on any background
+    // Base64-encoded SVG icons for guaranteed delivery
     const icons: Record<string, string> = {
-      facebook: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Facebook_icon_2013.svg',
-      instagram: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg',
-      linkedin: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png',
-      twitter: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg',
-      youtube: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg',
-      tiktok: 'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg',
+      facebook: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE4IDJoLTNhNSA1IDAgMCAwLTUgNXYzSDd2NGgzdjhoNHYtOGgzLjVsLjUtNEgxNFY3YTEgMSAwIDAgMSAxLTFoM3oiLz48L3N2Zz4=',
+      instagram: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiByeD0iNSIgcnk9IjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjE4IiBjeT0iNiIgcj0iMSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=',
+      linkedin: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE2IDhoLjAxSDIxdjEyaC00di03YTIgMiAwIDAgMC0yLTIgMiAyIDAgMCAwLTIgMnY3SDl2LTEyaDR2MSI+PC9wYXRoPjxyZWN0IHg9IjMiIHk9IjgiIHdpZHRoPSI0IiBoZWlnaHQ9IjEyIi8+PGNpcmNsZSBjeD0iNSIgY3k9IjQiIHI9IjIiLz48L3N2Zz4=',
+      twitter: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIzIDMuMDEyYTEwLjkgMTAuOSAwIDAgMS0zLjE0IDEuNTMgNC40OCA0LjQ4IDAgMCAwLTcuODYgMy4wOEExMi45NCAxMi45NCAwIDAgMSAzIDQuMDEyYTQuNTIgNC41MiAwIDAgMCAxLjQgNi4wMyA0LjQ4IDQuNDggMCAwIDEtMi4wMi0uNTZjMCAuMDYgMCAuMTEgMCAuMTdhNC41MiA0LjUyIDAgMCAwIDMuNjMgNC40MyA0LjUyIDQuNTIgMCAwIDEtMi4wNC4wOCA0LjUyIDQuNTIgMCAwIDAgNC4yMiAzLjE0QTkuMDUgOS4wNSAwIDAgMSAyIDE4LjU4YTEyLjggMTIuOCAwIDAgMCA2Ljk1IDIuMDRjOC4zNSAwIDEyLjkyLTYuOTIgMTIuOTItMTIuOTMgMC0uMiAwLS40LS4wMS0uNmEwOS4yNCA5LjI0IDAgMCAwIDIuMjYtMi4zNSIvPjwvc3ZnPg==',
+      youtube: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIyLjU0IDYuNDJhMi43OCAyLjc4IDAgMCAwLTEuOTQtMkMxOC44OCA0IDE yIDQgMTIgNHMtNi44OCAwLTguNi40MmEyLjc4IDIuNzggMCAwIDAtMS45NSAyIDI5LjA0IDI5LjA0IDAgMCAwLS40NiA1LjU4IDI5LjA0IDI5LjA0IDAgMCAwIC40NiA1LjU4IDIuNzggMi43OCAwIDAgMCAxLjk0IDJDNS4xMiAyMCAxMiAyMCAxMiAyMHM2Ljg4IDAgOC42LS40MmEyLjc4IDIuNzggMCAwIDAgMS45NC0yIDI5LjA0IDI5LjA0IDAgMCAwIC40Ni01LjU4IDI5LjA0IDI5LjA0IDAgMCAwLS40Ni01LjU4ek05Ljc1IDE1LjAyVjguOThsNS43NiAzLjAyLTUuNzYgMy4wMnoiLz48L3N2Zz4=',
+      tiktok: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTkgMTJhNCA0IDAgMSAwIDAgOCA0IDQgMCAwIDAgMC04em0wIDZhMiAyIDAgMSAxIDAtNCAyIDIgMCAwIDEgMCA0eiIvPjxwYXRoIGQ9Ik0xMiAydjZoNGE0IDQgMCAwIDAgNC00aDJhNiA2IDAgMCAxLTYgNmgtMnY2aDJhOCA4IDAgMSAxLTggOFY4SDZWMnoiLz48L3N2Zz4=',
     }
-    return icons[platform] || 'https://upload.wikimedia.org/wikipedia/commons/6/6a/External_link_font_awesome.svg'
+    return icons[platform] || icons.facebook
   }
 
   // Full Outlook-compatible HTML email template
