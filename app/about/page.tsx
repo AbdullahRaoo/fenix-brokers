@@ -71,8 +71,8 @@ export default function AboutPage() {
   ]
 
   const timeline = [
-    { year: "2010", title: "Fundación", description: "Comenzamos como una pequeña operación mayorista de belleza en Nueva York" },
-    { year: "2013", title: "Expansión", description: "Nos expandimos para atender clientes en toda Norteamérica" },
+    { year: "2010", title: "Fundación", description: "Comenzamos como una pequeña operación mayorista de belleza en Las Palmas de Gran Canaria" },
+    { year: "2013", title: "Expansión", description: "Nos expandimos para atender clientes en toda España y Europa" },
     { year: "2016", title: "Alcance Global", description: "Iniciamos operaciones internacionales, alcanzando más de 20 países" },
     { year: "2019", title: "Transformación Digital", description: "Lanzamos plataforma online para pedidos fluidos" },
     { year: "2022", title: "Líder de la Industria", description: "Nos convertimos en uno de los principales socios mayoristas de belleza globalmente" },

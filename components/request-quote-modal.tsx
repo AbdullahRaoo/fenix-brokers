@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Upload, X, FileText, CheckCircle2 } from "lucide-react"
+import { Upload, X, FileText, CheckCircle2, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { submitQuoteRequest } from "@/app/actions/inquiries"
+import { submitQuoteRequest, uploadAttachment } from "@/app/actions/inquiries"
 
 interface RequestQuoteModalProps {
   open: boolean
@@ -33,12 +33,22 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
     requirements: "",
   })
   const [file, setFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
+      // Validate file size (10MB max)
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        toast({
+          title: "Archivo muy grande",
+          description: "El archivo debe ser menor a 10MB",
+          variant: "destructive",
+        })
+        return
+      }
       setFile(selectedFile)
     }
   }
@@ -51,6 +61,28 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
     e.preventDefault()
 
     startTransition(async () => {
+      let attachmentUrl: string | undefined
+
+      // Upload file if selected
+      if (file) {
+        setIsUploading(true)
+        const formDataUpload = new FormData()
+        formDataUpload.append("file", file)
+
+        const uploadResult = await uploadAttachment(formDataUpload)
+        setIsUploading(false)
+
+        if (uploadResult.error) {
+          toast({
+            title: "Error al subir archivo",
+            description: uploadResult.error,
+            variant: "destructive",
+          })
+          return
+        }
+        attachmentUrl = uploadResult.url || undefined
+      }
+
       const result = await submitQuoteRequest({
         productId: product.id,
         productName: product.name,
@@ -59,6 +91,7 @@ export function RequestQuoteModal({ open, onOpenChange, product }: RequestQuoteM
         email: formData.email,
         quantity: parseInt(formData.quantity),
         requirements: formData.requirements || undefined,
+        attachmentUrl,
       })
 
       if (result.error) {

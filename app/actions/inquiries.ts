@@ -254,10 +254,15 @@ export async function replyToInquiry(
 }
 
 // Upload file to Supabase Storage
-export async function uploadAttachment(file: File): Promise<{ url: string | null; error: string | null }> {
+export async function uploadAttachment(formData: FormData): Promise<{ url: string | null; error: string | null }> {
     try {
         // ✅ SECURITY: Verify user is authenticated (public users can also submit)
         // Note: This is called from public quote form, so no permission check
+
+        const file = formData.get('file') as File | null
+        if (!file) {
+            return { url: null, error: 'No se encontró archivo' }
+        }
 
         // ✅ SECURITY: Validate file type
         if (!ALLOWED_ATTACHMENT_TYPES.includes(file.type)) {
