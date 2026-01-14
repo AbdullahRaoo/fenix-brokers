@@ -31,6 +31,7 @@ export default function CatalogPage() {
           category: categoryFilter === "all" ? undefined : categoryFilter,
           search: searchQuery || undefined,
           sortBy: sortBy as any,
+          status: 'published',
         }),
         getCategories(),
       ])

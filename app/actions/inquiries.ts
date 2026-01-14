@@ -292,3 +292,75 @@ export async function uploadAttachment(file: File): Promise<{ url: string | null
         return { url: null, error: 'Error al subir archivo' }
     }
 }
+
+// Submit contact form (public - no auth required)
+export async function submitContactForm(formData: {
+    name: string
+    email: string
+    company?: string
+    phone?: string
+    subject: string
+    message: string
+}): Promise<{ success: boolean; error: string | null }> {
+    try {
+        // Validate required fields
+        if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+            return { success: false, error: 'Por favor completa todos los campos requeridos' }
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(formData.email)) {
+            return { success: false, error: 'Por favor ingresa un email válido' }
+        }
+
+        // Create inquiry record for contact form
+        const { data, error } = await supabaseAdmin
+            .from('inquiries')
+            .insert({
+                product_name: `Contacto: ${formData.subject}`,
+                company_name: formData.company || 'No especificada',
+                contact_person: formData.name,
+                email: formData.email,
+                quantity: 0,
+                requirements: `${formData.message}${formData.phone ? `\n\nTeléfono: ${formData.phone}` : ''}`,
+                status: 'New',
+                admin_notes: 'Enviado desde formulario de contacto',
+                message_threads: [],
+            })
+            .select()
+            .single()
+
+        if (error) {
+            console.error('Error creating contact inquiry:', error)
+            return { success: false, error: 'Error al enviar mensaje' }
+        }
+
+        // Send notification email to admin
+        const adminEmail = process.env.ADMIN_EMAIL || 'ebono@fenixbrokers.com'
+        await sendEmail({
+            to: adminEmail,
+            subject: `Nuevo mensaje de contacto: ${escapeHtml(formData.subject)}`,
+            html: `
+                <h2>Nuevo Mensaje de Contacto</h2>
+                <p><strong>Nombre:</strong> ${escapeHtml(formData.name)}</p>
+                <p><strong>Email:</strong> ${escapeHtml(formData.email)}</p>
+                ${formData.company ? `<p><strong>Empresa:</strong> ${escapeHtml(formData.company)}</p>` : ''}
+                ${formData.phone ? `<p><strong>Teléfono:</strong> ${escapeHtml(formData.phone)}</p>` : ''}
+                <p><strong>Asunto:</strong> ${escapeHtml(formData.subject)}</p>
+                <hr />
+                <p><strong>Mensaje:</strong></p>
+                <p>${escapeHtml(formData.message).replace(/\n/g, '<br>')}</p>
+                <hr />
+                <p><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/inquiries/${data.id}">Ver en Admin</a></p>
+            `,
+        })
+
+        revalidatePath('/admin/inquiries')
+
+        return { success: true, error: null }
+    } catch (error) {
+        console.error('Error in submitContactForm:', error)
+        return { success: false, error: 'Error al enviar mensaje' }
+    }
+}

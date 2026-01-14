@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, Phone, MapPin, Clock, Send, Globe, Building2 } from "lucide-react"
+import { Mail, Phone, MapPin, Clock, Send, Globe, Building2, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { submitContactForm } from "@/app/actions/inquiries"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -28,8 +29,17 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const result = await submitContactForm(formData)
+
+    if (result.error) {
+      toast({
+        title: "Error",
+        description: result.error,
+        variant: "destructive",
+      })
+      setIsSubmitting(false)
+      return
+    }
 
     toast({
       title: "¡Mensaje enviado!",
@@ -241,7 +251,7 @@ export default function ContactPage() {
                 <Button type="submit" size="lg" className="w-full h-12 text-base shadow-lg shadow-primary/20" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
-                      <span className="animate-spin mr-2">⏳</span>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Enviando...
                     </>
                   ) : (
@@ -268,7 +278,7 @@ export default function ContactPage() {
           <div className="relative rounded-2xl overflow-hidden border border-border shadow-lg">
             <div className="aspect-[21/9] bg-muted">
               <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-74.0060%2C40.7128%2C-73.9800%2C40.7300&layer=mapnik&marker=40.7214%2C-73.9930"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-15.4400%2C28.0800%2C-15.3900%2C28.1200&layer=mapnik&marker=28.0997%2C-15.4134"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

@@ -192,3 +192,45 @@ export async function getSubscriberCount(): Promise<{ count: number; error: stri
         return { count: 0, error: 'Error al contar suscriptores' }
     }
 }
+
+// Public unsubscribe by email (for email links - no auth required)
+export async function unsubscribeByEmail(email: string): Promise<{ success: boolean; error: string | null }> {
+    try {
+        // Validate email format
+        if (!email || !email.includes('@')) {
+            return { success: false, error: 'Email inválido' }
+        }
+
+        // Find subscriber by email
+        const { data: subscriber, error: findError } = await supabaseAdmin
+            .from('subscribers')
+            .select('id, status')
+            .eq('email', email.toLowerCase())
+            .single()
+
+        if (findError || !subscriber) {
+            // Don't reveal if email exists or not for privacy
+            return { success: true, error: null }
+        }
+
+        if (subscriber.status === 'unsubscribed') {
+            return { success: true, error: null }
+        }
+
+        // Update status to unsubscribed
+        const { error: updateError } = await supabaseAdmin
+            .from('subscribers')
+            .update({ status: 'unsubscribed' })
+            .eq('id', subscriber.id)
+
+        if (updateError) {
+            console.error('Error unsubscribing by email:', updateError)
+            return { success: false, error: 'Error al procesar la solicitud' }
+        }
+
+        return { success: true, error: null }
+    } catch (error) {
+        console.error('Error in unsubscribeByEmail:', error)
+        return { success: false, error: 'Error al procesar la solicitud' }
+    }
+}
