@@ -280,22 +280,24 @@ export default function HomePage() {
       </section>
 
       {/* Scrolling logos section */}
-      <section className="py-12 bg-muted/30 border-y border-border/40 overflow-hidden">
+      <section className="py-12 bg-muted/30 border-y border-border/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-muted-foreground mb-8 font-semibold uppercase tracking-wider">
             Confianza de los Principales Minoristas de Belleza del Mundo
           </p>
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10" />
-            <div className="flex gap-16 animate-scroll">
+          <div className="relative overflow-hidden">
+            {/* Gradient overlays for smooth fade effect */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-muted/30 via-muted/30 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-muted/30 via-muted/30 to-transparent z-10 pointer-events-none" />
+            {/* Scrolling container */}
+            <div className="flex gap-16 animate-scroll whitespace-nowrap">
               {[...clientLogos, ...clientLogos, ...clientLogos].map((logo, index) => (
-                <div
+                <span
                   key={index}
-                  className="flex-shrink-0 text-2xl font-bold text-muted-foreground/30 hover:text-primary transition-colors duration-300 cursor-default"
+                  className="flex-shrink-0 text-2xl font-bold text-muted-foreground/30 hover:text-primary transition-colors duration-300 cursor-default select-none"
                 >
                   {logo}
-                </div>
+                </span>
               ))}
             </div>
           </div>
