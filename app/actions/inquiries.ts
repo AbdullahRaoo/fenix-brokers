@@ -64,8 +64,9 @@ export async function submitQuoteRequest(formData: {
         }
 
         // Send notification email to admin
+        const adminEmail = process.env.ADMIN_EMAIL || 'ebono@fenixbrokers.com'
         await sendEmail({
-            to: 'admin@example.com', // TODO: Make this configurable
+            to: adminEmail,
             subject: `New Quote Request: ${formData.productName}`,
             html: `
         <h2>New Quote Request Received</h2>

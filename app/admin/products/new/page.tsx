@@ -80,6 +80,19 @@ export default function NewProductPage() {
       return
     }
 
+    // Validate price if provided
+    if (price) {
+      const numPrice = parseFloat(price)
+      if (isNaN(numPrice) || numPrice < 0) {
+        toast({
+          title: "Precio Inválido",
+          description: "Por favor ingresa un precio válido  (mayor o igual a 0).",
+          variant: "destructive",
+        })
+        return
+      }
+    }
+
     startTransition(async () => {
       const result = await createProduct({
         title,

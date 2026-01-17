@@ -4,6 +4,26 @@ import { supabaseAdmin } from "@/lib/supabase"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 
+// Password validation helper
+function validatePassword(password: string): { valid: boolean; error?: string } {
+    if (password.length < 12) {
+        return { valid: false, error: "La contraseña debe tener al menos 12 caracteres" }
+    }
+    if (!/[A-Z]/.test(password)) {
+        return { valid: false, error: "La contraseña debe incluir al menos una letra mayúscula" }
+    }
+    if (!/[a-z]/.test(password)) {
+        return { valid: false, error: "La contraseña debe incluir al menos una letra minúscula" }
+    }
+    if (!/[0-9]/.test(password)) {
+        return { valid: false, error: "La contraseña debe incluir al menos un número" }
+    }
+    if (!/[^A-Za-z0-9]/.test(password)) {
+        return { valid: false, error: "La contraseña debe incluir al menos un carácter especial" }
+    }
+    return { valid: true }
+}
+
 // Types for admin users
 export interface AdminUser {
     id: string
@@ -57,7 +77,7 @@ export async function loginAdmin(email: string, password: string) {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 7, // 7 days
+            maxAge: 60 * 60 * 24, // 1 day (security best practice for admin sessions)
             path: "/",
         })
 
@@ -153,6 +173,12 @@ export async function createAdminUser(input: {
     role: "admin" | "editor" | "viewer"
 }) {
     try {
+        // Validate password strength
+        const passwordCheck = validatePassword(input.password)
+        if (!passwordCheck.valid) {
+            return { success: false, error: passwordCheck.error || "Contraseña inválida" }
+        }
+
         // Create auth user
         const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
             email: input.email,
