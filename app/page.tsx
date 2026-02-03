@@ -176,10 +176,10 @@ export default function HomePage() {
           style={{ transform: `translateY(${scrollY * 0.05}px)` }}
         />
 
-        {/* Floating decorative elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl animate-float" />
-        <div className="absolute bottom-20 right-20 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-float-delayed" />
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-secondary/30 rounded-full blur-lg animate-pulse" />
+        {/* Floating decorative elements - subtle blur for clean look */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-md animate-float" />
+        <div className="absolute bottom-20 right-20 w-32 h-32 bg-accent/10 rounded-full blur-lg animate-float-delayed" />
+        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-secondary/30 rounded-full blur-sm animate-pulse" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -236,7 +236,7 @@ export default function HomePage() {
             <div className="fade-in-right lg:block hidden relative">
               {/* Main hero image */}
               <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-50" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-xl opacity-50" />
                 <img
                   src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80"
                   alt="Cosméticos de Lujo"

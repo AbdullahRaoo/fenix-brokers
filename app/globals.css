@@ -195,7 +195,7 @@
   animation-play-state: paused;
 }
 
-/* Floating animations */
+/* Floating animations - gentle and smooth */
 @keyframes float {
 
   0%,
@@ -204,7 +204,7 @@
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
 }
 
@@ -216,41 +216,41 @@
   }
 
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
   }
 }
 
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
 }
 
 .animate-float-delayed {
-  animation: float-delayed 3s ease-in-out infinite 0.5s;
+  animation: float-delayed 4s ease-in-out infinite 0.5s;
 }
 
-/* Fade in animations */
+/* Fade in animations - Smooth cubic-bezier for natural feel */
 .fade-in-up,
 .fade-in-left,
 .fade-in-right,
 .scale-in {
   opacity: 0;
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .fade-in-up {
-  transform: translateY(30px);
+  transform: translateY(20px);
 }
 
 .fade-in-left {
-  transform: translateX(-30px);
+  transform: translateX(-20px);
 }
 
 .fade-in-right {
-  transform: translateX(30px);
+  transform: translateX(20px);
 }
 
 .scale-in {
-  transform: scale(0.95);
+  transform: scale(0.97);
 }
 
 .fade-in-up.animate-in,
