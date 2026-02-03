@@ -113,8 +113,8 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-transparent" />
-        <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-10 w-48 h-48 bg-accent/10 rounded-full blur-2xl" />
+        <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-xl" />
+        <div className="absolute bottom-10 left-10 w-48 h-48 bg-accent/10 rounded-full blur-lg" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl mx-auto text-center fade-in-up">
@@ -162,7 +162,7 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="fade-in-left">
               <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-50" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-lg opacity-50" />
                 <img
                   src="/images/our-story.png"
                   alt="Nuestro Equipo"
@@ -343,8 +343,8 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="fade-in-up relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary rounded-3xl" />
-            <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-xl" />
+            <div className="absolute bottom-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-xl" />
 
             <div className="relative p-12 lg:p-20 text-center">
               <Sparkles className="h-14 w-14 text-white/80 mx-auto mb-6" />

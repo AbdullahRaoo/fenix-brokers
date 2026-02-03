@@ -51,9 +51,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
-      <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-      <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-secondary/20 rounded-full blur-2xl" />
+      <div className="absolute top-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-xl animate-pulse" />
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/10 rounded-full blur-xl" />
+      <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-secondary/20 rounded-full blur-lg" />
 
       {/* Left panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative">

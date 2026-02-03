@@ -73,8 +73,8 @@ export default function CatalogPage() {
       {/* Hero Section */}
       <section className="relative py-16 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-transparent" />
-        <div className="absolute top-10 right-20 w-48 h-48 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-10 w-32 h-32 bg-accent/10 rounded-full blur-2xl" />
+        <div className="absolute top-10 right-20 w-48 h-48 bg-primary/10 rounded-full blur-xl" />
+        <div className="absolute bottom-10 left-10 w-32 h-32 bg-accent/10 rounded-full blur-lg" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center max-w-3xl mx-auto">

@@ -369,8 +369,8 @@ export default function HomePage() {
       {/* Categories Section */}
       <section id="categories" className="py-24 bg-muted/20 relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-72 h-72 bg-primary/5 rounded-full blur-xl" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-xl" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-16 fade-in-up">
@@ -481,7 +481,7 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="fade-in-left order-2 lg:order-1">
               <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl blur-2xl" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl blur-lg" />
                 <img
                   src="/logos/PNG/logo-fenix-brokers-11.png"
                   alt="Fenix Brokers"
@@ -677,9 +677,9 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary rounded-3xl" />
 
             {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse" />
+            <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-xl" />
+            <div className="absolute bottom-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-xl" />
+            <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-white/5 rounded-full blur-lg animate-pulse" />
 
             <div className="relative p-12 lg:p-20 text-center">
               <Sparkles className="h-16 w-16 text-white/80 mx-auto mb-6 animate-pulse" />

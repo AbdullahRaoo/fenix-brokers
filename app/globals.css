@@ -18,7 +18,7 @@
   /* Light Greyish Blue */
   --secondary-foreground: #0f172a;
   --muted: #dee6ea;
-  --muted-foreground: #64748b;
+  --muted-foreground: #475569;
   --accent: #5887da;
   /* Darker Blue */
   --accent-foreground: #ffffff;
@@ -57,7 +57,7 @@
   --secondary: #334155;
   --secondary-foreground: #dee6ea;
   --muted: #1e293b;
-  --muted-foreground: #94a3b8;
+  --muted-foreground: #b8c5d1;
   --accent: #5887da;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
