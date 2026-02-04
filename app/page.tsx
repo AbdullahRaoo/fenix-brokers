@@ -71,23 +71,6 @@ export default function HomePage() {
     loadData()
   }, [])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in")
-          }
-        })
-      },
-      { threshold: 0.1 },
-    )
-
-    // Re-observe when content changes (products load)
-    document.querySelectorAll(".fade-in-up, .fade-in-left, .fade-in-right, .scale-in").forEach((el) => observer.observe(el))
-
-    return () => observer.disconnect()
-  }, [featuredProducts, categoryData]) // Re-run when products or categories load
 
   // Default fallback images for categories (used only if no image is set in database)
   const defaultCategoryImages: Record<string, { image: string; description: string }> = {
@@ -183,7 +166,7 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="fade-in-up">
+            <div >
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-6 animate-shimmer">
                 <Sparkles className="h-4 w-4 text-primary" />

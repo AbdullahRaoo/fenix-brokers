@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
 import { PublicHeader } from "@/components/public-header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -23,22 +22,6 @@ import {
 import Link from "next/link"
 
 export default function AboutPage() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in")
-          }
-        })
-      },
-      { threshold: 0.1 },
-    )
-
-    document.querySelectorAll(".fade-in-up, .fade-in-left, .fade-in-right").forEach((el) => observer.observe(el))
-
-    return () => observer.disconnect()
-  }, [])
 
   const stats = [
     { icon: Award, value: "15+", label: "Años de Experiencia", color: "from-amber-500/20 to-orange-500/20" },
@@ -160,7 +143,7 @@ export default function AboutPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="fade-in-left">
+            <div >
               <div className="relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-lg opacity-50" />
                 <img
@@ -183,7 +166,7 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="fade-in-right">
+            <div >
               <span className="text-primary text-sm font-semibold uppercase tracking-wider">Nuestra Historia</span>
               <h2 className="text-3xl sm:text-4xl font-bold mt-3 mb-6 text-balance">
                 Construido sobre <span className="text-primary">Confianza y Calidad</span>
